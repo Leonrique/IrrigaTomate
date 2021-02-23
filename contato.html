@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html class="wide wow-animation" lang="en">
+  <head>
+    <title>Contato</title>
+    <meta name="format-detection" content="telephone=no">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <!-- Stylesheets-->
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/fonts.css">
+    <link rel="stylesheet" href="css/style.css">
+    <!--[if lt IE 10]>
+    <div style="background: #212121; padding: 10px 0; box-shadow: 3px 3px 5px 0 rgba(0,0,0,.3); clear: both; text-align:center; position: relative; z-index:1;"><a href="http://windows.microsoft.com/en-US/internet-explorer/"><img src="images/ie8-panel/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today."></a></div>
+    <script src="js/html5shiv.min.js"></script>
+    <![endif]-->
+    <script language="javascript" src="login.js" ></script>
+    <script type="text/javascript" src="getDadosUserLogin.js"></script>
+    <script language="javascript">
+
+      function verificalogin(user, senha) {
+ 
+ 
+             if(  user !== null)
+                  user = user.trim();
+             else {
+                alert("Digite o nome do usu\u00E1rio!");
+                return;
+             }
+             if(  senha !== null)
+                  senha = senha.trim();
+             else {
+                      alert("Digite a senha!");
+                      return;
+             }
+ 
+             if(user.length == 0 ) {
+ 
+                     alert("Digite o nome do usu\u00E1rio!");
+                     return;
+ 
+             }
+             if(senha.length == 0 ) {
+ 
+                     alert("Digite a senha!");
+                     return;
+             }else {
+ 
+                GetXmlHttpObject( user, senha);
+             }
+      }
+    </script>
+  </head>
+  <body>
+    <div class="preloader">
+      <div class="preloader-body">
+        <div class="cssload-container"><span></span><span></span><span></span><span></span>
+        </div>
+      </div>
+    </div>
+    <div class="page">
+      
+      <!-- Page Header-->
+      <header class="section page-header">
+        <!-- RD Navbar-->
+        <div class="rd-navbar-wrap rd-navbar-modern-wrap">
+          <nav class="rd-navbar rd-navbar-modern" data-layout="rd-navbar-fixed" data-sm-layout="rd-navbar-fixed" data-md-layout="rd-navbar-fixed" data-md-device-layout="rd-navbar-fixed" data-lg-layout="rd-navbar-static" data-lg-device-layout="rd-navbar-fixed" data-xl-layout="rd-navbar-static" data-xl-device-layout="rd-navbar-static" data-xxl-layout="rd-navbar-static" data-xxl-device-layout="rd-navbar-static" data-lg-stick-up-offset="46px" data-xl-stick-up-offset="46px" data-xxl-stick-up-offset="70px" data-lg-stick-up="true" data-xl-stick-up="true" data-xxl-stick-up="true">
+            <div class="rd-navbar-main-outer">
+              <div class="rd-navbar-main">
+                <!-- RD Navbar Panel-->
+                <div class="rd-navbar-panel">
+                  <!-- RD Navbar Toggle-->
+                  <button class="rd-navbar-toggle" data-rd-navbar-toggle=".rd-navbar-nav-wrap"><span></span></button>
+                  <!-- RD Navbar Brand-->
+                  <div class="rd-navbar-brand"><a class="brand" href="index.html"><img src="images/logo-default-196x47.png" alt="" width="196" height="47"/></a></div>
+                </div>
+                <div class="rd-navbar-main-element">
+                  <div class="rd-navbar-nav-wrap">
+                    <ul class="rd-navbar-nav">
+                      <li class="rd-nav-item"><a class="rd-nav-link" href="index.html">Home</a>
+                      </li>
+                      <li class="rd-nav-item"><a class="rd-nav-link" href="sobre.html">Sobre</a>
+                      </li>
+                      <li class="rd-nav-item"><a class="rd-nav-link" href="planejamento.html">Planejamento</a>
+                      </li>
+                      <li class="rd-nav-item"><a class="rd-nav-link" href="manejo.html">Manejo</a>
+                      </li>
+                      <li class="rd-nav-item active"><a class="rd-nav-link" href="contato.html">Contato</a>
+                      </li>
+                    </ul>
+                  </div>
+                  <div class="rd-navbar-brand">
+                    <a class="brand embrapa" href="http://www.agro.ufg.br"><img src="images/ufg-embrapa.png" alt="" /></a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </nav>
+        </div>
+      </header>
+
+      <!-- Breadcrumbs -->
+      <section class="breadcrumbs-custom-inset">
+        <div class="breadcrumbs-custom context-dark bg-overlay-39">
+          <div class="container">
+            <h2 class="breadcrumbs-custom-title">Contato</h2>
+            <ul class="breadcrumbs-custom-path">
+              <li><a href="index.html">Home</a></li>
+              <li class="active">Contato</li>
+            </ul>
+          </div>
+          <div class="box-position" style="background-image: url(images/bg-manejo.jpg);"></div>
+        </div>
+      </section>
+
+      <!-- Contact information-->
+      <section class="section section-md section-first bg-default">
+        <div class="container">
+          <div class="row row-30 justify-content-center">
+            <div class="col-sm-8 col-md-6 col-lg-4">
+              <article class="box-contacts">
+                <div class="box-contacts-body">
+                  <div class="box-contacts-icon fl-bigmug-line-cellphone55"></div>
+                  <div class="box-contacts-decor"></div>
+                  <p class="box-contacts-link"><a href="tel:062999930476">+55 (62) 9999 30476</a></p>
+                </div>
+              </article>
+            </div>
+            <div class="col-sm-8 col-md-6 col-lg-4">
+              <article class="box-contacts">
+                <div class="box-contacts-body">
+                  <div class="box-contacts-icon fl-bigmug-line-up104"></div>
+                  <div class="box-contacts-decor"></div>
+                  <p class="box-contacts-link"><a href="#">Universidade Federal <br/> de Goiás - UFG <br/>
+                    Escola de Agronomia, <br/>
+                    Goiânia, Goiás</a></p>
+                </div>
+              </article>
+            </div>
+            <div class="col-sm-8 col-md-6 col-lg-4">
+              <article class="box-contacts">
+                <div class="box-contacts-body">
+                  <div class="box-contacts-icon fl-bigmug-line-chat55"></div>
+                  <div class="box-contacts-decor"></div>
+                  <p class="box-contacts-link"><a href="mailto:josealvesufg@ufg.br">josealvesufg@ufg.br</a></p>
+                </div>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Contact Form and Gmap-->
+      <section class="section section-md section-last bg-default text-md-left">
+        <div class="container">
+          <div class="row row-50">
+            <a href="https://www.google.com.br/maps/place/Escola+de+Agronomia+da+UFG/@-16.5990088,-49.2786806,16z/data=!4m5!3m4!1s0x935e8caebc318a59:0xc03073669d61fd96!8m2!3d-16.5985532!4d-49.2781648" target="_blank" class="col-lg-6 section-map-small" style="background-image: url(images/mapa.jpg);">
+            </a>
+            <div class="col-lg-6">
+              <h4 class="text-spacing-50">Formulário de contato</h4>
+              <form class="rd-form rd-mailform" data-form-output="form-output-global" data-form-type="contact" method="post" action="bat/rd-mailform.php">
+                <div class="row row-14 gutters-14">
+                  <div class="col-sm-6">
+                    <div class="form-wrap">
+                      <input class="form-input" id="contact-first-name" type="text" name="name" data-constraints="@Required">
+                      <label class="form-label" for="contact-first-name">Nome</label>
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="form-wrap">
+                      <input class="form-input" id="contact-last-name" type="text" name="name" data-constraints="@Required">
+                      <label class="form-label" for="contact-last-name">Sobrenome</label>
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <div class="form-wrap">
+                      <input class="form-input" id="contact-email" type="email" name="email" data-constraints="@Email @Required">
+                      <label class="form-label" for="contact-email">E-mail</label>
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <div class="form-wrap">
+                      <label class="form-label" for="contact-message">Mensagem</label>
+                      <textarea class="form-input" id="contact-message" name="message" data-constraints="@Required"></textarea>
+                    </div>
+                  </div>
+                </div>
+                <button class="button button-primary button-pipaluk" type="submit">Enviar Mensagem</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Page Footer-->
+      <footer class="section footer-variant-2 footer-modern context-dark section-top-image section-top-image-dark">
+        <div class="footer-variant-2-content">
+          <div class="container">
+            <div class="row row-40 justify-content-between">
+              <div class="col-sm-6 col-lg-4 col-xl-3">
+                <div class="oh-desktop">
+                  <div class="wow slideInRight" data-wow-delay="0s">
+                    <div class="footer-brand"><a href="index.html"><img src="images/logo-inverse-196x42.png" alt="" width="196" height="42"/></a></div>
+                    <p>irrigaTomate é uma ferramenta para auxiliar o produtor a realizar o manejo da irrigação na cultura do tomate.</p>
+                    <ul class="footer-contacts d-inline-block d-md-block">
+                      <li>
+                        <div class="unit unit-spacing-xs">
+                          <div class="unit-left"><span class="icon fa fa-phone"></span></div>
+                          <div class="unit-body"><a class="link-phone" href="tel:#">+55 62 9999 30476</a></div>
+                        </div>
+                      </li>
+                      <li>
+                        <div class="unit unit-spacing-xs">
+                          <div class="unit-left"><span class="icon fa fa-envelope-o"></span></div>
+                          <div class="unit-body">
+                            <p>josealvesufg@ufg.br</p>
+                          </div>
+                        </div>
+                      </li>
+                      <li>
+                        <div class="unit unit-spacing-xs">
+                          <div class="unit-left"><span class="icon fa fa-location-arrow"></span></div>
+                          <div class="unit-body"><a class="link-location" href="#">Universidade Federal de Goiás - UFG </br> Escola de Agronomia, </br> Goiânia, Goiás</a></div>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-6 col-lg-4 col-xl-4">
+                <div class="oh-desktop">
+                  <div class="inset-top-18 wow slideInDown" data-wow-delay="0s">
+                    <h5>Acesse o manejo</h5>
+                    <p>Informe seu usuário e senha nos campos abaixo.</p>
+                    <form class="rd-form rd-mailform" name="form1" method="post" action>
+                      <div class="form-wrap">
+                        <input class="form-input" id="user_login" type="text" name="user_login" data-constraints="@Required">
+                        <label class="form-label" for="user_login">Informe seu usuário</label>
+                      </div>
+                      <div class="form-wrap">
+                        <input class="form-input" id="senha_login" type="password" name="senha_login" data-constraints="@Required">
+                        <label class="form-label" for="senha_login">Digite sua senha</label>
+                      </div>
+                      <button class="button button-block button-white" type="button" onclick="verificalogin(document.form1.user_login.value, document.form1.senha_login.value)">Acessar</button>
+                    </form>
+                    <div class="group-lg group-middle">
+                      <p class="text-white">Não possui conta? <a class="link-cadastro" href="cadastrar.html"> Cadastre-se</a></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-3 col-xl-3">
+                <div class="oh-desktop">
+                  <div class="inset-top-18 wow slideInLeft" data-wow-delay="0s">
+                    <h5>Apoio</h5>
+                    <div class="row row-10 gutters-10" data-lightgallery="group">
+                      <div class="col-6 col-sm-3 col-lg-6">
+                        <!-- Thumbnail Classic-->
+                        <article class="thumbnail thumbnail-mary">
+                          <div class="thumbnail-mary-figure"><img src="images/gallery-image-1-129x120.jpg" alt="" width="129" height="120"/>
+                          </div>
+                          <div class="thumbnail-mary-caption"><a class="icon fl-bigmug-line-zoom60" href="images/gallery-original-7-800x1200.jpg" data-lightgallery="item"><img src="images/gallery-image-1-129x120.jpg" alt="" width="129" height="120"/></a>
+                          </div>
+                        </article>
+                      </div>
+                      <div class="col-6 col-sm-3 col-lg-6">
+                        <!-- Thumbnail Classic-->
+                        <article class="thumbnail thumbnail-mary">
+                          <div class="thumbnail-mary-figure"><img src="images/gallery-image-2-129x120.jpg" alt="" width="129" height="120"/>
+                          </div>
+                          <div class="thumbnail-mary-caption"><a class="icon fl-bigmug-line-zoom60" href="images/gallery-original-8-1200x800.jpg" data-lightgallery="item"><img src="images/gallery-image-2-129x120.jpg" alt="" width="129" height="120"/></a>
+                          </div>
+                        </article>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer-variant-2-bottom-panel">
+          <div class="container">
+            <!-- Rights-->
+            <div class="group-sm group-sm-justify">
+              <p class="rights"><span>&copy;&nbsp;</span><span class="copyright-year"></span> <span>Embrapa Arroz e Feijão - UFG</span>. Todos os direitos reservados
+              </p>
+            </div>
+          </div>
+        </div>
+      </footer>
+
+    </div>
+    <!-- Global Mailform Output-->
+    <div class="snackbars" id="form-output-global"></div>
+    <!-- Javascript-->
+    <script src="js/core.min.js"></script>
+    <script src="js/script.js"></script>
+  </body>
+</html>

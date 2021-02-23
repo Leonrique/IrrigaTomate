@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html class="wide wow-animation" lang="en">
+  <head>
+    <title>irrigaTomate</title>
+    <meta http-equiv="cache-control" content="max-age=0" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <meta http-equiv="expires" content="0" />
+    <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta name="format-detection" content="telephone=no">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <!--<link rel="icon" href="images/favicon.ico" type="image/x-icon">-->
+    <!-- Stylesheets-->
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/fonts.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script language="javascript" src="login.js" ></script>
+    <script type="text/javascript" src="getDadosUserLogin.js"></script>
+    <!--[if lt IE 10]>
+    <div style="background: #212121; padding: 10px 0; box-shadow: 3px 3px 5px 0 rgba(0,0,0,.3); clear: both; text-align:center; position: relative; z-index:1;"><a href="http://windows.microsoft.com/en-US/internet-explorer/"><img src="images/ie8-panel/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today."></a></div>
+    <script src="js/html5shiv.min.js"></script>
+    <![endif]-->
+    <script language="javascript">
+
+      function verificalogin(user, senha) {
+ 
+ 
+             if(  user !== null)
+                  user = user.trim();
+             else {
+                alert("Digite o nome do usu\u00E1rio!");
+                return;
+             }
+             if(  senha !== null)
+                  senha = senha.trim();
+             else {
+                      alert("Digite a senha!");
+                      return;
+             }
+ 
+             if(user.length == 0 ) {
+ 
+                     alert("Digite o nome do usu\u00E1rio!");
+                     return;
+ 
+             }
+             if(senha.length == 0 ) {
+ 
+                     alert("Digite a senha!");
+                     return;
+             }else {
+ 
+                GetXmlHttpObject( user, senha);
+             }
+      }
+    </script>
+  </head>
+  <body>
+    <div class="preloader">
+      <div class="preloader-body">
+        <div class="cssload-container"><span></span><span></span><span></span><span></span>
+        </div>
+      </div>
+    </div>
+    <div class="page">
+      <!-- Page Header-->
+      <header class="section page-header">
+        <!-- RD Navbar-->
+        <div class="rd-navbar-wrap rd-navbar-modern-wrap">
+          <nav class="rd-navbar rd-navbar-modern" data-layout="rd-navbar-fixed" data-sm-layout="rd-navbar-fixed" data-md-layout="rd-navbar-fixed" data-md-device-layout="rd-navbar-fixed" data-lg-layout="rd-navbar-static" data-lg-device-layout="rd-navbar-fixed" data-xl-layout="rd-navbar-static" data-xl-device-layout="rd-navbar-static" data-xxl-layout="rd-navbar-static" data-xxl-device-layout="rd-navbar-static" data-lg-stick-up-offset="46px" data-xl-stick-up-offset="46px" data-xxl-stick-up-offset="70px" data-lg-stick-up="true" data-xl-stick-up="true" data-xxl-stick-up="true">
+            <div class="rd-navbar-main-outer">
+              <div class="rd-navbar-main">
+                <!-- RD Navbar Panel-->
+                <div class="rd-navbar-panel">
+                  <!-- RD Navbar Toggle-->
+                  <button class="rd-navbar-toggle" data-rd-navbar-toggle=".rd-navbar-nav-wrap"><span></span></button>
+                  <!-- RD Navbar Brand-->
+                  <div class="rd-navbar-brand"><a class="brand" href="index.html"><img src="images/logo-default-196x47.png" alt="" width="196" height="47"/></a></div>
+                </div>
+                <div class="rd-navbar-main-element">
+                  <div class="rd-navbar-nav-wrap">
+                    <ul class="rd-navbar-nav">
+                      <li class="rd-nav-item active"><a class="rd-nav-link" href="index.html">Home</a>
+                      </li>
+                      <li class="rd-nav-item"><a class="rd-nav-link" href="sobre.html">Sobre</a>
+                      </li>
+                      <li class="rd-nav-item"><a class="rd-nav-link" href="planejamento.html">Planejamento</a>
+                      </li>
+                      <li class="rd-nav-item"><a class="rd-nav-link" href="manejo.html">Manejo</a>
+                      </li>
+                      <li class="rd-nav-item"><a class="rd-nav-link" href="contato.html">Contato</a>
+                      </li>
+                    </ul>
+                  </div>
+                  <div class="rd-navbar-brand">
+                    <a class="brand embrapa" href="http://www.agro.ufg.br"><img src="images/ufg-embrapa.png" alt="" /></a>
+                    
+                  </div>
+                </div>
+              </div>
+            </div>
+          </nav>
+        </div>
+      </header>
+      <!-- Swiper-->
+      <section class="section swiper-container swiper-slider swiper-slider-modern" data-loop="true" data-autoplay="10000" data-simulate-touch="true" data-nav="true" data-slide-effect="fade">
+        <div class="swiper-wrapper text-left">
+          <div class="swiper-slide context-dark" data-slide-bg="images/slider-1-1920x729.jpg">
+            <div class="swiper-slide-caption">
+              <div class="container">
+                <div class="row justify-content-center justify-content-xxl-start">
+                  <div class="col-md-10 col-xxl-6">
+                    <div class="slider-modern-box">
+                      <h1 class="slider-modern-title"><span data-caption-animate="slideInDown" data-caption-delay="0">irrigaTomate</span></h1>
+                      <p data-caption-animate="fadeInRight" data-caption-delay="400">Uma ferramenta que reúne as variáveis necessárias para auxiliar você a realizar o manejo da irrigação do tomateiro.</p>
+                      <div class="oh button-wrap"><a class="button button-primary button-ujarak" href="planejamento.html" data-caption-animate="slideInLeft" data-caption-delay="400">Saiba mais</a></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="swiper-slide context-dark" data-slide-bg="images/slider-2-1920x729.jpg">
+            <div class="swiper-slide-caption">
+              <div class="container">
+                <div class="row justify-content-center justify-content-xxl-start">
+                  <div class="col-md-10 col-xxl-6">
+                    <div class="slider-modern-box">
+                      <h1 class="slider-modern-title"><span data-caption-animate="slideInLeft" data-caption-delay="0">Manejo</span></h1>
+                      <p data-caption-animate="fadeInRight" data-caption-delay="400">Acesse nossa ferramenta e tenha as informações necessárias para o manejo prático da irrigação na cultira do tomate para industria.</p>
+                      <div class="oh button-wrap"><a class="button button-primary button-ujarak" href="manejo.html" data-caption-animate="slideInLeft" data-caption-delay="400">Acesse agora</a></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Swiper Navigation-->
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next"></div>
+        <!-- Swiper Pagination-->
+        <div class="swiper-pagination swiper-pagination-style-2"></div>
+      </section>
+
+      <!-- Icons Ruby-->
+      <section class="section section-md bg-default section-top-image text-center">
+        <div class="container">
+          <h2 class="oh font-weight-normal"><span class="d-inline-block wow slideInDown" data-wow-delay="0s">Orientações</span></h2>
+              <p class="oh big text-width-large"><span class="d-inline-block wow slideInUp" data-wow-delay=".2s">Visualize todas as orientações para o planejamento e manejo prático da irrigação do tomateiro em sua propriedade.</span></p><a class="button button-primary button-icon button-icon-left button-ujarak" href="planejamento.html" ><span class="icon mdi mdi-play"></span>Ver orientações</a>
+        </div>
+      </section>
+
+      <section class="section section-md bg-default section-top-image">
+        <div class="container">
+          <div class="oh h2-title">
+            <h2 class="wow slideInUp" data-wow-delay="0s">Galeria de fotos</h2>
+          </div>
+          <div class="row row-30" data-lightgallery="group">
+            <div class="col-sm-6 col-lg-4">
+              <div class="oh-desktop">
+                <!-- Thumbnail Classic-->
+                <article class="thumbnail thumbnail-mary thumbnail-sm wow slideInLeft" data-wow-delay="0s">
+                  <div class="thumbnail-mary-figure"><img src="images/grid-gallery-1-370x303.jpg" alt="" width="370" height="303"/>
+                  </div>
+                  <div class="thumbnail-mary-caption"><a class="icon fl-bigmug-line-zoom60" href="images/gallery-original-1-1200x800.jpg" data-lightgallery="item"><img src="images/grid-gallery-1-370x303.jpg" alt="" width="370" height="303"/></a>
+                  </div>
+                </article>
+              </div>
+            </div>
+            <div class="col-sm-6 col-lg-4">
+              <div class="oh-desktop">
+                <!-- Thumbnail Classic-->
+                <article class="thumbnail thumbnail-mary thumbnail-sm wow slideInUp" data-wow-delay=".1s">
+                  <div class="thumbnail-mary-figure"><img src="images/grid-gallery-2-370x303.jpg" alt="" width="370" height="303"/>
+                  </div>
+                  <div class="thumbnail-mary-caption"><a class="icon fl-bigmug-line-zoom60" href="images/gallery-original-2-1200x800.jpg" data-lightgallery="item"><img src="images/grid-gallery-2-370x303.jpg" alt="" width="370" height="303"/></a>
+                  </div>
+                </article>
+              </div>
+            </div>
+            <div class="col-sm-6 col-lg-4">
+              <div class="oh-desktop">
+                <!-- Thumbnail Classic-->
+                <article class="thumbnail thumbnail-mary thumbnail-sm wow slideInRight" data-wow-delay=".0s">
+                  <div class="thumbnail-mary-figure"><img src="images/grid-gallery-3-370x303.jpg" alt="" width="370" height="303"/>
+                  </div>
+                  <div class="thumbnail-mary-caption"><a class="icon fl-bigmug-line-zoom60" href="images/gallery-original-3-800x1200.jpg" data-lightgallery="item"><img src="images/grid-gallery-3-370x303.jpg" alt="" width="370" height="303"/></a>
+                  </div>
+                </article>
+              </div>
+            </div>
+            <div class="col-sm-6 col-lg-4">
+              <div class="oh-desktop">
+                <!-- Thumbnail Classic-->
+                <article class="thumbnail thumbnail-mary thumbnail-sm wow slideInUp" data-wow-delay=".1s">
+                  <div class="thumbnail-mary-figure"><img src="images/grid-gallery-4-370x303.jpg" alt="" width="370" height="303"/>
+                  </div>
+                  <div class="thumbnail-mary-caption"><a class="icon fl-bigmug-line-zoom60" href="images/gallery-original-4-800x1200.jpg" data-lightgallery="item"><img src="images/grid-gallery-4-370x303.jpg" alt="" width="370" height="303"/></a>
+                  </div>
+                </article>
+              </div>
+            </div>
+            <div class="col-sm-6 col-lg-4">
+              <div class="oh-desktop">
+                <!-- Thumbnail Classic-->
+                <article class="thumbnail thumbnail-mary thumbnail-sm wow slideInLeft" data-wow-delay="0s">
+                  <div class="thumbnail-mary-figure"><img src="images/grid-gallery-5-370x303.jpg" alt="" width="370" height="303"/>
+                  </div>
+                  <div class="thumbnail-mary-caption"><a class="icon fl-bigmug-line-zoom60" href="images/gallery-original-5-800x1200.jpg" data-lightgallery="item"><img src="images/grid-gallery-5-370x303.jpg" alt="" width="370" height="303"/></a>
+                  </div>
+                </article>
+              </div>
+            </div>
+            <div class="col-sm-6 col-lg-4">
+              <div class="oh-desktop">
+                <!-- Thumbnail Classic-->
+                <article class="thumbnail thumbnail-mary thumbnail-sm wow slideInDown" data-wow-delay=".1s">
+                  <div class="thumbnail-mary-figure"><img src="images/grid-gallery-6-370x303.jpg" alt="" width="370" height="303"/>
+                  </div>
+                  <div class="thumbnail-mary-caption"><a class="icon fl-bigmug-line-zoom60" href="images/gallery-original-6-1200x800.jpg" data-lightgallery="item"><img src="images/grid-gallery-6-370x303.jpg" alt="" width="370" height="303"/></a>
+                  </div>
+                </article>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- Section CTA 2-->
+      <section class="section text-center">
+        <div class="parallax-container" data-parallax-img="images/bg-parallax-1.jpg">
+          <div class="parallax-content section-xl section-inset-custom-1 context-dark bg-overlay-40">
+            <div class="container">
+              <h2 class="oh font-weight-normal"><span class="d-inline-block wow slideInDown" data-wow-delay="0s">Planejamento</span></h2>
+              <p class="oh big text-width-large"><span class="d-inline-block wow slideInUp" data-wow-delay=".2s">Apresentando-se na forma de um calendário de irrigação, saiba quando e quanto irrigar de maneira mais assertiva.</span></p><a class="button button-primary button-icon button-icon-left button-ujarak" href="planejamento.html" ><span class="icon mdi mdi-play"></span>Acessar</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Page Footer-->
+      <footer class="section footer-variant-2 footer-modern context-dark section-top-image section-top-image-dark">
+        <div class="footer-variant-2-content">
+          <div class="container">
+            <div class="row row-40 justify-content-between">
+              <div class="col-sm-6 col-lg-4 col-xl-3">
+                <div class="oh-desktop">
+                  <div class="wow slideInRight" data-wow-delay="0s">
+                    <div class="footer-brand"><a href="index.html"><img src="images/logo-inverse-196x42.png" alt="" width="196" height="42"/></a></div>
+                    <p>irrigaTomate é uma ferramenta para auxiliar o produtor a realizar o manejo da irrigação na cultura do tomate.</p>
+                    <ul class="footer-contacts d-inline-block d-md-block">
+                      <li>
+                        <div class="unit unit-spacing-xs">
+                          <div class="unit-left"><span class="icon fa fa-phone"></span></div>
+                          <div class="unit-body"><a class="link-phone" href="tel:#">+55 62 9999 30476</a></div>
+                        </div>
+                      </li>
+                      <li>
+                        <div class="unit unit-spacing-xs">
+                          <div class="unit-left"><span class="icon fa fa-envelope-o"></span></div>
+                          <div class="unit-body">
+                            <p>josealvesufg@ufg.br</p>
+                          </div>
+                        </div>
+                      </li>
+                      <li>
+                        <div class="unit unit-spacing-xs">
+                          <div class="unit-left"><span class="icon fa fa-location-arrow"></span></div>
+                          <div class="unit-body"><a class="link-location" href="#">Universidade Federal de Goiás - UFG </br> Escola de Agronomia, </br> Goiânia, Goiás</a></div>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-6 col-lg-4 col-xl-4">
+                <div class="oh-desktop">
+                  <div class="inset-top-18 wow slideInDown" data-wow-delay="0s">
+                    <h5>Acesse o manejo</h5>
+                    <p>Informe seu usuário e senha nos campos abaixo.</p>
+                    <form class="rd-form rd-mailform" name="form1" method="post" action>
+                      <div class="form-wrap">
+                        <input class="form-input" id="user_login" type="text" name="user_login" data-constraints="@Required">
+                        <label class="form-label" for="user_login">Informe seu usuário</label>
+                      </div>
+                      <div class="form-wrap">
+                        <input class="form-input" id="senha_login" type="password" name="senha_login" data-constraints="@Required">
+                        <label class="form-label" for="senha_login">Digite sua senha</label>
+                      </div>
+                      <button class="button button-block button-white" type="button" onclick="verificalogin(document.form1.user_login.value, document.form1.senha_login.value)">Acessar</button>
+                    </form>
+                    <div class="group-lg group-middle">
+                      <p class="text-white">Não possui conta? <a class="link-cadastro" href="cadastrar.html"> Cadastre-se</a></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-3 col-xl-3">
+                <div class="oh-desktop">
+                  <div class="inset-top-18 wow slideInLeft" data-wow-delay="0s">
+                    <h5>Apoio</h5>
+                    <div class="row row-10 gutters-10" data-lightgallery="group">
+                      <div class="col-6 col-sm-3 col-lg-6">
+                        <!-- Thumbnail Classic-->
+                        <article class="thumbnail thumbnail-mary">
+                          <div class="thumbnail-mary-figure"><img src="images/gallery-image-1-129x120.jpg" alt="" width="129" height="120"/>
+                          </div>
+                          <div class="thumbnail-mary-caption"><a class="icon fl-bigmug-line-zoom60" href="images/gallery-original-7-800x1200.jpg" data-lightgallery="item"><img src="images/gallery-image-1-129x120.jpg" alt="" width="129" height="120"/></a>
+                          </div>
+                        </article>
+                      </div>
+                      <div class="col-6 col-sm-3 col-lg-6">
+                        <!-- Thumbnail Classic-->
+                        <article class="thumbnail thumbnail-mary">
+                          <div class="thumbnail-mary-figure"><img src="images/gallery-image-2-129x120.jpg" alt="" width="129" height="120"/>
+                          </div>
+                          <div class="thumbnail-mary-caption"><a class="icon fl-bigmug-line-zoom60" href="images/gallery-original-8-1200x800.jpg" data-lightgallery="item"><img src="images/gallery-image-2-129x120.jpg" alt="" width="129" height="120"/></a>
+                          </div>
+                        </article>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer-variant-2-bottom-panel">
+          <div class="container">
+            <!-- Rights-->
+            <div class="group-sm group-sm-justify">
+              <p class="rights"><span>&copy;&nbsp;</span><span class="copyright-year"></span> <span>Embrapa Arroz e Feijão - UFG</span>. Todos os direitos reservados
+              </p>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+    <!-- Global Mailform Output-->
+    <div class="snackbars" id="form-output-global"></div>
+    <!-- Javascript-->
+    <script src="js/core.min.js"></script>
+    <script src="js/script.js"></script>
+    <!-- coded by Ragnar-->
+  </body>
+</html>

@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html class="wide wow-animation" lang="en">
+  <head>
+    <title>irrigaTomate</title>
+    <meta http-equiv="cache-control" content="max-age=0" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <meta http-equiv="expires" content="0" />
+    <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta name="format-detection" content="telephone=no">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <!--<link rel="icon" href="images/favicon.ico" type="image/x-icon">-->
+    <!-- Stylesheets-->
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/fonts.css">
+    <link rel="stylesheet" href="css/style.css">
+    <!--[if lt IE 10]>
+    <div style="background: #212121; padding: 10px 0; box-shadow: 3px 3px 5px 0 rgba(0,0,0,.3); clear: both; text-align:center; position: relative; z-index:1;"><a href="http://windows.microsoft.com/en-US/internet-explorer/"><img src="images/ie8-panel/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today."></a></div>
+    <script src="js/html5shiv.min.js"></script>
+    <![endif]-->
+    <script type="text/javascript" src="login.js"></script>
+    <script type="text/javascript" src="getDadosUserLogin.js"></script>
+
+    <script language="javascript">
+
+      function verificalogin(user, senha) {
+ 
+ 
+             if(  user !== null)
+                  user = user.trim();
+             else {
+                alert("Digite o nome do usu\u00E1rio!");
+                return;
+             }
+             if(  senha !== null)
+                  senha = senha.trim();
+             else {
+                      alert("Digite a senha!");
+                      return;
+             }
+ 
+             if(user.length == 0 ) {
+ 
+                     alert("Digite o nome do usu\u00E1rio!");
+                     return;
+ 
+             }
+             if(senha.length == 0 ) {
+ 
+                     alert("Digite a senha!");
+                     return;
+             }else {
+ 
+                GetXmlHttpObject( user, senha);
+             }
+      }
+    </script>
+  </head>
+  <body>
+    <div class="preloader">
+      <div class="preloader-body">
+        <div class="cssload-container"><span></span><span></span><span></span><span></span>
+        </div>
+      </div>
+    </div>
+    <div class="page">
+      <!-- Page Header-->
+      <header class="section page-header">
+        <!-- RD Navbar-->
+        <div class="rd-navbar-wrap rd-navbar-modern-wrap">
+          <nav class="rd-navbar rd-navbar-modern" data-layout="rd-navbar-fixed" data-sm-layout="rd-navbar-fixed" data-md-layout="rd-navbar-fixed" data-md-device-layout="rd-navbar-fixed" data-lg-layout="rd-navbar-static" data-lg-device-layout="rd-navbar-fixed" data-xl-layout="rd-navbar-static" data-xl-device-layout="rd-navbar-static" data-xxl-layout="rd-navbar-static" data-xxl-device-layout="rd-navbar-static" data-lg-stick-up-offset="46px" data-xl-stick-up-offset="46px" data-xxl-stick-up-offset="70px" data-lg-stick-up="true" data-xl-stick-up="true" data-xxl-stick-up="true">
+            <div class="rd-navbar-main-outer">
+              <div class="rd-navbar-main">
+                <!-- RD Navbar Panel-->
+                <div class="rd-navbar-panel">
+                  <!-- RD Navbar Toggle-->
+                  <button class="rd-navbar-toggle" data-rd-navbar-toggle=".rd-navbar-nav-wrap"><span></span></button>
+                  <!-- RD Navbar Brand-->
+                  <div class="rd-navbar-brand"><a class="brand" href="index.html"><img src="images/logo-default-196x47.png" alt="" width="196" height="47"/></a></div>
+                </div>
+                <div class="rd-navbar-main-element">
+                  <div class="rd-navbar-nav-wrap">
+                    <ul class="rd-navbar-nav">
+                      <li class="rd-nav-item"><a class="rd-nav-link" href="index.html">Home</a>
+                      </li>
+                      <li class="rd-nav-item"><a class="rd-nav-link" href="sobre.html">Sobre</a>
+                      </li>
+                      <li class="rd-nav-item"><a class="rd-nav-link" href="planejamento.html">Planejamento</a>
+                      </li>
+                      <li class="rd-nav-item active"><a class="rd-nav-link" href="manejo.html">Manejo</a>
+                      </li>
+                      <li class="rd-nav-item"><a class="rd-nav-link" href="contato.html">Contato</a>
+                      </li>
+                    </ul>
+                  </div>
+                  <div class="rd-navbar-brand">
+                    <a class="brand embrapa" href="http://www.agro.ufg.br"><img src="images/ufg-embrapa.png" alt="" /></a>
+                    
+                  </div>
+                </div>
+              </div>
+            </div>
+          </nav>
+        </div>
+      </header>
+
+      <!-- Breadcrumbs -->
+      <section class="breadcrumbs-custom-inset">
+        <div class="breadcrumbs-custom context-dark bg-overlay-39">
+          <div class="container">
+            <h2 class="breadcrumbs-custom-title">Manejo</h2>
+            <ul class="breadcrumbs-custom-path">
+              <li><a href="index.html">Home</a></li>
+              <li class="active">Manejo</li>
+            </ul>
+          </div>
+          <div class="box-position" style="background-image: url(images/bg-contato.jpg);"></div>
+        </div>
+      </section>
+
+      <section class="section section-md section-last bg-default text-md-left">
+        <div class="container">
+          <div class="row row-50">
+            <div class="col-lg-12">
+              <h4 class="text-spacing-50">Efetue o Login para acessar o manejo</h4>
+              
+              <div class="tabs-custom tabs-horizontal tabs-line" id="tabs-4">
+                <ul class="nav nav-tabs">
+                  <li class="nav-item" role="presentation"><a class="nav-link active" href="#tabs-4-1" data-toggle="tab">Manejo</a></li>
+                  <li class="nav-item" role="presentation"><a class="nav-link" href="#tabs-4-2" data-toggle="tab">Orientações</a></li>
+                  <li class="nav-item" role="presentation"><a class="nav-link" href="#tabs-4-3" data-toggle="tab"></a></li>
+                  <li class="nav-item" role="presentation"><a class="nav-link" href="#tabs-4-4" data-toggle="tab"></a></li>
+                  <li class="nav-item" role="presentation"><a class="nav-link" href="#tabs-4-5" data-toggle="tab"></a></li>
+                  <li class="nav-item" role="presentation"><a class="nav-link" href="#tabs-4-6" data-toggle="tab"></a></li>
+                </ul>
+
+                <div class="tab-content">
+                  <div class="tab-pane fade show active" id="tabs-4-1">
+                    <form name="form1" class="rd-form rd-mailform"  method="post" action>
+                      <div class="row row-14 gutters-14">
+                        <div class="col-sm-12">
+                          <div class="form-wrap">
+                            <input class="form-input" id="user_login" type="text" name="user_login" data-constraints="@Required">
+                            <label class="form-label" for="user_login">Usuário</label>
+                          </div>
+                        </div>
+                        <div class="col-sm-12">
+                          <div class="form-wrap">
+                            <input class="form-input" id="senha_login" type="password" name="senha_login" data-constraints="@Required">
+                            <label class="form-label" for="senha_login">Senha</label>
+                          </div>
+                        </div>
+                      </div>
+                      <button class="button button-primary button-pipaluk" type="submit" onclick="verificalogin(document.form1.user_login.value, document.form1.senha_login.value)">Acesso ao manejo</button>
+                    </form>
+                    <div class="group-lg group-middle">
+                      <p>Não possui conta? <a class="link-manejo" href="cadastrar.html"> Cadastre-se</a></p>
+                    </div>
+                  </div>
+
+                  <div class="tab-pane fade" id="tabs-4-2">
+                    <p style="text-align: justify;">1.&nbsp;Para o <strong>primeiro acesso</strong>, o usu&aacute;rio precisar&aacute; realizar um simples cadastro, com a vantagem de suas informa&ccedil;&otilde;es ficarem registradas entre um acesso e outro, podendo continuar o manejo de irriga&ccedil;&atilde;o exatamente onde parou, sem precisar repetir nenhuma informa&ccedil;&atilde;o. E caso precise substituir algum dado, basta substitui-lo e clicar em atualizar.</p>
+                    <p style="text-align: justify;">2.&nbsp;<strong>Na data de transplantio das mudas de tomate</strong>, o solo deve estar &uacute;mido, com bom teor de &aacute;gua ("caixa cheia"). Para isso, recomenda-se fazer irriga&ccedil;&atilde;o de 30 mm, sendo (25 mm antes e 5 mm imediatamente ap&oacute;s o transplantio), a n&atilde;o ser que ocorram chuvas suficientes para substituir o recomendado. Obs.: em termos m&eacute;dios, os solos do Cerrado ret&ecirc;m 30 mm de &aacute;gua em uma profundidade de 0-30 cm. O <strong>irrigaTomate</strong> foi desenvolvido para 3 tipos de solo (arenoso, m&eacute;dio e argiloso) e considerando profundidades de ra&iacute;zes diferentes para os diferentes est&aacute;dios fenol&oacute;gicos do tomateiro. Assim, o intervalo entre irriga&ccedil;&otilde;es fica livre para ser definido pelo usu&aacute;rio, entretanto, o software indicar&aacute; o n&iacute;vel de &aacute;gua no solo, apresentado a l&acirc;mina de irriga&ccedil;&atilde;o recomendada, nas cores verde (n&iacute;vel de &aacute;gua no solo sem estresse h&iacute;drico) e vermelho (n&iacute;vel de &aacute;gua no solo abaixo do limite cr&iacute;tico, portanto com estresse h&iacute;drico). Para facilitar a compreens&atilde;o, um gr&aacute;fico no rodap&eacute; da planilha, ilustrar&aacute; o esgotamento de &aacute;gua no solo ao longo do ciclo.</p>
+                    <p style="text-align: justify;">3.&nbsp;<strong>O usu&aacute;rio deve manter a planilha atualizada com os dados de chuvas e as irriga&ccedil;&otilde;es que forem ocorrendo ao longo do ciclo</strong>. Assim, para que o IrrigaTomate informe a nova recomenda&ccedil;&atilde;o de irriga&ccedil;&atilde;o, basta clicar em atualizar.</p>
+                    <p style="text-align: justify;">4.&nbsp;&Eacute; importante que o usu&aacute;rio tenha informa&ccedil;&atilde;o local de chuva, e n&atilde;o confie em dados regionais, do munic&iacute;pio e nem mesmo de informa&ccedil;&otilde;es de propriedades vizinhas. Pois, Goi&aacute;s est&aacute; em uma regi&atilde;o tropical e a variabilidade espacial e temporal das chuvas &eacute; muito grande.</p>
+                    <p style="text-align: justify;">5.&nbsp;Quando chuvas e/ou irriga&ccedil;&otilde;es muito grandes ocorrerem, o software considerar&aacute; apenas a fra&ccedil;&atilde;o desta que seja suficiente para repor o teor &aacute;gua no solo at&eacute; o limite m&aacute;ximo, e desconsiderar&aacute; o restante, que ser&aacute; drenado ou escorrido.</p>
+                  </div>
+                </div>
+              </div>
+              
+              
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Page Footer-->
+      <footer class="section footer-variant-2 footer-modern context-dark section-top-image section-top-image-dark">
+        <div class="footer-variant-2-content">
+          <div class="container">
+            <div class="row row-40 justify-content-between">
+              <div class="col-sm-6 col-lg-4 col-xl-3">
+                <div class="oh-desktop">
+                  <div class="wow slideInRight" data-wow-delay="0s">
+                    <div class="footer-brand"><a href="index.html"><img src="images/logo-inverse-196x42.png" alt="" width="196" height="42"/></a></div>
+                    <p>irrigaTomate é uma ferramenta para auxiliar o produtor a realizar o manejo da irrigação na cultura do tomate.</p>
+                    <ul class="footer-contacts d-inline-block d-md-block">
+                      <li>
+                        <div class="unit unit-spacing-xs">
+                          <div class="unit-left"><span class="icon fa fa-phone"></span></div>
+                          <div class="unit-body"><a class="link-phone" href="tel:#">+55 62 9999 30476</a></div>
+                        </div>
+                      </li>
+                      <li>
+                        <div class="unit unit-spacing-xs">
+                          <div class="unit-left"><span class="icon fa fa-envelope-o"></span></div>
+                          <div class="unit-body">
+                            <p>josealvesufg@ufg.br</p>
+                          </div>
+                        </div>
+                      </li>
+                      <li>
+                        <div class="unit unit-spacing-xs">
+                          <div class="unit-left"><span class="icon fa fa-location-arrow"></span></div>
+                          <div class="unit-body"><a class="link-location" href="#">Universidade Federal de Goiás - UFG </br> Escola de Agronomia, </br> Goiânia, Goiás</a></div>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-6 col-lg-4 col-xl-4">
+                <div class="oh-desktop">
+                  <div class="inset-top-18 wow slideInDown" data-wow-delay="0s">
+                    <h5>Acesse o manejo</h5>
+                    <p>Informe seu usuário e senha nos campos abaixo.</p>
+                    <form class="rd-form rd-mailform" name="form2" method="post" action>
+                      <div class="form-wrap">
+                        <input class="form-input" id="user_login" type="text" name="user_login" data-constraints="@Required">
+                        <label class="form-label" for="user_login">Informe seu usuário</label>
+                      </div>
+                      <div class="form-wrap">
+                        <input class="form-input" id="senha_login" type="password" name="senha_login" data-constraints="@Required">
+                        <label class="form-label" for="senha_login">Digite sua senha</label>
+                      </div>
+                      <button class="button button-block button-white" type="button" onclick="verificalogin(document.form2.user_login.value, document.form2.senha_login.value)">Acessar</button>
+                    </form>
+                    <div class="group-lg group-middle">
+                      <p class="text-white">Não possui conta? <a class="link-cadastro" href="cadastrar.html"> Cadastre-se</a></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-3 col-xl-3">
+                <div class="oh-desktop">
+                  <div class="inset-top-18 wow slideInLeft" data-wow-delay="0s">
+                    <h5>Apoio</h5>
+                    <div class="row row-10 gutters-10" data-lightgallery="group">
+                      <div class="col-6 col-sm-3 col-lg-6">
+                        <!-- Thumbnail Classic-->
+                        <article class="thumbnail thumbnail-mary">
+                          <div class="thumbnail-mary-figure"><img src="images/gallery-image-1-129x120.jpg" alt="" width="129" height="120"/>
+                          </div>
+                          <div class="thumbnail-mary-caption"><a class="icon fl-bigmug-line-zoom60" href="images/gallery-original-7-800x1200.jpg" data-lightgallery="item"><img src="images/gallery-image-1-129x120.jpg" alt="" width="129" height="120"/></a>
+                          </div>
+                        </article>
+                      </div>
+                      <div class="col-6 col-sm-3 col-lg-6">
+                        <!-- Thumbnail Classic-->
+                        <article class="thumbnail thumbnail-mary">
+                          <div class="thumbnail-mary-figure"><img src="images/gallery-image-2-129x120.jpg" alt="" width="129" height="120"/>
+                          </div>
+                          <div class="thumbnail-mary-caption"><a class="icon fl-bigmug-line-zoom60" href="images/gallery-original-8-1200x800.jpg" data-lightgallery="item"><img src="images/gallery-image-2-129x120.jpg" alt="" width="129" height="120"/></a>
+                          </div>
+                        </article>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer-variant-2-bottom-panel">
+          <div class="container">
+            <!-- Rights-->
+            <div class="group-sm group-sm-justify">
+              <p class="rights"><span>&copy;&nbsp;</span><span class="copyright-year"></span> <span>Embrapa Arroz e Feijão - UFG</span>. Todos os direitos reservados
+              </p>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+    <!-- Global Mailform Output-->
+    <div class="snackbars" id="form-output-global"></div>
+    <!-- Javascript-->
+    <script src="js/core.min.js"></script>
+    <script src="js/script.js"></script>
+    <!-- coded by Ragnar-->
+  </body>
+</html>

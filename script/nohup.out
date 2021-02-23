@@ -1,0 +1,7 @@
+PHP Warning:  mysqli_connect(): Headers and client library minor version mismatch. Headers:50560 Library:50644 in /export/narciso/novo-irrigaTomate/script/temp/funcoesInmet.php on line 402
+PHP Warning:  mysqli_connect(): Headers and client library minor version mismatch. Headers:50560 Library:50644 in /export/narciso/novo-irrigaTomate/script/temp/getDadosSimehgo.php on line 687
+PHP Warning:  mysqli_connect(): Headers and client library minor version mismatch. Headers:50560 Library:50644 in /export/narciso/novo-irrigaTomate/script/temp/funcoesUfg.php on line 237
+PHP Warning:  mysqli_connect(): Headers and client library minor version mismatch. Headers:50560 Library:50644 in /export/narciso/novo-irrigaTomate/script/temp/getDadosSimehgo.php on line 612
+
+PHP Warning:  file_get_contents(http://www.simehgo.sectec.go.gov.br/cgi-bin/rede_obs/consulta_dados_dia.pl?cpcd=1303&dd=23&mm=09&aa=2020): failed to open stream: No route to host in /export/narciso/novo-irrigaTomate/script/temp/getDadosSimehgo.php on line 175
+PHP Fatal error:  Call to a member function find() on a non-object in /export/narciso/novo-irrigaTomate/script/temp/getDadosSimehgo.php on line 198

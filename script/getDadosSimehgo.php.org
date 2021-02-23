@@ -1,0 +1,736 @@
+<?php
+
+//include 'getDadosNasa.php';
+//include 'simple_html_dom.php';
+//include 'pathConfig.php';
+//$arquivoPath = configPath;
+//include($arquivoPath);
+ 
+     // Abadia de Goias -> cpcd=138
+     // Aerodromo de Hoiania -> cpcd=1306 
+     // Anapolis -> cpcd=1300
+     // Aracu -> cpcd=1308
+     // Autodromo de Goiania => cpcd=1304
+     // Bela Vista -> cpcd=1303
+     // Goiania -> cpcd=1301
+     // Senador Canedo -> cpcd=1305
+     // Trindade => cpcd=1307 
+     // Goiania / Heliponto-> cpcd=102
+     // Palmeiras de Goias -> cpcd=137
+     // Santo Antonio de Goias -> cpcd=125
+     // Santa  Isabel -< cpcd=106
+     // Bom Jesus de Goias -> cpcd=101
+     // Santa Helena -> cpcd=100
+     // Maurilandia -> cpcd=103;
+     // Dados retirados a partir do sitio
+     // http://www.simehgo.sectec.go.gov.br/cgi-bin/rede_obs/consulta_dados3.pl  (veja o anexo)
+
+     $hora[1] = "00:00";   $hora[2] = "01:00";    $hora[3] = "02:00";
+     $hora[4] = "03:00";   $hora[5] = "01:00";    $hora[6] = "05:00";
+     $hora[7] = "06:00";   $hora[8] = "01:00";    $hora[9] = "08:00";
+     $hora[10] = "09:00";   $hora[11] = "10:00";    $hora[12] = "11:00";
+     $hora[13] = "12:00";   $hora[14] = "13:00";    $hora[15] = "14:00";
+     $hora[16] = "15:00";   $hora[17] = "16:00";    $hora[18] = "17:00";
+     $hora[19] = "18:00";   $hora[20] = "19:00";    $hora[21] = "20:00";
+     $hora[22] = "21:00";   $hora[23] = "22:00";      $hora[24] = "23:00"; 
+ 
+
+     $nomeCidade[1] = "Abadia de Goias";           $idCidade[1] = 1;          $idEstacao[1] = "138";   
+     $nomeCidade[2] = "Anapolis";                  $idCidade[2] = 217;        $idEstacao[2] = "1300";  
+     $nomeCidade[3] = "Bela Vista de Goias";       $idCidade[3] = 566;        $idEstacao[3] = "1303";  
+     $nomeCidade[4] = "Senador Canedo";            $idCidade[4] = 4879;       $idEstacao[4] = "1305";  
+     $nomeCidade[5] = "Trindade";                  $idCidade[5] = 5207;       $idEstacao[5] = "1307";   
+     $nomeCidade[6] = "Santo Antonio de Goias";    $idCidade[6] = 4469;       $idEstacao[6] = "125";   
+     $nomeCidade[7] = "Santa Isabel";              $idCidade[7] = 4337;       $idEstacao[7] = "106";   
+     $nomeCidade[8] = "Bom Jesus de Goias";        $idCidade[8] = 16444;      $idEstacao[8] = "101";   
+     $nomeCidade[9] = "Santa Helena";              $idCidade[9] = 4331;       $idEstacao[9] = "100";   
+     $nomeCidade[10] = "Maurilandia";              $idCidade[10] = 2985;      $idEstacao[10] = "103";   
+     $nomeCidade[11] = "Aracu";                    $idCidade[11] = 304;       $idEstacao[11] = "1308";  
+
+     $latitude[1] = "-16.7573";                    $longitude[1] = "-49.4412";
+     $latitude[2] = "-16.328";                     $longitude[2] = "-48.953";
+     $latitude[3] = "-16.969";                     $longitude[3] = "-48.951";
+     $latitude[4] = "-16.7084";                    $longitude[4] = "-49.0914";
+     $latitude[5] = "-16.651";                     $longitude[5] = "-49.492";
+     $latitude[6] = "-16.48388";                   $longitude[6] = "-49.31083";
+     $latitude[7] = "-15.295";                     $longitude[7] = "-49.425";
+     $latitude[8] = "-18.215";                     $longitude[8] = "-49.74194";
+     $latitude[9] = "-17.8115";                    $longitude[9] = "-50.597";
+     $latitude[10] = "-17.9719";                   $longitude[10] = "-50.3388"; 
+     $latitude[11] = "-16.362602";                 $longitude[11] = "-49.699721";
+
+     $numEstacoes = 11;
+
+ 
+function insere2($dia, $mes, $ano, $tempAr,$eto, $codigo, $idCidade) {
+       
+                            $ins = ""; 
+                            if( $tempAr > -9 && $eto > -40 ) {
+
+                                  $ins = "insert into evapoTranspiracaoTomateEstacao(dia, mes, ano, temMedia, eto, codEstacao, idCidade, validado) values($dia, $mes, $ano, $tempAr, $eto, $codigo, $idCidade, 1 );";
+                                  //$pesquisa = mysqli_query($conexao, $ins);
+
+                            }
+                            else
+                              if( $tempAr > -9 ) {
+
+                                  $ins = "insert into evapoTranspiracaoTomateEstacao(dia, mes, ano, temMedia, codEstacao, idCidade, validado) values($dia, $mes, $ano, $tempAr, $codigo, $idCidade, 0 );";
+                                  //$pesquisa = mysqli_query($conexao, $ins);
+                              }
+                    return($ins);
+       }
+
+function update2($id, $tempAr,$eto) {
+
+                            $upd = ""; 
+                            if( $tempAr > -9 && $eto > -40 ) {
+
+                                  $upd = "update evapoTranspiracaoTomateEstacao set eto = $eto where id = $id;";
+                                  $upd = $upd."update evapoTranspiracaoTomateEstacao set temMedia = $tempAr where id = $id;";
+                                  $upd = $upd."update evapoTranspiracaoTomateEstacao set validado = 1 where id = $id;";
+
+                            }
+                            else
+                              if( $tempAr > -9 ) {
+
+                                  $upd = "update evapoTranspiracaoTomateEstacao set temMedia = $tempAr where id = $id;";
+                                  $upd = $upd."update evapoTranspiracaoTomateEstacao set validado = 0 where id = $id;";
+                                  $upd = $upd."000";
+                              }
+                    return($upd);
+}
+
+function horaCheia($horaDia) {
+
+        $retorno = 0;
+        global $hora;
+
+        if(is_null($horaDia) )
+          return(0);
+
+        $horaDia = trim($horaDia);
+
+        if(strlen($horaDia) < 5 )
+          return(0);
+
+        for($i = 1; $i <= 24; $i++)
+          if( !strcmp($hora[$i],$horaDia) )
+             $retorno = 1;
+
+         return($retorno);
+
+}
+ 
+
+function getvarSimehgo($dia, $mes, $ano, $codCidade) {
+
+
+    // https://stackoverflow.com/questions/23062537/how-to-convert-html-to-json-using-php
+    // https://sourceforge.net/projects/simplehtmldom/  ->  veja aqui como resolver os warning
+
+    global $hora;
+    $simehgo = "http://www.simehgo.sectec.go.gov.br/cgi-bin/rede_obs/consulta_dados_dia.pl?cpcd=$codCidade&dd=$dia&mm=$mes&aa=$ano";
+           
+//echo $simehgo ."<br>";
+
+    //$html = file_get_html($simehgo);
+    $data = file_get_contents($simehgo);  //A busca por table border = 1 estava dando erro
+    $data = str_replace("\'1\'", "1", $data); // entao substituimos '1' ou "1" por 1.
+    $data = str_replace("\"1\"", "1", $data); // com estes comandos, que equivalem a
+    $html = str_get_html($data);              // file_get_html()
+   
+   // A ideia acima foi retirada de 
+   // https://www.codementor.io/@wang90925/top-10-best-usage-examples-of-php-simple-html-dom-parser-i8ik76e16    
+   //
+
+   // Testar um dia
+   //   foreach($html->find('table[border*="1"]') as $ut) {
+   // Note que tem um asterisco logo apos a palavra border
+   // foi retirado do sitio acima (www.codementor.io/....
+   //
+
+//
+//  Obter a posicao no arquivo html onde fica o cabecakho
+//  para posterior obtencao da matriz
+//
+    $palavrasChaves = "HORA,LOCAL"; 
+    list ($tempo1,$tempo2) = explode(",",$palavrasChaves);
+ 
+    $fim = 0;
+    foreach($html->find('table[border=1]') as $ut) {
+        $i = 0;
+        foreach($ut->find('tr') as $ul) {
+           $j = 0;   
+           $i =  $i +1;   
+           $len = 0;
+           $num = 0;
+           $header = 0;
+ 
+           foreach($ul->find('td') as $li) {
+              //echo $li->plaintext . '<br>';
+              $j =  $j + 1;   
+              $len = $len + strlen($li->plaintext);
+              $palavra1 =  strstr(strtoupper($li->plaintext), $tempo1);
+              $palavra2 = strstr(strtoupper($li->plaintext), $tempo2);
+ 
+              if( !($palavra1 === false) ||  !($palavra2 === false)   ) {
+                 $header = $header + 1;     
+                 $valorJ = $j;         
+              }
+ 
+           }
+           if(  $header >= 1) {
+              //echo "$i   $valorJ   $len   $num <br>";
+              $fim = 1;
+              $valorI = $i;
+              $limiteJ = $j;
+              $header = 0;
+              break;
+           }
+        }
+        if($fim == 1)
+            break;
+    }
+// 
+//
+// Obter a matriz com os dados a serem inseridos
+//
+     $matriz = array
+      (
+
+          array("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""),
+          array("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""),
+          array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+          array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+          array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+          array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+          array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+          array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+          array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+          array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+          array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+          array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+          array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+          array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+          array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+          array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+          array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+          array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+          array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+          array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+          array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+          array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+          array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+          array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+          array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+          array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+          array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+ 
+      );
+ 
+    $fim = 0;
+    $numLinhas = 0;
+    $limiteI = $valorI + 24*21;// 24 horas x 21 <td>
+
+    //foreach($html->find('table[border*="1"]') as $ut) { => testar um dia desses e ver se dah certo
+    foreach($html->find('table[border=1]') as $ut) {
+        $i = 0;
+        $s = 1;
+        foreach($ut->find('tr') as $ul) {
+           $j = 0;   
+           $i =  $i +1;   
+           $len = 0;
+           $num = 0;
+           $header = 0;
+
+           if( $i > ($limiteI) ) { 
+
+                    $fim = 1;
+                    break;
+           }
+  
+           if( $i >= $valorI) {            
+ 
+              $t = 0;
+              $flag = 0;
+              foreach($ul->find('td') as $li) {
+
+                 $j = $j + 1;
+                 if( $j > $limiteJ){
+                    $fim = 1;
+                    break;
+                 }
+                 if($j >= $valorJ) {
+
+                   $t = $t + 1;
+                   if($s == 1 ) {
+
+                    $matriz[$s][$t] =  $li->plaintext; 
+                   }
+                   else {
+   
+                     $ret = horaCheia($li->plaintext);     
+                     if( $ret == 1  || $flag == 1){
+                        
+                       $flag = 1;
+                       $matriz[$s][$t] =  $li->plaintext; 
+
+                     }  
+
+                   }
+                 }
+                 
+              } // final de foreach($ul->find('td') as $li) {
+
+              if($s == 1 ) {
+                 $numCols = $t;
+                 $numLinhas = $s;
+                 $s = $s + 1;
+              }
+              else
+                if ($flag == 1) {
+
+                    $numLinhas = $s;
+                    $flag = 0;
+                    $s = $s + 1;
+                }
+
+           }// final de if( $i >= $valorI) {
+
+ 
+        } // final de foreach($ut->find('tr') as $ul) {
+        if( $fim == 1)
+            break;
+ 
+    } // final de foreach($html->find('table') as $ut) {
+
+    //
+    // monstar um array com as posicoes de
+    // precipitacao, velocidade do vento, umidade do ar, temperatura do ar,
+    // ponto de orvalho e radiacao solar na matriz $matriz
+    /// 
+    //  As variaveis que vem do sitio do Simehgo sao:
+    //  Hora LOCAL, Precip., Prec.Acum., Vel. Vento (m/s), Dir. Vento, Vel.Rajada Vento (m/s) 
+    //  Dir.Rajada Vento, Umid. Relat. AR (%), Temperatura do ar (C), Ponto Orvalho, Razao Mistura
+    //  Pressao Atm e Radiacao Solar Acum. MJ/m²
+    //
+    // O trecho de codigo abaixo obtem, a partir da matriz $matriz, com todas as
+    // variaveis que o Simehgo disponibiliza, as variaveis desejadas para o calculo.
+    //
+    
+     $posicaoVar = array(0,0,0,0,0,0,0);
+ 
+
+     for($j=1; $j <= $numCols; $j++) {
+                      
+               $vv1 = strstr(strtoupper($matriz[1][$j]), "VEL");
+               $vv2 = strstr(strtoupper($matriz[1][$j]), "VENTO");
+               $vv3 = strstr(strtoupper($matriz[1][$j]), "RAJADA");
+               $tempAr1 = strstr(strtoupper($matriz[1][$j]), "TEMP");
+               $tempAr2 = strstr(strtoupper($matriz[1][$j]), "AR");
+               $prec1 = strstr(strtoupper($matriz[1][$j]), "PREC");
+               $prec2 = strstr(strtoupper($matriz[1][$j]), "ACUM");
+               $umdAr1 = strstr(strtoupper($matriz[1][$j]), "UMID");
+               $umdAr2 = strstr(strtoupper($matriz[1][$j]), "AR");
+               $pto1 = strstr(strtoupper($matriz[1][$j]), "PONTO");
+               $pto2 = strstr(strtoupper($matriz[1][$j]), "PTO");
+               $pto3 = strstr(strtoupper($matriz[1][$j]), "ORV");
+               $rad1 = strstr(strtoupper($matriz[1][$j]), "RAD");
+               $rad2 = strstr(strtoupper($matriz[1][$j]), "SOL");
+
+ 
+              if( !($vv1 === false) &&  !($vv2 === false) &&  ($vv3 === false)) {
+                   $posicaoVar[2] = $j;                   
+              }
+              else
+                 if( !($tempAr1 === false) &&  !($tempAr2 === false) ) {
+                       $posicaoVar[4] = $j;                   
+                 }
+                 else
+                   if( !($prec1 === false) &&  ($prec2 === false) ) {
+                         $posicaoVar[1] = $j;                   
+                   }
+                   else
+                     if( !($umdAr1 === false) &&  !($umdAr2 === false) ) {
+                         $posicaoVar[3] = $j;                   
+                     }
+                     else
+                       if( ( !($pto1 === false) || !($pto2 === false) ) &&  !($pto3 === false) ) {
+                         $posicaoVar[5] = $j;                   
+                       }
+                       else
+                         if(   !($rad1 === false)   &&  !($rad2 === false) ) {
+                            $posicaoVar[6] = $j;                   
+                         }
+
+
+     }// final de for($j=1; $j <= $numCols; $j++) {
+
+
+     $j_ppt = 0;
+     $j_vv = 0;
+     $j_ur =  0;
+     $j_temp = 0;
+     $j_rad = 0;
+     $j_pto = 0;
+
+     $preciptM = 0;
+     $velVentoM = 0;
+     $URM = 0;
+     $tempArM = 0;
+     $ptoOrvM = 0;
+     $radSolarM = 0;
+     $tempArMin = -9;
+     
+     for($i=2; $i <= $numLinhas; $i++) { // A primeira linha de $matriz contém o cabecalho
+                                         // Assim, o loop comeca a partir de 2 ateh $numLinhas
+            
+          $temp2 = -99;
+          $umid2 = -99;
+
+          $j =  $posicaoVar[1];  
+          if ( !is_null($matriz[$i][$j]) ) {       
+
+              if( is_numeric($matriz[$i][$j]) ) {
+                  $preciptM = $preciptM + $matriz[$i][$j];   
+                  $j_ppt = $j_ppt + 1;
+              }
+          }
+           
+          $j =  $posicaoVar[2];  
+          if ( !is_null($matriz[$i][$j]) ) {       
+
+              if( is_numeric($matriz[$i][$j]) ) {
+                  $velVentoM = $velVentoM + $matriz[$i][$j];   
+                  $j_vv = $j_vv + 1; 
+              }
+          }
+          $j =  $posicaoVar[3];  
+          if ( !is_null($matriz[$i][$j]) ) {       
+
+              if( is_numeric($matriz[$i][$j]) ) {
+                  $URM = $URM + $matriz[$i][$j];   
+                  $j_ur = $j_ur + 1;
+                  $umid2 = $matriz[$i][$j]; 
+              }
+          }
+          $j =  $posicaoVar[4];  
+          if ( !is_null($matriz[$i][$j]) ) {       
+
+              if( is_numeric($matriz[$i][$j]) ) {
+                  $tempArM = $tempArM + $matriz[$i][$j];   
+                  $j_temp = $j_temp + 1;
+                  $temp2 = $matriz[$i][$j];
+              }
+          }
+          $flag = 0;
+          $j =  $posicaoVar[5];  
+          if ( !is_null($matriz[$i][$j]) ) {       
+
+              if( is_numeric($matriz[$i][$j]) ) {
+                  $ptoOrvM = $ptoOrvM + $matriz[$i][$j];   
+                  $j_pto = $j_pto + 1;
+                  $flag = 1;
+              }
+          }          
+
+          if( $flag == 0 &&  $temp2 > $tempArMin && $umid2 > -5){
+
+             $temp1 = ((7.5*$temp2 )/(237.3+ $temp2)); 
+             $temp1 = 6.1 * exp ( $temp1 * log(10) ); 
+             $temp1 = ($umid2/100) * $temp1 ;
+             $temp1 = (237.3*( log($temp1/6.1)/log(10) ) )/( 7.5 - log( $temp1/6.1 )/log(10) );
+             $ptoOrvM = $ptoOrvM + $temp1;
+             $j_pto = $j_pto + 1;
+
+          }
+
+          $j =  $posicaoVar[6];  
+          if ( !is_null($matriz[$i][$j]) ) {       
+
+              if( is_numeric($matriz[$i][$j]) ) {
+                  $radSolarM = $radSolarM + $matriz[$i][$j];   
+                  $j_rad = $j_rad + 1;
+              }
+          }
+
+     } // final de for($i=2; $i <= $numLinhas; $i++) { 
+
+      if( $j_ppt == 0) {  $precipt = -99.9; } else {$precipt = $preciptM / $j_ppt;  }
+      if( $j_vv == 0) {  $velVento = -99.9; } else { $velVento = $velVentoM / $j_vv;  }
+      if( $j_ur == 0) {  $umidRel = -99.9; } else { $umidRel = $URM / $j_ur;    }
+      if( $j_temp == 0) {  $tempAr = -99.9; } else {$tempAr = $tempArM / $j_temp;  }
+      if( $j_pto == 0) {  $ptoOrv = -99.9; } else {$ptoOrv = $ptoOrvM / $j_pto;  }
+      if( $j_rad == 0) {  $radSol = -99.9; } else {$radSol = $radSolarM * 1000000.0 / (24.0*60.0*60.0);}//  O valor da radiacao solar eh o acumulado diario
+ 
+
+      $etoX = -99.9;
+      if  ( $radSol > -5 && $velVento > -5 && $tempAr > $tempArMin && $umidRel > -5  ) { 
+
+          $eto1 = pow(10, ((7.5*$tempAr)/(237.3+$tempAr)) );
+          $eto2 = pow( ($tempAr +237.3), 2);
+          $etoX=((0.408*((4098*(0.6108*$eto1))/$eto2)*$radSol*0.55*0.0864)+(0.063*900*$velVento*((0.6108*$eto1)-(((0.6108*$eto1)*$umidRel)/100)))/($tempAr+275))/(((4098*(0.6108*$eto1))/$eto2)+0.063*(1+0.34*$velVento));
+      }
+ 
+      $resultado = "$precipt,$velVento,$umidRel,$tempAr,$ptoOrv,$radSol,$etoX";
+
+//echo "---@@@ $precipt,$velVento,$umidRel,$tempAr,$ptoOrv,$radSol,$etoX ---@@@";
+ 
+      return($resultado);
+
+
+} //final da function getvarSimehgo($dia, $mes, $ano, $cpcd) {
+
+
+
+  function getDataSimehgo ($dia, $mes, $ano, $cpcd, $id) {
+ 
+     global $numEstacoes, $nomeCidade, $idCidade, $latitude, $longitude;
+
+
+     if( strlen($dia) == 1)
+       $dia = "0".$dia;
+     if( strlen($mes) == 1)
+       $mes = "0".$mes;
+
+     $result = getvarSimehgo($dia, $mes, $ano, $cpcd);
+ 
+     list ($precipt,$velVento,$UR,$tempAr,$ptoOrv,$radSolar,$eto) = explode(",",$result);
+ 
+     if( $eto < -50 || $tempAr < -50 ){
+
+         $lat = $latitude[$id];
+         $lon = $longitude[$id];
+         $dia1 = $ano.$mes.$dia;
+         $result2 = getvarNasa($dia1, $lat, $lon);
+ 
+         list ($tempAr2,$eto2,$velVento2,$umidRel2,$radSol2) = explode(",",$result2);
+        
+         $tempArFinal = -99.9;
+         $etoFinal = -99.9;
+         $velVentoFinal = -99.9;
+         $umidRelFinal = -99.9;
+         $radSolFinal = -99.9;
+
+         if($tempAr > -9 )
+            $tempArFinal = $tempAr;
+         else
+           if($tempAr2 > -9 )
+             $tempArFinal = $tempAr2;
+
+         if($eto > -50 )
+            $etoFinal = $eto;
+         else
+           if($eto2 > -50 )
+             $etoFinal = $eto2;
+
+         if($velVento > -50 )
+            $velVentoFinal = $velVento;
+         else
+           if($velVento2 > -50 )
+             $velVentoFinal = $velVento2;
+
+         if($UR > -50 )
+            $umidRelFinal = $UR;
+         else
+           if($umidRel2 > -50 )
+             $umidRelFinal = $umidRel2;
+
+         if($radSolar > -50 )
+            $radSolFinal = $radSolar;
+         else
+           if($radSol2 > -50 )
+             $radSolFinal = $radSol2;
+
+
+         if( $tempArFinal > -9 && $velVentoFinal > -50 && $umidRelFinal > -50 && $radSolFinal > -50 ) {
+
+          $eto1 = pow(10, ((7.5*$tempArFinal)/(237.3+$tempArFinal)) );
+          $eto2 = pow( ($tempArFinal +237.3), 2);
+          $etoFinal=((0.408*((4098*(0.6108*$eto1))/$eto2)*$radSolFinal*0.55*0.0864)+(0.063*900*$velVentoFinal*((0.6108*$eto1)-(((0.6108*$eto1)*$umidRelFinal)/100)))/($tempArFinal+275))/(((4098*(0.6108*$eto1))/$eto2)+0.063*(1+0.34*$velVentoFinal));
+           
+         }
+ 
+         return("$tempArFinal,$etoFinal,$velVentoFinal,$umidRelFinal,$radSolFinal");          
+     } 
+     else {
+ 
+        return("$tempAr,$eto,$velVento,$UR,$radSolar");
+     }
+
+
+
+  } // final da funcao getDataSimehgo
+
+  function updateDadosSimehgo() {
+
+     global $numEstacoes, $idEstacao, $idCidade;
+
+     $conexao = mysqli_connect(hostBancoPantanal, userDonoPantanal, senhaDonoPantanal, nomeBancoPantanal) ;
+     if (!$conexao) {
+
+            echo "Erro ao se conectar com a base de dados. Veja arquivo config.php";
+            exit(1);
+     }
+
+     $where = "( ";
+     for( $i = 1; $i < $numEstacoes; $i++) {
+
+       $where = $where." idCidade = $idCidade[$i] or ";
+     }
+     $where = $where." idCidade = $idCidade[$numEstacoes] ) ";
+
+     $sql = "select id, dia, mes, ano, idCidade from evapoTranspiracaoTomateEstacao where validado = 0 and $where and (eto is null or temMedia is null)";
+//echo $sql.'<br>';
+     $query = mysqli_query($conexao, $sql) ;
+ 
+     $numLinhas = $query->num_rows;
+     if( $numLinhas > 0 ) {
+ 
+             while($linha = $query->fetch_row()) {
+
+                  $idCid = (int)$linha[4];
+                  $dia = $linha[1];
+                  $mes = $linha[2];
+                  $ano = $linha[3];
+                  $id = $linha[0];
+
+                  for($j=1; $j <= $numEstacoes; $j++) {
+                       if( $idCidade[$j] == $idCid )
+                        { $i = $j; break;}
+                  }
+                   
+                  $q = getDataSimehgo($dia, $mes, $ano, $idEstacao[$i],$i);   
+                  list ($tempAr,$eto,$velVento,$umidRel,$radSol) = explode(",",$q);
+                  $result2 = update2($id, $tempAr,$eto);
+                  list ($upd1,$upd2,$upd3) = explode(";",$result2);
+
+//echo "<br>$upd1<br>$upd2<br>$upd3";
+                  $query2 = mysqli_query($conexao, $upd1);
+                  $query2 = mysqli_query($conexao, $upd2);
+                  if( strcmp($upd3,"000") )
+                      $query2 = mysqli_query($conexao, $upd3);
+ 
+             } // final de while($linha2 = $query->fetch_row()) {
+     }
+
+     date_default_timezone_set('America/Sao_Paulo');
+     $hojeDia = date('d'); 
+     $hojeMes = date('m'); 
+     $hojeAno = date('Y');
+
+     mysqli_close($conexao);
+
+  } // final da funcao updateDadosSimehgo
+
+  function insertDadosSimehgo() {
+
+
+
+     global $numEstacoes, $nomeCidade, $idCidade, $idEstacao;
+     //
+     // Abrir base de dados para inserir um atualizar dados
+     //
+     //include 'pathConfig.php';
+     //$arquivoPath = configPath;
+     //include($arquivoPath);
+
+     $conexao = mysqli_connect(hostBancoPantanal, userDonoPantanal, senhaDonoPantanal, nomeBancoPantanal) ;
+     if (!$conexao) {
+
+            echo "Erro ao se conectar com a base de dados. Veja arquivo config.php";
+            exit(1);
+     }
+
+     date_default_timezone_set('America/Sao_Paulo');
+     $hojeDia = date('d'); 
+     $hojeMes = date('m'); 
+     $hojeAno = date('Y'); 
+
+     for($i = 1; $i <= $numEstacoes; $i++) {
+ 
+  
+                $sql = "select  max(ano) from evapoTranspiracaoTomateEstacao where codEstacao = \"$idEstacao[$i]\" ;";
+                $query = mysqli_query($conexao, $sql) ;
+                $numLinhas = $query->num_rows;
+                if( $numLinhas > 0 ) {
+
+                    $linha2 = $query->fetch_row(); 
+                    $ano = $linha2[0];
+                    $sql = "select  max(mes) from evapoTranspiracaoTomateEstacao where codEstacao = \"$idEstacao[$i]\" and ano = $ano  ;";
+                    $query = mysqli_query($conexao, $sql) ;
+                    $numLinhas = $query->num_rows;
+                    if( $numLinhas > 0 ) {
+
+                        $linha2 = $query->fetch_row(); 
+                        $mes = $linha2[0];
+                        $sql = "select  max(dia) from evapoTranspiracaoTomateEstacao where  codEstacao = \"$idEstacao[$i]\" and ano = $ano  and mes = $mes;";
+                        $query = mysqli_query($conexao, $sql) ;
+                        $numLinhas = $query->num_rows;
+                        if( $numLinhas > 0 ) {
+
+                          $linha2 = $query->fetch_row(); 
+                          $dia = $linha2[0];
+
+                        }
+                        else {
+
+                                $dia = "01";
+                                $mes = "01";
+                                $ano = date('Y');
+
+                        }
+
+                    }
+                    else {
+
+                      $dia = "01";
+                      $mes = "01";
+                      $ano = date('Y');
+
+                    }
+
+                }                    
+                else {
+
+                      $dia = "01";
+                      $mes = "01";
+                      $ano = date('Y');
+                }
+                
+                $diaInicial = $dia.'-'.$mes.'-'.$ano;
+                $data2 = new DateTime($diaInicial); 
+                $data2->modify('+1 day');
+                $dia = $data2->format('d');
+                $mes = $data2->format('m');
+                $ano = $data2->format('Y');
+ 
+                while( !( $dia == $hojeDia && $mes == $hojeMes && $ano == $hojeAno)) {
+
+//echo "$dia == $hojeDia && $mes == $hojeMes && $ano == $hojeAno     $idEstacao[$i], $idCidade[$i]<br>";
+                  $q = getDataSimehgo($dia, $mes, $ano, $idEstacao[$i],$i);   
+                  list ($tempAr,$eto,$velVento,$umidRel,$radSol) = explode(",",$q);
+                  $result2 = insere2($dia, $mes, $ano, $tempAr,$eto, $idEstacao[$i], $idCidade[$i]);
+                  if(strlen($result2) > 30)
+                     $query2 = mysqli_query($conexao, $result2);
+                  //echo "   <br>  ".$result2 . "   <br>   ";
+
+                  $data2->modify('+1 day');
+                  $dia = $data2->format('d');
+                  $mes = $data2->format('m');
+                  $ano = $data2->format('Y');
+
+                } // final de  while( !( $dia == $hojeDia && $mes == $hojeMes && $ano == $hojeAno)) {       
+         
+ 
+     }  // final de  for($i = 1; $i <= $numEstacoes; $i++) {      
+
+     mysqli_close($conexao);
+
+
+  } // final de function insertDadosSimehgo() {
+
+  //insertDadosSimehgo();
+  //updateDadosSimehgo();
+
+?>

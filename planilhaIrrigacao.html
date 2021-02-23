@@ -1,0 +1,1251 @@
+<!doctype html> 
+<html>
+<head>
+   <!--meta http-equiv="Content-Type" content="text/html; charset=utf-8"-->
+   <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <meta name="Author" content="Marcelo G Narciso">
+   <meta name="GENERATOR" content="Mozilla/4.76 [en] (WinNT; U) [Netscape]">
+   <title>IrrigaTomate</title>
+   <link href="css/singlePage.css" rel="stylesheet" type="text/css">
+   <link rel="shortcut icon" type="image/x-icon" href="imagens/favicon.ico">
+   <link rel="stylesheet" href="https://code.jquery.com/ui/1.9.0/themes/base/jquery-ui.css" / >
+   <link rel="stylesheet" href="js/package/dist/sweetalert2.min.css">
+   <!-- link rel="stylesheet" href="css/jquery-ui.css" / -->
+    <style>
+
+
+          input[type=text] {
+                                height: 30px;
+                                width: 195;
+                                border: 1px thin #000000;
+          }
+
+ 
+
+         .ui-datepicker {
+                           width: 200px; 
+                           height: 170px;
+                           //font-size:12px;
+                           font-weight:bold;
+                           font-family: Trebuchet MS, Tahoma, Verdana, Arial, sans-serif; 
+         }
+
+    </style>
+
+</script>
+	
+	<style type="text/css">
+
+	
+	
+	.selectBoxArrow{
+		margin-top:0px;
+		margin-botton:0px;
+		float:left;
+		position:absolute;
+		right:0px;
+		height:35px;
+		
+
+	}	
+	.selectBoxInput{
+		border:0px;
+		padding-left:1px;
+		height:16px;
+		position:absolute;
+		top:0px;
+		left:0px;
+	}
+
+	.selectBox{
+		border:1px solid #7f9db9;
+		height:38px;	// aqui antes eram 20
+	
+	}
+	.selectBoxOptionContainer{
+		position:absolute;
+		border:1px solid #7f9db9;
+		height:100px;
+		background-color:#FFF;
+		left:-1px;
+		top:35px;
+		visibility:hidden;
+		overflow:auto;
+		z-index:1000;
+	}
+	.selectBoxIframe{
+		position:absolute;
+		background-color:#FFF;
+		border:0px;
+		z-index:999;
+	}
+	.selectBoxAnOption{
+
+		font-family:sans-serif, Arial, Helvetica Neue, Helvetica;
+                color:#669900;
+                font-weight:normal;
+		font-size:16px;
+		cursor:default;
+		margin:1px;
+		overflow:hidden;
+		white-space:nowrap;
+	}
+	</style>
+
+   <script src="https://code.jquery.com/jquery-1.8.2.js"></script>
+   <script src="https://code.jquery.com/ui/1.9.0/jquery-ui.js"></script> 
+   <script type="text/javascript" src="getCidades.js"></script>
+   <script type="text/javascript" src="getDadosUser.js"></script>
+   <script src="js/package/dist/sweetalert2.all.min.js"></script>
+   <script src="js/package/dist/sweetalert2.min.js"></script>
+
+	<script type="text/javascript">
+ 	
+        var idCidadeZ = [];
+        var identificacaoZ = [];
+        var idPivotZ = [];
+        var dataPlantioZ = [];
+        var eficienciaZ = [];
+        var laminaAplicadaZ = [];
+        var tipoPlantioZ = [];
+        var tipoSoloZ = [];
+        var areaPivotZ = [];
+        var numRegistrosZ;
+        var selectBoxOptions2;
+        var numCidades = 6000;
+        var retornoDataIrrigacao;
+
+        var mesInicial = 2; //Alterar, caso a data de inicio nao seja fevereiro
+        var mesFinal = 12; //Alterar, caso a data de termino nao seja dezembro
+	
+	// Path to arrow images
+	var arrowImage = 'imagens/select_arrow.gif';	// Regular arrow
+	var arrowImageOver = 'imagens/select_arrow_over.gif';	// Mouse over
+	var arrowImageDown = 'imagens/select_arrow_down.gif';	// Mouse down
+
+	
+	var selectBoxIds = 0;
+	var currentlyOpenedOptionBox = false;
+	var editableSelect_activeArrow = false;
+        var objDiv;
+
+      function textoAreaTotal() {
+
+          msg = "<p style='color:black; text-align:justify' >Digite a &aacute;rea total do piv&ocirc; central, em hectares, mesmo que o plantio tenha sido feito em apenas um quadrante o ou em \"meia-lua\".";
+          Swal.fire({  position: 'top-end', html:  msg});
+      }
+
+      function msgDataPlantio() {
+
+
+          msg = "<p style='color:black; text-align:justify' >O per&iacute;odo de transplantio de tomate em Goi&aacute;s &eacute; de 01/Fevereiro a 15/Julho, devido &agrave; sensibilidade das plantas ao molhamento foliar e &agrave; alta umidade relativa do ar.</p>";
+          Swal.fire({  position: 'top-end', html:  msg});
+      }
+
+      function msgTipoSolo() {
+
+          msg = "<p style='color:black; text-align:justify' ><span style='color:green'>Arenoso:</span> areia Franca, 10 a 15% de argila.<br><span style='color:green'>M&eacute;dio:</span> franco, 15 a 30% de argila.<br><span style='color:green'>Argiloso:</span> textura argilosa, 40 a 60% de argila.</p>";
+
+          Swal.fire({  position: 'top-end', html:  msg});
+      }
+
+      function msgPlantio() {
+
+          msg = "<p style='color:black; text-align:justify' ><span style='color:green'>Plantio Direto:</span> com palha na superf&iacute;cie do solo. Sistema de preparo reduzido ou cultivo m&iacute;nimo do solo.<br><span style='color:green'><br>Plantio Convencional:</span> sem palha na superf&iacute;cie do solo </p>";
+          Swal.fire({  position: 'top-end', html:  msg});
+      }
+
+      function msgPercentimetro() {
+
+          msg = "<p style='color:black; text-align:justify' >Digite a l&acirc;mina m&iacute;nima (2 a 7 mm) de irriga&ccedil;&atilde;o aplicada pelo piv&ocirc; central. <br>L&acirc;mina para quando o piv&ocirc; opera na m&aacute;xima velocidade (rel&ecirc; percentual a 100%).</p>";
+          Swal.fire({  position: 'top-end', html:  msg});
+/*
+          msg = "<p style='color:black; background-color:#dff0d8; border-color:#d6e9c6; text-align:justify' >Digite a l&acirc;mina m&iacute;nima (2 a 7 mm) de irriga&ccedil;&atilde;o aplicada pelo piv&ocirc; central. <br>L&acirc;mina para quando o piv&ocirc; opera na m&aacute;xima velocidade (rel&ecirc; percentual a 100%).</p>";
+          document.getElementById("msgPercentimetro").style.display = "inline";
+          pixel0 = document.getElementById("conteudoPrincipal2").style.height;
+          pixels =  parseInt(document.getElementById("conteudoPrincipal2").style.height) + 100;
+          pixels2 = pixels+"px";
+          document.getElementById("conteudoPrincipal2").style.height =  pixels2;
+          document.getElementById("msgPercentimetro").innerHTML = msg;
+          setTimeout( function() { document.getElementById("msgPercentimetro").style.display="none"; document.getElementById("conteudoPrincipal2").style.height = pixel0;  } , 5000 );
+*/
+ 
+        }
+
+        function textoPlantioDireto() {
+
+          document.getElementById("tipoSolo").style.display="none" ;
+          document.getElementById("tipoPlantio").style.display = "inline";
+          document.getElementById("tipoPlantio").style.color = "black";
+          document.getElementById("tipoPlantio").style.backgroundColor = "#dff0d8";
+          document.getElementById("tipoPlantio").style.borderColor = "#d6e9c6";
+          msg = "<br><br>Com palha na superf&iacute;cie do solo. Sistema de preparo reduzido ou cultivo m&iacute;nimo do solo.<br>";
+          document.getElementById("tipoPlantio").innerHTML = msg;
+          setTimeout( function() { document.getElementById("tipoPlantio").style.display="none" } , 5000 );
+
+        }
+
+        function textoPlantioConvencional() {
+
+          document.getElementById("tipoSolo").style.display="none" ;
+          document.getElementById("tipoPlantio").style.display = "inline";
+          document.getElementById("tipoPlantio").style.color = "black";
+          document.getElementById("tipoPlantio").style.backgroundColor = "#dff0d8";
+          document.getElementById("tipoPlantio").style.borderColor = "#d6e9c6";
+          msg = "<br><br>Sem palha na superf&iacute;cie do solo<br>";
+          document.getElementById("tipoPlantio").innerHTML = msg;
+          setTimeout( function() { document.getElementById("tipoPlantio").style.display="none" } , 5000 );
+
+        }
+
+
+        function textoSoloArgiloso() {
+
+          document.getElementById("tipoPlantio").style.display="none";
+          document.getElementById("tipoSolo").style.display = "inline";
+          document.getElementById("tipoSolo").style.color = "black";
+          document.getElementById("tipoSolo").style.backgroundColor = "#dff0d8";
+          document.getElementById("tipoSolo").style.borderColor = "#d6e9c6";
+          msg = "textura argilosa, 40 a 60% de argila.";
+          document.getElementById("tipoSolo").innerHTML = msg;
+          setTimeout( function() { document.getElementById("tipoSolo").style.display="none" } , 5000 );
+         
+        }
+
+        function textoSoloMedio() {
+
+          document.getElementById("tipoPlantio").style.display="none";
+          document.getElementById("tipoSolo").style.display = "inline";
+          document.getElementById("tipoSolo").style.color = "black";
+          document.getElementById("tipoSolo").style.backgroundColor = "#dff0d8";
+          document.getElementById("tipoSolo").style.borderColor = "#d6e9c6";
+          msg = "Franco, 15 a 30% de argila.";
+          document.getElementById("tipoSolo").innerHTML = msg;
+          setTimeout( function() { document.getElementById("tipoSolo").style.display="none" } , 5000 );
+         
+        }
+
+        function textoSoloArenoso() {
+
+          document.getElementById("tipoPlantio").style.display="none";
+          document.getElementById("tipoSolo").style.display = "inline";
+          document.getElementById("tipoSolo").style.color = "black";
+          document.getElementById("tipoSolo").style.backgroundColor = "#dff0d8";
+          document.getElementById("tipoSolo").style.borderColor = "#d6e9c6";
+          msg = "Areia Franca, 10 a 15% de argila.";
+          document.getElementById("tipoSolo").innerHTML = msg;
+          setTimeout( function() { document.getElementById("tipoSolo").style.display="none" } , 5000 );
+         
+        }
+        function textoEficiencia() {
+
+         texto = "<b style=\"color:green; text-align: justify;\">Efici&ecirc;ncia de aplica&ccedil;&atilde;o de &aacute;gua (EA) do sistema de irriga&ccedil;&atilde;o Piv&ocirc; Central</b><br>";
+         texto = texto + "<p style=\"text-align: justify;\" >Normalmente, esse valor &eacute; 80 ou 85%, e pode ser verificado em campo com o teste de uniformidade de aplica&ccedil;&atilde;o de &aacute;gua (CUC e CUD), seguindo as recomenda&ccedil;&otilde;es t&eacute;cnicas (ABNT). </p>";
+         texto = texto + "<p style=\"text-align: justify;\" >EA = CUC x 0,95    ...........................(1)<br>";
+         texto = texto + "Ou <br>";
+         texto = texto + "EA = CUD  ......................................(2)</p>";
+         texto = texto + "<p style=\"text-align: justify;\" >em que: <br><br>";
+         texto = texto + "CUC = coeficiente de uniformidade de Christiansen; <br><br>";
+         texto = texto + "0,95 = Fator de perda combinada de &aacute;gua por evapora&ccedil;&atilde;o e arrastamento pelo vento (em condi&ccedil;&otilde;es de ETo = 5 mm/dia e vento de 2,0 m/s)<br><br>";
+         texto = texto + "CUD = Coeficiente de Distribui&ccedil;&atilde;o de &aacute;gua </p>";
+
+         texto = texto + "<p style=\"text-align: justify;\" ><span style=\"color:green\" >ATEN&Ccedil;&Atilde;O:</span> A uniformidade de aplica&ccedil;&atilde;o de &aacute;gua &eacute; influenciada por v&aacute;rios fatores, tais como: varia&ccedil;&otilde;es na vaz&atilde;o dos aspersores ao longo da tubula&ccedil;&atilde;o a&eacute;rea; varia&ccedil;&otilde;es nas condi&ccedil;&otilde;es do vento; varia&ccedil;&otilde;es na velocidade de rota&ccedil;&atilde;o e varia&ccedil;&otilde;es nos bocais dos aspersores (Tamanho de gota, altura de aplica&ccedil;&atilde;o, di&acirc;metro molhado, e inclina&ccedil;&atilde;o).";
+         texto = texto + "<br><br>Mantenha os bocais na sequ&ecirc;ncia de projeto e os bocais e os reguladores de press&atilde;o sem entupimento; abra regularmente o tamp&atilde;o da extremidade final do piv&ocirc; para limpeza de arraste da tubula&ccedil;&atilde;o; n&atilde;o permita que a v&aacute;lvula de suc&ccedil;&atilde;o fique enterrada no barro; Opere o piv&ocirc; sempre na press&atilde;o correta.</p>";
+
+          Swal.fire({ position: 'top-end', html:  texto }); 
+          // ver https://sweetalert2.github.io/ -> Popup window position, can be 'top', 'top-start', 'top-end', 'center', 'center-start', 'center-end', 'bottom', 'bottom-start', or 'bottom-end'.
+
+        }
+
+
+        function identificacaoPivot (nomePivot) {
+
+              var i,j;
+
+              nomePivot = nomePivot.trim();
+              for(i=1; i<= numRegistrosZ; i++) {
+
+                identificacaoZ[i] = identificacaoZ[i].trim();
+                if(nomePivot == identificacaoZ[i]) {
+                       
+                      j = i;
+                      i = numRegistrosZ + 1;
+
+                }
+
+              }
+
+              if(  document.getElementById("cidade").options.length !== null && document.getElementById("cidade").options.length !== undefined)
+                  numCidades =  document.getElementById("cidade").options.length;
+              for(i=1; i<= numCidades; i++) {
+
+                if(document.getElementById("cidade").options[i].value == idCidadeZ[j]) { 
+                 s = i;
+                 i = 7000;
+                 break;
+                } 
+              }
+              document.getElementById("calendario").value = dataPlantioZ[j]; //verificar se eh i ou j
+              document.getElementById("area").value = areaPivotZ[j];
+              document.getElementById("ident").value = identificacaoZ[j];
+              document.getElementById("cidade").selectedIndex = s;
+              document.getElementById("norma").value = laminaAplicadaZ[j];
+
+              document.getElementById("arenoso").checked = false;
+              document.getElementById("medio").checked = false;
+              document.getElementById("argiloso").checked = false;
+ 
+              
+              if( tipoSoloZ[j] == 1)
+                document.getElementById("arenoso").checked = true;
+              else
+                 if( tipoSoloZ[j] == 2)
+                   document.getElementById("medio").checked = true;
+                 else
+                   if( tipoSoloZ[j] == 3)
+                       document.getElementById("argiloso").checked = true;
+ 
+ 
+              document.getElementById("Ptdireto").checked = false;
+              document.getElementById("Ptconvencional").checked = false;
+
+              if( tipoPlantioZ[j] == 1)
+                document.getElementById("Ptdireto").checked = true;
+              else
+                 if( tipoPlantioZ[j] == 2)
+                    document.getElementById("Ptconvencional").checked = true;
+
+              document.getElementById("efic2").checked = false;
+              document.getElementById("efic1").checked = false;
+
+              if(eficienciaZ[j] == 1)
+                  document.getElementById("efic1").checked = true;
+              else
+                if(eficienciaZ[j] == 2)
+                  document.getElementById("efic2").checked = true;
+            
+              document.getElementById("calendario").value = dataPlantioZ[j];
+
+        }
+
+	
+	function selectBox_switchImageUrl()
+	{
+		if(this.src.indexOf(arrowImage)>=0){
+			this.src = this.src.replace(arrowImage,arrowImageOver);	
+		}else{
+			this.src = this.src.replace(arrowImageOver,arrowImage);
+		}
+		
+		
+	}
+	
+	function selectBox_showOptions()
+	{
+		if(editableSelect_activeArrow && editableSelect_activeArrow!=this){
+			editableSelect_activeArrow.src = arrowImage;
+			
+		}
+		editableSelect_activeArrow = this;
+		
+		var numId = this.id.replace(/[^\d]/g,'');
+		var optionDiv = document.getElementById('selectBoxOptions' + numId);
+		if(optionDiv.style.display=='block'){
+			optionDiv.style.display='none';
+			if(navigator.userAgent.indexOf('MSIE')>=0)document.getElementById('selectBoxIframe' + numId).style.display='none';
+			this.src = arrowImageOver;	
+		}else{			
+			optionDiv.style.display='block';
+			if(navigator.userAgent.indexOf('MSIE')>=0)document.getElementById('selectBoxIframe' + numId).style.display='block';
+			this.src = arrowImageDown;	
+			if(currentlyOpenedOptionBox && currentlyOpenedOptionBox!=optionDiv)currentlyOpenedOptionBox.style.display='none';	
+			currentlyOpenedOptionBox= optionDiv;			
+		}
+	}
+	
+	function selectOptionValue()
+	{
+		var parentNode = this.parentNode.parentNode;
+		var textInput = parentNode.getElementsByTagName('INPUT')[0];
+		textInput.value = this.innerHTML;
+               //
+               // A funcao abaixo pega outros parametros da propriedade	
+               // ao escolher a identificacao do pivot
+                identificacaoPivot(textInput.value);
+               
+		this.parentNode.style.display='none';	
+		document.getElementById('arrowSelectBox' + parentNode.id.replace(/[^\d]/g,'')).src = arrowImageOver;
+		
+		if(navigator.userAgent.indexOf('MSIE')>=0)document.getElementById('selectBoxIframe' + parentNode.id.replace(/[^\d]/g,'')).style.display='none';
+		
+	}
+        function divOnMouseOut(optDiv) {
+
+ 
+           //this.parentNode.style.display='none';	
+ 
+           if(currentlyOpenedOptionBox )
+              optDiv.style.display='none';
+
+           //currentlyOpenedOptionBox.style.display='none';
+           //var optionDiv = document.getElementById('selectBoxOptions' + numId);
+           //optionDiv.style.display='none';
+           optDiv.style.display='none';
+ 
+ 
+ 
+        }
+	var activeOption;
+	function highlightSelectBoxOption()
+	{
+		if(this.style.backgroundColor=='#316AC5'){
+			this.style.backgroundColor='';
+			this.style.color='';
+		}else{
+			this.style.backgroundColor='#316AC5';
+			this.style.color='#FFF';			
+		}	
+		
+		if(activeOption){
+			activeOption.style.backgroundColor='';
+			activeOption.style.color='';			
+		}
+		activeOption = this;
+		
+	}
+	
+        function limpa() {
+
+          currentlyOpenedOptionBox.style.display='none';
+
+        }
+	function createEditableSelect(dest)
+	{
+
+		dest.className='selectBoxInput';		
+		var div = document.createElement('DIV');
+                
+		div.style.styleFloat = 'left';
+		div.style.width = dest.offsetWidth + 30 + 'px';
+		div.style.position = 'relative';
+		div.id = 'selectBox' + selectBoxIds;
+		var parent = dest.parentNode;
+		parent.insertBefore(div,dest);
+		div.appendChild(dest);	
+		div.className='selectBox';
+		div.style.zIndex = 10000 - selectBoxIds;
+                
+
+		var img = document.createElement('IMG');
+		img.src = arrowImage;
+		img.className = 'selectBoxArrow';
+		
+		img.onmouseover = selectBox_switchImageUrl;
+		//img.onmouseout = selectBox_switchImageUrl;
+		img.onclick = selectBox_showOptions;
+		img.id = 'arrowSelectBox' + selectBoxIds;
+
+		div.appendChild(img);
+		
+		var optionDiv = document.createElement('DIV');
+		optionDiv.id = 'selectBoxOptions' + selectBoxIds;
+		optionDiv.className='selectBoxOptionContainer';
+		optionDiv.style.width = div.offsetWidth-2 + 'px';
+		div.appendChild(optionDiv);
+		
+		if(navigator.userAgent.indexOf('MSIE')>=0){
+			var iframe = document.createElement('<IFRAME src="about:blank" frameborder=0>');
+			iframe.style.width = optionDiv.style.width;
+			iframe.style.height = optionDiv.offsetHeight + 'px';
+			iframe.style.display='none';
+			iframe.id = 'selectBoxIframe' + selectBoxIds;
+			div.appendChild(iframe);
+		}
+		
+ 
+		if(dest.getAttribute('selectBoxOptions')){
+			var options = dest.getAttribute('selectBoxOptions').split(';');
+			var optionsTotalHeight = 0;
+			var optionArray = new Array();
+			for(var no=0;no<options.length;no++){
+				var anOption = document.createElement('DIV');
+				anOption.innerHTML = options[no];
+				anOption.className='selectBoxAnOption';
+				anOption.onclick = selectOptionValue;
+				anOption.style.width = optionDiv.style.width.replace('px','') - 2 + 'px'; 
+				anOption.onmouseover = highlightSelectBoxOption;
+				optionDiv.appendChild(anOption);	
+				optionsTotalHeight = optionsTotalHeight + anOption.offsetHeight;
+				optionArray.push(anOption);
+			}
+			if(optionsTotalHeight > optionDiv.offsetHeight){				
+				for(var no=0;no<optionArray.length;no++){
+					optionArray[no].style.width = optionDiv.style.width.replace('px','') - 22 + 'px'; 	
+				}	
+			}	
+ 	
+			optionDiv.style.display='none';
+			optionDiv.style.visibility='visible';
+
+                        
+		}
+
+		optionDiv.onmouseout = divOnMouseOut(optionDiv);
+ 		selectBoxIds = selectBoxIds + 1;
+
+	}	
+	
+	<!--/script-->
+
+   <!--script language="javascript"-->
+
+
+      $(function() {
+         // Ver em 
+         // https://api.jqueryui.com/datepicker/
+         // para mais informacoes 
+         //      
+   
+        var d = new Date();
+        var mes = d.getMonth() + 1;
+        var dia = d.getDate() ;
+        //if( mes > mesFinal || ( mes == mesFinal && dia >=21) )
+           //var year = d.getYear() + 1900 + 1;
+        //else
+           var year = d.getYear() + 1900;
+ 
+        $("#calendario").datepicker({
+           //dateFormat: 'dd/mm/yy',
+           dateFormat: 'dd/mm',
+           dayNames: ['Domingo','Segunda','Terca','Quarta','Quinta','Sexta','Sabado','Domingo'],
+           dayNamesMin: ['D','S','T','Q','Q','S','S','D'],
+           dayNamesShort: ['Dom','Seg','Ter','Qua','Qui','Sex','S&aacute;b','Dom'],
+           monthNames: ['Janeiro','Fevereiro','Mar&ccedil;o','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
+           monthNamesShort: ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'],
+           minDate: new Date(year, mesInicial - 1, 01),
+           //maxDate: new Date(year, mesFinal - 1, 20),
+           maxDate: new Date(year, mesFinal - 1, 31),
+           defaultDate: new Date(year, mesInicial - 1, 01),
+           altFormat: "dd/mm/yy",
+           duration: "fast", // fast, normal, slow
+           beforeShow: function(){    
+                $(".ui-datepicker").css('font-size', 12) 
+           }
+
+        });
+
+        $("#calendario1").datepicker({
+           //dateFormat: 'dd/mm/yy',
+           dateFormat: 'dd/mm',
+           dayNames: ['Domingo','Segunda','Terca','Quarta','Quinta','Sexta','Sabado','Domingo'],
+           dayNamesMin: ['D','S','T','Q','Q','S','S','D'],
+           dayNamesShort: ['Dom','Seg','Ter','Qua','Qui','Sex','S&aacute;b','Dom'],
+           monthNames: ['Janeiro','Fevereiro','Mar&ccedil;o','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
+           monthNamesShort: ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'],
+           minDate: new Date(year, mesInicial - 1, 01),
+           maxDate: new Date(year, mesFinal - 1, 20),
+           defaultDate: new Date(year, mesInicial - 1, 01),
+           altFormat: "dd/mm/yy",
+           duration: "fast", // fast, normal, slow
+           beforeShow: function(){    
+                $(".ui-datepicker").css('font-size', 12) 
+           }
+
+        });
+
+        $("#calendario2").datepicker({
+           //dateFormat: 'dd/mm/yy',
+           dateFormat: 'dd/mm',
+           dayNames: ['Domingo','Segunda','Terca','Quarta','Quinta','Sexta','Sabado','Domingo'],
+           dayNamesMin: ['D','S','T','Q','Q','S','S','D'],
+           dayNamesShort: ['Dom','Seg','Ter','Qua','Qui','Sex','S&aacute;b','Dom'],
+           monthNames: ['Janeiro','Fevereiro','Mar&ccedil;o','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
+           monthNamesShort: ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'],
+           minDate: new Date(year, mesInicial - 1, 01),
+           maxDate: new Date(year, mesFinal - 1, 20),
+           defaultDate: new Date(year, mesInicial - 1, 01),
+           altFormat: "dd/mm/yy",
+           duration: "fast", // fast, normal, slow
+           beforeShow: function(){    
+                $(".ui-datepicker").css('font-size', 12) 
+           }
+
+        });
+
+      });
+
+      function verificaDataIrrigacao() {
+
+          dataInicial = (typeof document.getElementById("calendario2").value === "undefined ")? "": document.getElementById("calendario2").value;
+          dataInicial = dataInicial.trim();
+          if( dataInicial.length == 0)
+            return 0;
+
+          var dia= parseInt(dataInicial.substring(0,2) );
+          var mes = parseInt(dataInicial.substring(3,5) );
+
+          if ( mes < mesInicial || mes > mesFinal) {
+              alert('Escolha um m\u00EAs entre fevereiro e junho.\nOs dias podem variar de 01/02 a 20/06.');
+              return 0;
+          }
+          else
+            if (mes == mesFinal && dia > 20) {
+
+              alert('O dia para plantio, recomendado, seria 20 de junho.');
+              //return 0;
+
+            }
+            else {
+               dataIrrigacao = document.getElementById('calendario2').value;
+               return 1;
+ 
+            }
+
+
+      } 
+      function validaIrrigacao() {
+
+           numero = (typeof document.getElementById("irrigacao").value === "undefined ")? "": document.getElementById("irrigacao").value;
+           numero = numero.trim();
+           n = numero.search(/,/);
+           if(numero.charAt(n) == ',' ) {
+
+                    numero = numero.replace(/[,]/ig, ".");
+                    document.getElementById("irrigacao").value = numero;
+
+           }
+
+           if( numero.length == 0) {
+
+                return 1;
+           }
+           else
+              if (isNaN ( numero ) ) {
+
+                  alert('O valor da irriga\u00E7\u00E3o, em mm, \ndeve ter algum caractere inv\u00E1lido. ');
+                  return 0;
+              }
+              else
+                 if ( parseFloat(numero) >= 0 )
+                    return 1;
+                 else {
+
+                  alert('O valor da irriga\u00E7\u00E3o (mm) deve ser um n\u00FAmero positivo. ');
+                  return 0;
+                }
+
+
+      }
+
+      function validaDataChuva() {
+
+          dataInicial = (typeof document.getElementById("calendario1").value === "undefined ")? "": document.getElementById("calendario1").value;
+          dataInicial = dataInicial.trim();
+          if( dataInicial.length == 0)
+            return 0;
+
+          var dia= parseInt(dataInicial.substring(0,2) );
+          var mes = parseInt(dataInicial.substring(3,5) );
+
+          if ( mes < mesInicial || mes > mesFinal) {
+
+              alert('Escolha um m\u00EAs entre fevereiro e junho.\nOs dias podem variar de 01/02 a 20/06.');
+              return 0;
+
+          }
+          else
+            if (mes == mesFinal && dia > 20) {
+
+              alert('Para o m\u00EAs de junho, dia 20 e o \u00FAltimo dia recomendado.');
+              return 0;
+
+            }
+            else {
+               return 1; 
+            }
+
+      }
+      function validaNorma() {
+
+
+           numero = (typeof document.getElementById("norma").value === "undefined ")? "": document.getElementById("norma").value;
+           numero = numero.trim();
+
+           if( numero.length == 0) {
+
+                alert('O valor da l\u00E2mina aplicada a 100% do percent\u00EDmetro \nn\u00E3o deve ser nulo. Insira um valor entre 2.0 e 7.0');
+                return 0;
+           }
+
+           var n = numero.search(/[a-zA-Z]/i);
+           if( n >= 0 )
+              {
+                alert('O valor da l\u00E2mina aplicada a 100% do percent\u00EDmetro n\u00E3o deve ter letras.');
+                return 0;
+              }
+           else
+              {
+                 n = numero.search(/,/);
+                 if(numero.charAt(n) == ',' ) {
+
+                    numero = numero.replace(/[,]/ig, ".");
+                    document.getElementById("norma").value = numero;
+
+                 }
+                 if( isNaN( numero ) ) {
+                   alert('O valor passado n\u00E3o \u00E9 um n\u00FAmero. Confira! ');
+                   return 0;
+                 }
+                 else 
+                   if( parseFloat(numero) < 2.00 || parseFloat(numero) > 7.00) {
+                       alert(' Escolha um valor entre 2.0 e 7.0');
+                       return 0;
+                   }
+                   else
+                     return 1;
+              }
+
+      }
+      function validaArea() {
+
+           numero = (typeof document.getElementById("area").value === "undefined ")? "": document.getElementById("area").value;
+           numero = numero.trim();
+           if( numero.length == 0) {
+
+                alert('Insira o valor da \u00E1rea.');
+                return 0;
+           }
+           flag = 1;
+           cont = 0;
+           while(flag) {
+
+              n = numero.search(/,/);
+              if(numero.charAt(n) == ',' ) {
+
+                    numero = numero.replace(/[,]/ig, ".");
+                    document.getElementById("area").value = numero;
+                    cont = cont + 1;
+              }
+              else
+                flag = 0;
+           }           
+           if (cont > 1) {
+
+               alert('N\u00FAmero com mais de uma v\u00EDrgula. \nInsira o valor da \u00E1rea com apenas um ponto para separar as casas decimais.');
+               return 0;
+           }
+           if (isNaN ( numero ) ) {
+ 
+                  alert('O valor da \u00E1rea deve ter caractere n\u00E3o num\u00E9rico. ');
+                  return 0;
+           }
+           else
+             if ( parseFloat(numero) >= 0 )
+                return 1;
+             else {
+
+                  alert('O valor da \u00E1rea deve ser um n\u00FAmero positivo. ');
+                  return 0;
+             }
+                
+
+      }
+ 
+
+      function inicializa() {
+ 
+ 
+           //municipios();
+           //
+           // Limitar o calendario para 01-02 a 20-06 do corrente ano
+           // remover todos os sessionStorage em login.html
+/*
+           var x = document.getElementById("identificadores");
+           var option = document.createElement('option');
+           option.text = "Kiwi";
+           x.add(option);
+
+           var obj = new Object();
+           obj.label = 'Label';
+           obj.data = 'Data';
+           var optionBox = document.createElement('option');
+           optionBox.label = obj.label;
+           optionBox.value = obj.data;
+           document.getElementById("ident").add(optionBox)
+
+           var select = document.getElementById("identificadores");
+           var option = document.createElement('option');
+           option.text = "Mozilla";
+           option.value = 2;
+           select.add(option, 0)
+*/
+           var today = new Date();
+           var ano = today.getFullYear();
+
+ 
+           if (sessionStorage.getItem('area') !== null )
+             document.getElementById("area").value = sessionStorage.getItem("area");
+
+
+           if (sessionStorage.getItem('laminaAplicada') !== null )
+             document.getElementById("norma").value = sessionStorage.getItem("laminaAplicada");
+
+           if (sessionStorage.getItem('solo') !== null ) {
+
+              opcao = sessionStorage.getItem("solo");
+              if ( opcao == 1)
+                document.getElementById("arenoso").checked = true;
+              else
+                   if ( opcao == 2)
+                      document.getElementById("medio").checked = true;
+                   else
+                     if ( opcao == 3)
+                       document.getElementById("argiloso").checked = true;
+                      else
+                       {
+
+                          document.getElementById("arenoso").checked = false;
+                          document.getElementById("medio").checked = false;
+                          document.getElementById("argiloso").checked = false;
+                       }
+           }// final de  if (sessionStorage.getItem('solo') !== null ) {
+
+
+           if (sessionStorage.getItem('plantio') !== null ) {
+
+              opcao = sessionStorage.getItem("plantio");
+              if ( opcao == 1)
+                document.getElementById("Ptdireto").checked = true;
+              else
+                   if ( opcao == 2)
+                      document.getElementById("Ptconvencional").checked = true;
+                   else {
+
+                      document.getElementById("Ptdireto").checked = false;
+                      document.getElementById("Ptconvencional").checked = false;
+                   }
+           } // fim de  if (sessionStorage.getItem('plantio') !== null ) {
+
+
+           if (sessionStorage.getItem('eficiencia') !== null ) {
+
+              opcao = sessionStorage.getItem("eficiencia");
+              if ( opcao == 1)
+                document.getElementById("efic1").checked = true;
+              else
+                   if ( opcao == 2)
+                      document.getElementById("efic2").checked = true;
+                   else {
+
+                      document.getElementById("efic2").checked = false;
+                      document.getElementById("efic1").checked = false;
+                   }
+           } // fim de  if (sessionStorage.getItem('eficiencia') !== null ) {
+
+                id = document.getElementById("cidade").selectedIndex;
+                opcao = document.getElementById("cidade").options[id].value;
+                cidade = id;
+
+           identificadorPropriedade = sessionStorage.getItem("selectBoxOptions2");
+           idIdentificador = sessionStorage.getItem("colecaoId");
+           tam = identificadorPropriedade.length;
+ 
+           if(tam == 0) {
+
+              document.getElementById("identificador").innerHTML = "";
+              texto =  '<p>Identifica&ccedil;&atilde;o piv&ocirc;-central/ quadrante / propriet&aacute;rio: </p>';
+              texto = texto + '<textarea rows="3" cols="30" name="ident" id="ident" value=""  style="color:#669900; padding:3px;"></textarea>';
+              document.getElementById("identificador").innerHTML = texto;
+
+
+ 
+           }
+           else{
+
+              document.getElementById("identificador").innerHTML = "";
+              texto =  '<p>Identifica&ccedil;&atilde;o piv&ocirc;-central/ quadrante / propriet&aacute;rio: </p>';
+              texto = texto + '<input type = text  size = 40 name="ident" id="ident" placeholder = "Digite ou escolha uma identifica&ccedil;&atilde;o" value=""  onclick = "limpa()" style="font-size:16px;color:#669900; padding:3px;font-family: sans-serif, Arial, Helvetica Neue, Helvetica;" selectBoxOptions="">';
+              document.getElementById("identificador").innerHTML = texto;
+              selectBoxOptions2 = sessionStorage.getItem("selectBoxOptions2"); 
+              document.getElementById("ident").setAttribute('selectBoxOptions', selectBoxOptions2);
+              createEditableSelect(document.forms[0].ident);
+
+           }
+
+           if (sessionStorage.getItem('dataplantio') !== null )
+              document.getElementById("calendario").value = sessionStorage.getItem("dataplantio");
+
+           if (sessionStorage.getItem('identificacao') !== null ) {
+                  document.getElementById("ident").value = sessionStorage.getItem("identificacao");
+           }
+
+           if (sessionStorage.getItem('cidade') !== null ) {
+
+// ---> aqui deve ser revisto
+//
+                 //document.getElementById("cidade").selectedIndex = sessionStorage.getItem('cidade');
+
+                 if(document.getElementById("cidade") !== null  ) {
+
+                     setTimeout(  function() { getCidades(9);  setTimeout( function() { document.getElementById("cidade").selectedIndex = sessionStorage.getItem('cidade'); } , 1000 ); }, 2);
+                     
+                 } else { alert('nao deu ...'); }
+           }
+           else {
+              
+              getCidades(9); 
+           }
+
+           
+ 
+           setTimeout( function() { idZ = sessionStorage.getItem("idUser"); getDadosUser(idZ); } , 1000 );  
+
+
+      } // fim de function inicializa() {
+
+ 
+
+      function verificaData() {
+
+ 
+          //getCidades(9);
+          //dataInicial = document.getElementById("data1").value;
+          mesFinal2 = 6; // mes recomendado
+          dataInicial = document.getElementById('calendario').value
+          dataInicial = dataInicial.trim();
+          var dia= parseInt(dataInicial.substring(0,2) );
+          var mes = parseInt(dataInicial.substring(3,5) );
+
+          if ( mes < mesInicial || mes > mesFinal2)
+           alert('Escolha um m\u00EAs entre fevereiro e junho.\nOs dias podem variar de 01/02 a 20/06,\nque s\u00E3o os dias recomendados. ');
+          else
+            if (mes == mesFinal && dia > 20) 
+             alert('Para o m\u00EAs de junho, dia 20 seria o \u00FAltimo dia recomendado.');
+            else
+             document.getElementById('calendario').style.paddingLeft = "75px";
+
+      }
+
+ 
+      function verifica()
+        {
+
+          var cidade;
+          var flag;
+ 
+
+                id = document.getElementById("cidade").selectedIndex;
+                opcao = document.getElementById("cidade").options[id].value;
+                cidade = id;
+                idCidade = parseInt(opcao);
+                if( parseInt(opcao) == 0 ) {
+
+                   alert("Escolha o munic\u00EDpio.");
+                   flag = 0;
+
+                }
+                else {
+
+                  if( document.getElementById("calendario") === undefined  || document.getElementById("calendario") === null ) {
+
+                     alert("Escolha uma data inicial.");
+                     flag = 0;
+                  }
+                  else
+                    if( document.getElementById("calendario").value == "" ) {
+
+                     alert("Escolha a data de plantio.");
+                     flag = 0;
+                    }
+                    else {
+
+                              if( document.getElementById("efic1").checked === true  ) {
+                                opcao = 1;
+                              }
+                              else 
+                                if (document.getElementById("efic2").checked === true) {
+                                      opcao = 2;
+                                }
+                                else 
+                                      opcao = 0;
+                              
+                                 
+                              eficiencia = parseInt(opcao);
+                              if(parseInt(opcao) == 0) {
+
+                                   alert("Escolha um valor para efici\u00EAncia.");
+                                   flag = 0;
+                              }
+                              else {
+
+                                 if( !validaNorma() )  {
+
+                                   flag = 0;
+
+                                 }
+                                 else {
+
+                                       dataInicial = document.getElementById("calendario").value;
+                                       dataInicial = dataInicial.trim();
+                                       dia1 = parseInt(dataInicial.substring(0,2) );
+                                       mes1 = parseInt(dataInicial.substring(3,5) );
+
+                                       if ( mes1 < mesInicial || mes1 > mesFinal) {
+                                       
+                                         alert('Escolha um m\u00EAs entre fevereiro e junho.\nOs dias podem variar de 01/02 a 20/07.');
+                                         flag = 0;
+                                       }
+                                       else
+                                         if (mes1 == mesFinal && dia1 > 20) {
+             
+                                           alert('Para o m\u00EAs de junho, dia 20 e o \u00FAltimo dia permitido');
+                                           flag = 0;
+
+                                         }
+                                         else {
+                      
+                                                 if( document.getElementById("ident") === undefined ) {
+
+                                                     alert('O campo relativo a identifica\u00E7\u00E3o  piv\u00F4-central/ quadrante / propriet\u00E1rio \nn\u00E3o pode ser vazio.');
+                                                     flag = 0;
+                                                 } 
+                                                 else {
+                                                   
+                                                        identifier = document.getElementById("ident").value;
+                                                        identifier = identifier.trim();
+                                                 }
+                                                 if( identifier == "" ) {
+
+                                                     alert('O campo relativo a identifica\u00E7\u00E3o  piv\u00F4-central/ quadrante / propriet\u00E1rio \nn\u00E3o pode ser vazio.');
+                                                     flag = 0;
+                                                 }
+                                                 else {                          
+ 
+
+                                                      if( document.getElementById("arenoso").checked === true  ) {
+                                                          solo1 = 1;
+                                                      }
+                                                      else 
+                                                         if (document.getElementById("medio").checked === true) {
+                                                            solo1 = 2;
+                                                         }
+                                                         else 
+                                                           if (document.getElementById("argiloso").checked === true) {
+                                                              solo1 = 3;
+                                                           }
+                                                           else 
+                                                             solo1 = 0;
+                              
+                                 
+                                                      solo = parseInt(solo1);
+                                                      if(parseInt(solo) == 0) {
+
+                                                             alert("Escolha o tipo de solo.");
+                                                             flag = 0;
+                                                      } 
+                                                      else {
+
+                                                         if (document.getElementById("Ptdireto").checked === true) {
+                                                            plantio1 = 1; // Direto
+                                                         }
+                                                         else 
+                                                           if (document.getElementById("Ptconvencional").checked === true) {
+                                                              plantio1 = 2; // convencional
+                                                           }
+                                                           else 
+                                                             plantio1 = 0;
+
+                                                           plantio = parseInt(plantio1);
+                                                           if(parseInt(plantio) == 0) {
+
+                                                             alert("Escolha o tipo de plantio.");
+
+                                                             flag = 0;
+                                                           }
+                                                           else {
+
+ 
+                                                        
+                                                             if( !validaArea() ) {
+                                                             
+                                                                flag = 0;
+
+                                                             }
+                                                             else
+                                                               flag = 1;
+                                                                                                                                                                                                                     
+                                                           } //ok
+                                                         
+                                                      
+                                                      } // ok
+                                                      
+                                                 
+                                                 }//ok
+                                        
+
+                                        } // ok
+
+                                 }
+
+                              }
+                       }
+                }
+     
+                if( flag == 1 ) {
+
+                      
+                     sessionStorage.setItem("cidade", cidade);
+                     sessionStorage.setItem("identificacao", document.getElementById("ident").value);
+                     sessionStorage.setItem("dataplantio", document.getElementById("calendario").value);
+                     sessionStorage.setItem("area", document.getElementById("area").value);
+                     sessionStorage.setItem("eficiencia", opcao);
+                     sessionStorage.setItem("laminaAplicada", document.getElementById("norma").value);
+                     sessionStorage.setItem("solo", solo);
+                     sessionStorage.setItem("plantio", plantio);
+                                                 
+                     window.document.form1.enctype = "multipart/form-data";
+                     window.document.form1.method = "post";
+                     window.document.form1.action = "calculaLamina.php";
+                     window.document.form1.submit();
+
+
+                } 
+
+         //return flag;
+
+        }
+
+
+   </script>
+
+
+</head>
+<body  onload="inicializa()" >
+<!-- Barra dos logotipos -->
+<div id="barraLogotipos"> 
+  <!-- Logo irrigaTomate  --> 
+  <img src="imagens/logo-irrigaTomate.svg" class="logoIrrigaTomate" /> </div>
+<div id="barraMenu"> 
+  <!-- barra do menu de navegacao -->
+  <div id="Navegador">
+    <nav>
+      <ul>
+        <li><a href="sobre.html">SOBRE</a></li>
+        <li><a href="index.html" >PLANEJAMENTO</a></li>
+        <li><a href="#" class="selecionado">MANEJO</a></li>
+        <li><a href="orientacoes.html">ORIENTA&Ccedil;&Otilde;ES</a></li>
+        <li><a href="cadastro.html">CADASTRO</a></li>
+        <li><a href="contato.html">CONTATO</a></li>
+        <li><a href="apoio.html">APOIO</a></li>
+
+      </ul>
+    </nav>
+  </div>
+</div>
+<!-- barra da imagem de fundo com slogam -->
+<div id="barraDestaque"> 
+  <!-- quadro com informaç destaque -->
+  <div id="conteudoDestaque">
+    <h1> MANEJO</h1>
+    <h2>DA IRRIGA&Ccedil;&Atilde;O</h2>
+    <div id="apresentacao" >
+      <p>Acesso f&aacute;cil a informa&ccedil;&otilde;es para manejo pr&aacute;tico da irriga&ccedil;&atilde;o do tomateiro na sua propriedade</p>
+    </div>
+  </div>
+</div>
+<!-- box do conteudo Principal-->
+<div id="conteudoPrincipal2"  style="height:600px">
+  <form name = form1 id = form1>
+    <div id="colunaForm">
+
+      <div id="identificador" ></div>
+ 
+
+      <p>Munic&iacute;pio:</p>
+      <select name=cidade id="cidade"  style="HEIGHT: 32px; WIDTH: 193px" style="color:#669900; font-size: 24px;">
+      <option value =0 style="color:#000000 ; font-size: 14px;  height: 30px;"> --escolha o munic&iacute;pio--</option>
+      </select>
+
+
+      <p><a href="javascript:msgPlantio()" style="text-decoration:none; color:black">Plantio:</a></p>
+      <label style="margin-left:20px">
+        <input type="radio" name="optradio2" value = 1 id="Ptdireto">
+        <span onMouseOver=textoPlantioDireto(); >Direto</span>
+        </input>
+      </label>
+      <label style="margin-left:20px">
+        <input type="radio" name="optradio2" value=2 id="Ptconvencional">
+        <span onMouseOver=textoPlantioConvencional(); >Convencional</span>
+        </input>
+      </label>
+      <div id="tipoPlantio" ></div>
+
+      <p><a href="javascript:msgTipoSolo()" style="text-decoration:none; color:black">Tipo de solo:</a></p>
+      <label style="margin-left:20px">
+        <input type="radio" name="optradio1" value = 1 id="arenoso">
+        <span onMouseOver=textoSoloArenoso(); >Arenoso</span>
+        </input>
+      </label>
+      <label style="margin-left:20px">
+        <input type="radio" name="optradio1" value=2 id="medio">
+        <span onMouseOver=textoSoloMedio(); >M&eacute;dio</span>
+        </input>
+      </label>
+      <label style="margin-left:20px">
+        <input type="radio" name="optradio1" value=3 id="argiloso">
+        <span onMouseOver=textoSoloArgiloso(); >Argiloso</span>
+        </input>
+      </label>
+      <br><br>
+      <div id="tipoSolo" ></div>
+    </div>
+    <div id="colunaForm" style="float: right;">
+      <p><a href="javascript:msgDataPlantio()" style="text-decoration:none; color:black">Data de transplantio:</a></p>
+      <input type="text" id="calendario" name = "calendario" style="color:#669900; font-Weight:bold; padding-left:50px; height: 30px;" placeHolder="dd/mm"  onChange="verificaData()" />
+      <p style="text-decoration:none;"><a href="javascript:textoEficiencia()" style="text-decoration:none; color:black"  >Efici&ecirc;ncia de distribui&ccedil;&atilde;o da &aacute;gua do piv&ocirc;-central:</a></p>
+      <!--p>Efici&ecirc;ncia de distribui&ccedil;&atilde;o da &aacute;gua do piv&ocirc;-central:</p-->
+      <label style="margin-left:20px">
+        <input type="radio" name="optradio" value = 2 id="efic2">
+        80%
+        </input>
+      </label>
+      <label style="margin-left:20px">
+        <input type="radio" name="optradio" value=1 id="efic1">
+        85%
+        </input>
+      </label>
+      <p><a href="javascript:msgPercentimetro()" style="text-decoration:none; color:black">L&acirc;mina aplicada a 100% do percent&iacute;metro (mm):</a></p>
+      <input type="text" maxlength="5" name="norma" id="norma" value="" placeholder="valores entre 2.0 e 7.0"  onchange="validaNorma()" style="color: #669900; padding-left:10px; height: 30px; font-weight: bold;" size=40>
+
+      <div id="msgPercentimetro" style="display:none;  text-align: justify;"></div>
+
+      <p><a href="javascript:textoAreaTotal()" style="text-decoration:none; color:black"  >&Aacute;rea total do Piv&ocirc; (ha):</a></p>
+      <input type="text" maxlength="10" name="area" id="area" value=""  onchange="validaArea()" style="color: #669900; padding-left:10px; height: 30px; font-weight: bold;" size=40>
+
+      
+      <p><br><br><a href="javascript:verifica()" class="botao">Atualizar</a></p>
+
+      <!-- <input type="button" name="button" onclick="verifica()" value="Acessar" style="color:#fff; font-weight: bold; font-size:18px; width: 200px; background:#669900; display: block; height: 50px; margin-top:20px; border: none; cursor: pointer;"> --> 
+    </div>
+<script type="text/javascript">
+
+    if ( sessionStorage.getItem('selectBoxOptions2') !== null ) {
+
+           identificadorPropriedade = sessionStorage.getItem("selectBoxOptions2");
+           tam = identificadorPropriedade.length;
+           if( tam > 0) {
+    
+              selectBoxOptions2 = sessionStorage.getItem("selectBoxOptions2"); 
+              //document.getElementById("ident").setAttribute('selectBoxOptions', selectBoxOptions2);
+              //createEditableSelect(document.forms[0].ident);
+           }
+
+    }
+</script>
+  </form>
+</div>
+<p class="creditos">© 2020 Embrapa Arroz e Feij&atilde;o / UFG - Todos os direitos reservados</p>
+</body>
+</html>
+
