@@ -11,8 +11,7 @@
      $pieces = explode("/", $data);
      $mes = (int)$pieces[1];
      $dia = (int)$pieces[0];
-   
- 
+
      if($efic == 1) {
        $eficiencia = 0.85;
        $eficiencia2 = 85;
@@ -49,6 +48,7 @@
 
 
      $sql = "select m.cidadeHTML, e.siglaEstado from municipios as m, estados as e  where e.id=m.idEstado and m.id = $idCidade;";
+       
 
      //$query = mysql_query($sql) ;
      $query = mysqli_query($conexao, $sql) ;

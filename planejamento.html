@@ -22,449 +22,464 @@
     <![endif]-->
     <script language="javascript" src="login.js" ></script>
     <script type="text/javascript" src="getDadosUserLogin.js"></script>
+    
     <script language="javascript">
+      var mesInicial = 1;
+      var mesFinal = 6;
 
-      var mesInicial = 2;
-      var mesFinal = 12;
+      function showInfo(){
+        var elementName = document.activeElement.name;
 
-        function textoPlantioDireto() {
-
-          document.getElementById("tipoPlantio").style.display = "inline";
-          document.getElementById("tipoPlantio").style.color = "black";
-          document.getElementById("tipoPlantio").style.backgroundColor = "#dff0d8";
-          document.getElementById("tipoPlantio").style.borderColor = "#d6e9c6";
-          msg = "<br><br>Com palha na superf&iacute;cie do solo. Sistema de preparo reduzido ou cultivo m&iacute;nimo do solo.<br>";
-          document.getElementById("tipoPlantio").innerHTML = msg;
-          setTimeout( function() { document.getElementById("tipoPlantio").style.display="none" } , 5000 );
-
+        if(! (elementName == undefined)){
+          switch(elementName){
+            case "calendario":
+              msgDataPlantio();
+              break;
+            case "optradio":
+              textoEficiencia();
+              break;
+            case "optradio2":
+              msgPlantio();
+              break;
+            case "norma":
+              msgPercentimetro();
+              break;
+            case "optradio1":
+              msgTipoSolo();
+              break;
+          }
         }
+      }
 
-        function textoPlantioConvencional() {
+      function setDate(input) {
+        var timestamp = Date.parse(input.value);
+        
+        input.type = "text";
+        
+        if (!isNaN(timestamp)) {
+          var data = new Date(timestamp);
+          data = new Date(data.getTime() + Math.abs(data.getTimezoneOffset()*60000))
 
-          document.getElementById("tipoPlantio").style.display = "inline";
-          document.getElementById("tipoPlantio").style.color = "black";
-          document.getElementById("tipoPlantio").style.backgroundColor = "#dff0d8";
-          document.getElementById("tipoPlantio").style.borderColor = "#d6e9c6";
-          msg = "<br><br>Sem palha na superf&iacute;cie do solo<br>";
-          document.getElementById("tipoPlantio").innerHTML = msg;
-          setTimeout( function() { document.getElementById("tipoPlantio").style.display="none" } , 5000 );
+          var dia = data.getDate();
+          var mes = data.getMonth();
 
+          if (parseInt(mes) < mesInicial || parseInt(mes) > mesFinal) {
+            alert('Escolha um m\u00EAs entre fevereiro e julho.\nOs dias podem variar de 01/02 a 01/07.');
+            resetDate(input);
+            return;
+          }
+          else {
+            if (parseInt(mes) == mesFinal && parseInt(dia) > 1) {
+              alert('Para o m\u00EAs de julho, dia 01 \u00E9 o \u00FAltimo dia recomendado.');
+              resetDate(input);
+              return;
+            }
+          }
+
+          dia = data.getDate().toString().padStart(2, '0'),
+          mes = (data.getMonth() + 1).toString().padStart(2, '0'), //+1 pois no getMonth Janeiro começa com zero.
+          ano = data.getFullYear();
+          
+          if (ano < 1900 || ano > 2100){
+            alert("A data informada não é válida.");
+            resetDate(input);
+            return;
+          }
+          
+          input.value = dia + "/" + mes + "/" + ano;
         }
+      }
+      
+      function resetDate(input){
+        input.value = "";
+        input.type = "date"
+        input.focus();
+      }
+
+      function textoPlantioDireto() {
+
+        document.getElementById("tipoPlantio").style.display = "inline";
+        document.getElementById("tipoPlantio").style.color = "black";
+        document.getElementById("tipoPlantio").style.backgroundColor = "#dff0d8";
+        document.getElementById("tipoPlantio").style.borderColor = "#d6e9c6";
+        msg = "<br><br>Com palha na superf&iacute;cie do solo. Sistema de preparo reduzido ou cultivo m&iacute;nimo do solo.<br>";
+        document.getElementById("tipoPlantio").innerHTML = msg;
+        setTimeout(function () { document.getElementById("tipoPlantio").style.display = "none" }, 5000);
+
+      }
+
+      function textoPlantioConvencional() {
+
+        document.getElementById("tipoPlantio").style.display = "inline";
+        document.getElementById("tipoPlantio").style.color = "black";
+        document.getElementById("tipoPlantio").style.backgroundColor = "#dff0d8";
+        document.getElementById("tipoPlantio").style.borderColor = "#d6e9c6";
+        msg = "<br><br>Sem palha na superf&iacute;cie do solo<br>";
+        document.getElementById("tipoPlantio").innerHTML = msg;
+        setTimeout(function () { document.getElementById("tipoPlantio").style.display = "none" }, 5000);
+
+      }
 
       function msgPlantio() {
 
-          msg = "<p style='color:black; text-align:justify' ><span style='color:green'>Plantio Direto:</span> com palha na superf&iacute;cie do solo. Sistema de preparo reduzido ou cultivo m&iacute;nimo do solo.<br><span style='color:green'><br>Plantio Convencional:</span> sem palha na superf&iacute;cie do solo </p>";
-          Swal.fire({  position: 'top-end', html:  msg});
+        msg = "<p style='color:black; text-align:justify' ><span style='color:green'>Plantio Direto:</span> com palha na superf&iacute;cie do solo. Sistema de preparo reduzido ou cultivo m&iacute;nimo do solo.<br><span style='color:green'><br>Plantio Convencional:</span> sem palha na superf&iacute;cie do solo </p>";
+        Swal.fire({ position: 'top-end', html: msg });
       }
 
       function msgDataPlantio() {
 
 
-          msg = "<p style='color:black; text-align:justify' >O per&iacute;odo de transplantio de tomate em Goi&aacute;s &eacute; de 01/Fevereiro a 15/Julho, devido &agrave; sensibilidade das plantas ao molhamento foliar e &agrave; alta umidade relativa do ar.</p>";
-          Swal.fire({  position: 'top-end', html:  msg});
+        msg = "<p style='color:black; text-align:justify' >O per&iacute;odo de transplantio de tomate em Goi&aacute;s &eacute; de 01/Fevereiro a 15/Julho, devido &agrave; sensibilidade das plantas ao molhamento foliar e &agrave; alta umidade relativa do ar.</p>";
+        Swal.fire({ position: 'top-end', html: msg });
       }
 
       function msgPercentimetro() {
 
-          msg = "<p style='color:black; text-align:justify' >Digite a l&acirc;mina m&iacute;nima (2 a 7 mm) de irriga&ccedil;&atilde;o aplicada pelo piv&ocirc; central. <br>L&acirc;mina para quando o piv&ocirc; opera na m&aacute;xima velocidade (rel&ecirc; percentual a 100%).</p>";
-          Swal.fire({  position: 'top-end', html:  msg});
-/*
-          msg = "<p style='color:black; background-color:#dff0d8; border-color:#d6e9c6; text-align:justify' >Digite a l&acirc;mina m&iacute;nima (2 a 7 mm) de irriga&ccedil;&atilde;o aplicada pelo piv&ocirc; central. <br>L&acirc;mina para quando o piv&ocirc; opera na m&aacute;xima velocidade (rel&ecirc; percentual a 100%).</p>";
-          document.getElementById("msgPercentimetro").style.display = "inline";
-          pixel0 = document.getElementById("conteudoPrincipal2").style.height;
-          pixels =  parseInt(document.getElementById("conteudoPrincipal2").style.height) + 100;
-          pixels2 = pixels+"px";
-          document.getElementById("conteudoPrincipal2").style.height =  pixels2;
-          document.getElementById("msgPercentimetro").innerHTML = msg;
-          setTimeout( function() { document.getElementById("msgPercentimetro").style.display="none"; document.getElementById("conteudoPrincipal2").style.height = pixel0;  } , 5000 );
-*/
+        msg = "<p style='color:black; text-align:justify' >Digite a l&acirc;mina m&iacute;nima (2 a 7 mm) de irriga&ccedil;&atilde;o aplicada pelo piv&ocirc; central. <br>L&acirc;mina para quando o piv&ocirc; opera na m&aacute;xima velocidade (rel&ecirc; percentual a 100%).</p>";
+        Swal.fire({ position: 'top-end', html: msg });
+        /*
+                  msg = "<p style='color:black; background-color:#dff0d8; border-color:#d6e9c6; text-align:justify' >Digite a l&acirc;mina m&iacute;nima (2 a 7 mm) de irriga&ccedil;&atilde;o aplicada pelo piv&ocirc; central. <br>L&acirc;mina para quando o piv&ocirc; opera na m&aacute;xima velocidade (rel&ecirc; percentual a 100%).</p>";
+                  document.getElementById("msgPercentimetro").style.display = "inline";
+                  pixel0 = document.getElementById("conteudoPrincipal2").style.height;
+                  pixels =  parseInt(document.getElementById("conteudoPrincipal2").style.height) + 100;
+                  pixels2 = pixels+"px";
+                  document.getElementById("conteudoPrincipal2").style.height =  pixels2;
+                  document.getElementById("msgPercentimetro").innerHTML = msg;
+                  setTimeout( function() { document.getElementById("msgPercentimetro").style.display="none"; document.getElementById("conteudoPrincipal2").style.height = pixel0;  } , 5000 );
+        */
       }
       function textoEficiencia() {
 
-         texto = "<b style=\"color:green; text-align: justify;\">Efici&ecirc;ncia de aplica&ccedil;&atilde;o de &aacute;gua (EA) do sistema de irriga&ccedil;&atilde;o Piv&ocirc; Central</b><br>";
-         texto = texto + "<p style=\"text-align: justify;\" >Normalmente, esse valor &eacute; 80 ou 85%, e pode ser verificado em campo com o teste de uniformidade de aplica&ccedil;&atilde;o de &aacute;gua (CUC e CUD), seguindo as recomenda&ccedil;&otilde;es t&eacute;cnicas (ABNT). </p>";
-         texto = texto + "<p style=\"text-align: justify;\" >EA = CUC x 0,95    ...........................(1)<br>";
-         texto = texto + "Ou <br>";
-         texto = texto + "EA = CUD  ......................................(2)</p>";
-         texto = texto + "<p style=\"text-align: justify;\" >em que: <br><br>";
-         texto = texto + "CUC = coeficiente de uniformidade de Christiansen; <br><br>";
-         texto = texto + "0,95 = Fator de perda combinada de &aacute;gua por evapora&ccedil;&atilde;o e arrastamento pelo vento (em condi&ccedil;&otilde;es de ETo = 5 mm/dia e vento de 2,0 m/s)<br><br>";
-         texto = texto + "CUD = Coeficiente de Distribui&ccedil;&atilde;o de &aacute;gua </p>";
+        texto = "<b style=\"color:green; text-align: justify;\">Efici&ecirc;ncia de aplica&ccedil;&atilde;o de &aacute;gua (EA) do sistema de irriga&ccedil;&atilde;o Piv&ocirc; Central</b><br>";
+        texto = texto + "<p style=\"text-align: justify;\" >Normalmente, esse valor &eacute; 80 ou 85%, e pode ser verificado em campo com o teste de uniformidade de aplica&ccedil;&atilde;o de &aacute;gua (CUC e CUD), seguindo as recomenda&ccedil;&otilde;es t&eacute;cnicas (ABNT). </p>";
+        texto = texto + "<p style=\"text-align: justify;\" >EA = CUC x 0,95    ...........................(1)<br>";
+        texto = texto + "Ou <br>";
+        texto = texto + "EA = CUD  ......................................(2)</p>";
+        texto = texto + "<p style=\"text-align: justify;\" >em que: <br><br>";
+        texto = texto + "CUC = coeficiente de uniformidade de Christiansen; <br><br>";
+        texto = texto + "0,95 = Fator de perda combinada de &aacute;gua por evapora&ccedil;&atilde;o e arrastamento pelo vento (em condi&ccedil;&otilde;es de ETo = 5 mm/dia e vento de 2,0 m/s)<br><br>";
+        texto = texto + "CUD = Coeficiente de Distribui&ccedil;&atilde;o de &aacute;gua </p>";
 
-         texto = texto + "<p style=\"text-align: justify;\" ><span style=\"color:green\" >ATEN&Ccedil;&Atilde;O:</span> A uniformidade de aplica&ccedil;&atilde;o de &aacute;gua &eacute; influenciada por v&aacute;rios fatores, tais como: varia&ccedil;&otilde;es na vaz&atilde;o dos aspersores ao longo da tubula&ccedil;&atilde;o a&eacute;rea; varia&ccedil;&otilde;es nas condi&ccedil;&otilde;es do vento; varia&ccedil;&otilde;es na velocidade de rota&ccedil;&atilde;o e varia&ccedil;&otilde;es nos bocais dos aspersores (Tamanho de gota, altura de aplica&ccedil;&atilde;o, di&acirc;metro molhado, e inclina&ccedil;&atilde;o).";
-         texto = texto + "<br><br>Mantenha os bocais na sequ&ecirc;ncia de projeto e os bocais e os reguladores de press&atilde;o sem entupimento; abra regularmente o tamp&atilde;o da extremidade final do piv&ocirc; para limpeza de arraste da tubula&ccedil;&atilde;o; n&atilde;o permita que a v&aacute;lvula de suc&ccedil;&atilde;o fique enterrada no barro; Opere o piv&ocirc; sempre na press&atilde;o correta.</p>";
+        texto = texto + "<p style=\"text-align: justify;\" ><span style=\"color:green\" >ATEN&Ccedil;&Atilde;O:</span> A uniformidade de aplica&ccedil;&atilde;o de &aacute;gua &eacute; influenciada por v&aacute;rios fatores, tais como: varia&ccedil;&otilde;es na vaz&atilde;o dos aspersores ao longo da tubula&ccedil;&atilde;o a&eacute;rea; varia&ccedil;&otilde;es nas condi&ccedil;&otilde;es do vento; varia&ccedil;&otilde;es na velocidade de rota&ccedil;&atilde;o e varia&ccedil;&otilde;es nos bocais dos aspersores (Tamanho de gota, altura de aplica&ccedil;&atilde;o, di&acirc;metro molhado, e inclina&ccedil;&atilde;o).";
+        texto = texto + "<br><br>Mantenha os bocais na sequ&ecirc;ncia de projeto e os bocais e os reguladores de press&atilde;o sem entupimento; abra regularmente o tamp&atilde;o da extremidade final do piv&ocirc; para limpeza de arraste da tubula&ccedil;&atilde;o; n&atilde;o permita que a v&aacute;lvula de suc&ccedil;&atilde;o fique enterrada no barro; Opere o piv&ocirc; sempre na press&atilde;o correta.</p>";
 
-          Swal.fire({  position: 'top-end', html:  texto });
+        Swal.fire({ position: 'top-end', html: texto });
       }
-      $(function() {
-         // Ver em 
-         // https://api.jqueryui.com/datepicker/
-         // para mais informacoes 
-         //      
-   
-        var d = new Date();
-        var mes = d.getMonth() + 1;
-        var dia = d.getDate() ;
-        if( mes > mesFinal || ( mes == mesFinal && dia >=2) )
-           var year = d.getYear() + 1900 + 1;
-        else
-           var year = d.getYear() + 1900;
 
-        $("#calendario").datepicker({
-           //dateFormat: 'dd/mm/yy',
-           dateFormat: 'dd/mm',
-           dayNames: ['Domingo','Segunda','Terca','Quarta','Quinta','Sexta','Sabado','Domingo'],
-           dayNamesMin: ['D','S','T','Q','Q','S','S','D'],
-           dayNamesShort: ['Dom','Seg','Ter','Qua','Qui','Sex','S&aacute;b','Dom'],
-           monthNames: ['Janeiro','Fevereiro','Mar&ccedil;o','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
-           monthNamesShort: ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'],
-           minDate: new Date(year, mesInicial - 1, 01),
-           maxDate: new Date(year, mesFinal - 1, 01),
-           defaultDate: new Date(year, mesInicial - 1, 01),
-           altFormat: "dd/mm/yy",
-           duration: "fast", // fast, normal, slow
-           beforeShow: function(){    
-                $(".ui-datepicker").css('font-size', 12) 
-           }
-
-        });
-      });
       function valida() {
 
-           numero = (typeof document.getElementById("norma").value === "undefined")? "": document.getElementById("norma").value;
-           numero = numero.trim();
+        numero = (typeof document.getElementById("norma").value === "undefined") ? "" : document.getElementById("norma").value;
+        numero = numero.trim();
 
-           if( numero.length == 0) {
+        if (numero.length == 0) {
 
-                alert('O valor da l\u00E2mina aplicada a 100% do percent\u00EDmetro \nn\u00E3o deve ser nulo. Insira um valor entre 2.0 e 7.0');
-                return 0;
-           }
+          alert('O valor da l\u00E2mina aplicada a 100% do percent\u00EDmetro \nn\u00E3o deve ser nulo. Insira um valor entre 2.0 e 7.0');
+          return 0;
+        }
 
-           var n = numero.search(/[a-zA-Z]/i);
-           if( n >= 0 )
-              {
-                alert('O valor da l\u00E2mina aplicada a 100% do percentt\u00EDmetro n\u00E3o deve ter letras.');
-                return 0;
-              } 
-           else
-              {
-                 n = numero.search(/,/);
-                 if(numero.charAt(n) == ',' ) {
+        var n = numero.search(/[a-zA-Z]/i);
+        if (n >= 0) {
+          alert('O valor da l\u00E2mina aplicada a 100% do percentt\u00EDmetro n\u00E3o deve ter letras.');
+          return 0;
+        }
+        else {
+          n = numero.search(/,/);
+          if (numero.charAt(n) == ',') {
 
-                    numero = numero.replace(/[,]/ig, ".");
-                    document.getElementById("norma").value = numero;
-                
-                 }
-                 if( parseFloat(numero) < 2.00 || parseFloat(numero) > 7.00) {
-                   alert(' Escolha um valor entre 2.0 e 7.0');
-                   return 0
-                 }
-                 else
-                   return 1;
-              }
+            numero = numero.replace(/[,]/ig, ".");
+            document.getElementById("norma").value = numero;
+
+          }
+          if (parseFloat(numero) < 2.00 || parseFloat(numero) > 7.00) {
+            alert(' Escolha um valor entre 2.0 e 7.0');
+            return 0
+          }
+          else
+            return 1;
+        }
       }
+
       function inicializa() {
+        //
+        // Limitar o calendario para 01-04 a 20-06 do corrente ano
+        //
+        getCidades(9);
 
-           //
-           // Limitar o calendario para 01-04 a 20-06 do corrente ano
-           //
-           getCidades(9);
+        var today = new Date();
+        var ano = today.getFullYear();
+        
+        if (sessionStorage.getItem('placeZZ') !== null)
+          document.getElementById("norma").placeholder = "";
 
-           var today = new Date();
-           var ano = today.getFullYear();
-           //document.getElementById("data1").setAttribute("max", ano + "-06-20");
-           //document.getElementById("data1").setAttribute("min", ano + "-04-01");
+        if (sessionStorage.getItem('identificacaoZZ') !== null) {
+          document.getElementById("ident").value = sessionStorage.getItem("identificacaoZZ");
+        }
 
+        if (sessionStorage.getItem('dataSemeaduraZZ') !== null)
+          document.getElementById("calendario").value = sessionStorage.getItem("dataSemeaduraZZ");
 
-           if (sessionStorage.getItem('placeZZ') !== null )
-             document.getElementById("norma").placeholder = "";
+        if (sessionStorage.getItem('laminaAplicadaZZ') !== null)
+          document.getElementById("norma").value = sessionStorage.getItem("laminaAplicadaZZ");
 
-           if (sessionStorage.getItem('identificacaoZZ') !== null ) {
-             document.getElementById("ident").value = sessionStorage.getItem("identificacaoZZ");
-           }
+        //sessionStorage.setItem("cicloVegetativo", cicloVegetativo);
 
-           if (sessionStorage.getItem('dataSemeaduraZZ') !== null )
-             document.getElementById("calendario").value = sessionStorage.getItem("dataSemeaduraZZ");
+        if (sessionStorage.getItem('eficienciaZZ') !== null) {
 
-           if (sessionStorage.getItem('laminaAplicadaZZ') !== null )
-             document.getElementById("norma").value = sessionStorage.getItem("laminaAplicadaZZ");
+          opcao = sessionStorage.getItem("eficienciaZZ");
+          if (opcao == 1)
+            document.getElementById("efic1").checked = true;
+          else
+            if (opcao == 2)
+              document.getElementById("efic2").checked = true;
+            else {
 
-                                                                      //sessionStorage.setItem("cicloVegetativo", cicloVegetativo);
+              document.getElementById("efic2").checked = false;
+              document.getElementById("efic1").checked = false;
+            }
+        } // fim de  if (sessionStorage.getItem('eficienciaZZ') !== null ) {
 
-           if (sessionStorage.getItem('eficienciaZZ') !== null ) {
+        if (sessionStorage.getItem('sistemaPlantioZZ') !== null) {
 
-              opcao = sessionStorage.getItem("eficienciaZZ");
-              if ( opcao == 1)
-                document.getElementById("efic1").checked = true;
-              else
-                   if ( opcao == 2)
-                      document.getElementById("efic2").checked = true;
-                   else {
+          opcao = sessionStorage.getItem("sistemaPlantioZZ");
+          if (opcao == 1)
+            document.getElementById("plantio1").checked = true;
+          else
+            if (opcao == 2)
+              document.getElementById("plantio2").checked = true;
+            else {
 
-                      document.getElementById("efic2").checked = false;
-                      document.getElementById("efic1").checked = false;
-                   }
-           } // fim de  if (sessionStorage.getItem('eficienciaZZ') !== null ) {
-
-           if (sessionStorage.getItem('sistemaPlantioZZ') !== null ) {
-
-              opcao = sessionStorage.getItem("sistemaPlantioZZ");
-              if ( opcao == 1)
-                document.getElementById("plantio1").checked = true;
-              else
-                   if ( opcao == 2)
-                      document.getElementById("plantio2").checked = true;
-                   else {
-
-                      document.getElementById("plantio1").checked = false;
-                      document.getElementById("plantio2").checked = false;
-                   }
-           } // fim de  if (sessionStorage.getItem('sistemaPlantioZZ') !== null ) {
+              document.getElementById("plantio1").checked = false;
+              document.getElementById("plantio2").checked = false;
+            }
+        } // fim de  if (sessionStorage.getItem('sistemaPlantioZZ') !== null ) {
 
 
-           if (sessionStorage.getItem('cidadeZZ') !== null ) {
-                 setTimeout( function() { document.getElementById("cidade").selectedIndex = sessionStorage.getItem('cidadeZZ'); } , 800 ); 
+        if (sessionStorage.getItem('cidadeZZ') !== null) {
+          setTimeout(function () { document.getElementById("cidade").selectedIndex = sessionStorage.getItem('cidadeZZ'); }, 800);
 
 
-           }
+        }
 
       } // fim de function inicializa() {
 
       function verificaData() {
 
-          //dataInicial = document.getElementById("data1").value;
-          dataInicial = document.getElementById('calendario').value
-          dataInicial = dataInicial.trim();
-          var dia= parseInt(dataInicial.substring(0,2) );
-          var mes = parseInt(dataInicial.substring(3,5) );
+        //dataInicial = document.getElementById("data1").value;
+        dataInicial = document.getElementById('calendario').value
+        dataInicial = dataInicial.trim();
+        var dia = parseInt(dataInicial.substring(0, 2));
+        var mes = parseInt(dataInicial.substring(3, 5));
 
-          if ( mes < mesInicial || mes > mesFinal)
-           alert('Escolha um m\u00EAs entre fevereiro e julho.\nOs dias podem variar de 01/02 a 01/07.');
+        if (mes < mesInicial || mes > mesFinal)
+          alert('Escolha um m\u00EAs entre fevereiro e julho.\nOs dias podem variar de 01/02 a 01/07.');
+        else
+          if (mes == mesFinal && dia > 1)
+            alert('Para o m\u00EAs de julho, dia 01 \u00E9 o \u00FAltimo dia recomendado.');
           else
-            if (mes == mesFinal && dia > 1) 
-             alert('Para o m\u00EAs de julho, dia 01 \u00E9 o \u00FAltimo dia recomendado.');
-            else
-             document.getElementById('calendario').style.paddingLeft = "75px";
+            document.getElementById('calendario').style.paddingLeft = "75px";
 
       }
       function municipios() {
 
-         var id = document.getElementById("estado").selectedIndex;
-         var opcao = parseInt(document.getElementById("estado").options[id].value);
- 
-           if( opcao == 2) // goias
-             {
-                 getCidades(9);
+        var id = document.getElementById("estado").selectedIndex;
+        var opcao = parseInt(document.getElementById("estado").options[id].value);
 
-             }
-           else
-             if(  opcao == 3) // Mato Grosso 
-               {
-
-                 getCidades(11);
-               }
-             else
-                 if(  opcao == 5) // Minas Gerais
-                   {
-                      getCidades(13);
-
-                   }
-                 else
-                   if(  opcao == 6) // Sao Paulo
-                     {
-                        getCidades(25);
-
-                     }
-         
-        
-      }
-
-      function verifica()
+        if (opcao == 2) // goias
         {
-
-          //var id = document.getElementById("estado").selectedIndex;
-          //var opcao = document.getElementById("estado").options[id].value;
-          var cidade, estado;
-          var flag = 1;
-          var opcao = 1;
-          var identfier;
-
-          if ( parseInt(opcao) == 0 )
-            {
-                alert("Escolha o estado.");
-                flag = 0;
-            }
-          else {
-
-                //estado = id;
-                id = document.getElementById("cidade").selectedIndex;
-                opcao = document.getElementById("cidade").options[id].value;
-                cidade = id;
-                idCidade = parseInt(opcao);
-                if( parseInt(opcao) == 0 ) {
-
-                   alert("Escolha o munic\u00EDpio.");
-                   flag = 0;
-
-                }
-                else {
-
-                  if( document.getElementById("calendario") === undefined  || document.getElementById("calendario") === null ) {
-
-                     alert("Escolha uma data inicial.");
-                     flag = 0;
-                  }
-                  else
-                    if( document.getElementById("calendario").value == "" ) {
-
-                     alert("Escolha a data de transplantio.");
-                     flag = 0;
-                    }
-                    else {
-
-                              if( document.getElementById("efic1").checked === true  ) {
-                                opcao = 1;
-                              }
-                              else 
-                                if (document.getElementById("efic2").checked === true) {
-                                      opcao = 2;
-                                }
-                                else 
-                                      opcao = 0;
-                              
-                                 
-                              eficiencia = parseInt(opcao);
-                              if(parseInt(opcao) == 0) {
-
-                                   alert("Escolha um valor para efici\u00EAncia.");
-                                   flag = 0;
-                              }
-                              else {
-
-                                 if( !valida() )  {
-
-                                   flag = 0;
-
-                                 }
-                                 else {
-
-                                       dataInicial = document.getElementById("calendario").value;
-                                       dataInicial = dataInicial.trim();
-                                       dia1 = parseInt(dataInicial.substring(0,2) );
-                                       mes1 = parseInt(dataInicial.substring(3,5) );
-
-                                       if ( mes1 < mesInicial || mes1 > mesFinal) {
-                                       
-                                         alert('Escolha um m\u00EAs entre fevereiro e junho.\nOs dias podem variar de 01/02 a 01/07.');
-                                         flag = 0;
-                                       }
-                                       else
-                                         if (mes1 == mesFinal && dia1 > 1) {
-             
-                                           alert('Para o m\u00EAs de julho, dia 01 e o \u00FAltimo dia permitido');
-                                           flag = 0;
-
-                                         }
-                                         else {
-                       
-                                                 identifier = document.getElementById("ident").value;
-                                                 identifier = identifier.trim();
-                                                 if( identifier == "" ) {
-
-                                                     alert('O campo relativo \u00E0 identifica\u00E7\u00E3o  piv\u00F4-central/ quadrante / propriet\u00E1rio \nn\u00E3o pode ser vazio.');
-                                                     flag = 0;
-                                                 }
-                                                 else {                          
-
-                                                          if( document.getElementById("plantio1").checked === true  ) {
-                                                                 opcaoP = 1;
-                                                          }
-                                                          else
-                                                            if (document.getElementById("plantio2").checked === true) {
-                                                                opcaoP = 2;
-                                                            }
-                                                            else
-                                                               opcaoP = 0;
-
-
-                                                         sistemaPlantio = parseInt(opcaoP);
-                                                         if(parseInt(opcaoP) == 0) {
-
-                                                               alert("Escolha uma op\u00E7\u00E3o para Sistema de Plantio.");
-                                                               flag = 0;
-                                                         } 
-                                                         else {
-
-
-                                                                      sessionStorage.setItem("placeZZ", 1);
-                                                                      sessionStorage.setItem("cidadeZZ", cidade);
-                                                                      sessionStorage.setItem("identificacaoZZ", document.getElementById("ident").value);
-                                                                      sessionStorage.setItem("dataSemeaduraZZ", document.getElementById("calendario").value);
-                                                                      sessionStorage.setItem("eficienciaZZ", opcao);
-                                                                      sessionStorage.setItem("laminaAplicadaZZ", document.getElementById("norma").value);
-                                                                      sessionStorage.setItem("sistemaPlantioZZ", sistemaPlantio);
-                                                 
-                                                                      window.document.form1.enctype = "multipart/form-data";
-                                                                      window.document.form1.method = "post";
-                                                                      window.document.form1.action = "calculaLamina2.php";
-                                                                      window.document.form1.submit();
-
-                                                                 
-                                                         }
-                                                 
-
-                                                 }
-
-                                        }
-
-                                 }
-
-                              }
-                       }
-                }
-          }
-
-         //return flag;
+          getCidades(9);
 
         }
+        else
+          if (opcao == 3) // Mato Grosso 
+          {
+
+            getCidades(11);
+          }
+          else
+            if (opcao == 5) // Minas Gerais
+            {
+              getCidades(13);
+
+            }
+            else
+              if (opcao == 6) // Sao Paulo
+              {
+                getCidades(25);
+
+              }
 
 
-   </script>
-    <script language="javascript">
+      }
 
-      function verificalogin(user, senha) {
- 
- 
-             if(  user !== null)
-                  user = user.trim();
-             else {
-                alert("Digite o nome do usu\u00E1rio!");
-                return;
-             }
-             if(  senha !== null)
-                  senha = senha.trim();
-             else {
-                      alert("Digite a senha!");
-                      return;
-             }
- 
-             if(user.length == 0 ) {
- 
-                     alert("Digite o nome do usu\u00E1rio!");
-                     return;
- 
-             }
-             if(senha.length == 0 ) {
- 
-                     alert("Digite a senha!");
-                     return;
-             }else {
- 
-                GetXmlHttpObject( user, senha);
-             }
+      function verifica() {
+
+        //var id = document.getElementById("estado").selectedIndex;
+        //var opcao = document.getElementById("estado").options[id].value;
+        var cidade, estado;
+        var flag = 1;
+        var opcao = 1;
+        var identfier;
+
+        if (parseInt(opcao) == 0) {
+          alert("Escolha o estado.");
+          flag = 0;
+        }
+        else {
+
+          //estado = id;
+          id = document.getElementById("cidade").selectedIndex;
+          opcao = document.getElementById("cidade").options[id].value;
+          cidade = id;
+          idCidade = parseInt(opcao);
+          if (parseInt(opcao) == 0) {
+
+            alert("Escolha o munic\u00EDpio.");
+            flag = 0;
+
+          }
+          else {
+
+            if (document.getElementById("calendario") === undefined || document.getElementById("calendario") === null) {
+
+              alert("Escolha uma data inicial.");
+              flag = 0;
+            }
+            else
+              if (document.getElementById("calendario").value == "") {
+
+                alert("Escolha a data de transplantio.");
+                flag = 0;
+              }
+              else {
+
+                if (document.getElementById("efic1").checked === true) {
+                  opcao = 1;
+                }
+                else
+                  if (document.getElementById("efic2").checked === true) {
+                    opcao = 2;
+                  }
+                  else
+                    opcao = 0;
+
+
+                eficiencia = parseInt(opcao);
+                if (parseInt(opcao) == 0) {
+
+                  alert("Escolha um valor para efici\u00EAncia.");
+                  flag = 0;
+                }
+                else {
+                  if (!valida()) {
+                    flag = 0;
+                    event.preventDefault();
+                  }
+                  else {
+
+                    dataInicial = document.getElementById("calendario").value;
+                    dataInicial = dataInicial.trim();
+                    dia1 = parseInt(dataInicial.substring(0, 2));
+                    mes1 = parseInt(dataInicial.substring(3, 5));
+
+                    if (mes1 < mesInicial || mes1 > mesFinal) {
+
+                      alert('Escolha um m\u00EAs entre fevereiro e junho.\nOs dias podem variar de 01/02 a 01/07.');
+                      flag = 0;
+                    }
+                    else
+                      if (mes1 == mesFinal && dia1 > 1) {
+
+                        alert('Para o m\u00EAs de julho, dia 01 e o \u00FAltimo dia permitido');
+                        flag = 0;
+
+                      }
+                      else {
+
+                        identifier = document.getElementById("ident").value;
+                        identifier = identifier.trim();
+                        if (identifier == "") {
+
+                          alert('O campo relativo \u00E0 identifica\u00E7\u00E3o  piv\u00F4-central/ quadrante / propriet\u00E1rio \nn\u00E3o pode ser vazio.');
+                          flag = 0;
+                        }
+                        else {
+
+                          if (document.getElementById("plantio1").checked === true) {
+                            opcaoP = 1;
+                          }
+                          else
+                            if (document.getElementById("plantio2").checked === true) {
+                              opcaoP = 2;
+                            }
+                            else
+                              opcaoP = 0;
+
+
+                          sistemaPlantio = parseInt(opcaoP);
+                          if (parseInt(opcaoP) == 0) {
+
+                            alert("Escolha uma op\u00E7\u00E3o para Sistema de Plantio.");
+                            event.preventDefault();
+                            flag = 0;
+                          }
+                          else {
+                            sessionStorage.setItem("placeZZ", 1);
+                            sessionStorage.setItem("cidadeZZ", cidade);
+                            sessionStorage.setItem("identificacaoZZ", document.getElementById("ident").value);
+                            sessionStorage.setItem("dataSemeaduraZZ", document.getElementById("calendario").value);
+                            sessionStorage.setItem("eficienciaZZ", opcao);
+                            sessionStorage.setItem("laminaAplicadaZZ", document.getElementById("norma").value);
+                            sessionStorage.setItem("sistemaPlantioZZ", sistemaPlantio);
+
+                            window.document.form1.enctype = "multipart/form-data";
+                            window.document.form1.method = "post";
+                            window.document.form1.action = "calculaLamina2.php";
+                            window.document.form1.submit();
+                          }
+                        }
+                      }
+                  }
+                }
+              }
+          }
+        }
+        //return flag;
       }
     </script>
-  </head>
+
+    <script language="javascript">
+      function verificalogin(user, senha) {
+        if (user !== null)
+          user = user.trim();
+        else {
+          alert("Digite o nome do usu\u00E1rio!");
+          return;
+        }
+        if (senha !== null)
+          senha = senha.trim();
+        else {
+          alert("Digite a senha!");
+          return;
+        }
+
+        if (user.length == 0) {
+
+          alert("Digite o nome do usu\u00E1rio!");
+          return;
+
+        }
+        if (senha.length == 0) {
+
+          alert("Digite a senha!");
+          return;
+        } else {
+
+          GetXmlHttpObject(user, senha);
+        }
+      }
+    </script>
+  
+</head>
   <body>
     <div class="preloader">
       <div class="preloader-body">
@@ -795,34 +810,64 @@
                             </select>
                           </div>
                         </div>
+
                         <div class="col-sm-6">
                           <div class="form-wrap">
-                            <input class="form-input" id="dtplantio" type="month" value="2020-01" name="dtplantio" data-constraints="@Required">
-                            <label class="form-label" for="dtplantio">Data de plantio</label>
+                            <input class="form-input" name="calendario" id="calendario" placeholder="Data de transplantio" type="text" onfocus="(this.type='date')" onblur="setDate(this)" data-constraints="@Required">
                           </div>
                         </div>
-                        <div class="col-sm-12">
-                          <div class="form-wrap">
-                            <input class="form-input" id="idpivo" type="text" name="idpivo" data-constraints="@Required">
-                            <label class="form-label" for="idpivo">Identificação pivô-central / quadrante / proprietário</label>
-                          </div>
-                        </div>
+
                         <div class="col-sm-6">
                           <div class="form-wrap">
-                            <input class="form-input" id="eficiencia" type="text" name="eficiencia" data-constraints="@Required">
-                            <label class="form-label" for="eficiencia">Eficiência de distribuição da água do pivô-central</label>
+                            <input class="form-input" name="ident" id="ident" placeholder="Identificação pivô-central / quadrante / proprietário" 
+                                    type="text" data-constraints="@Required">
+                            </input>
                           </div>
                         </div>
+                        
                         <div class="col-sm-6">
                           <div class="form-wrap">
-                            <input class="form-input" id="sisplantio" type="text" name="sisplantio" data-constraints="@Required">
-                            <label class="form-label" for="sisplantio">Sistema de plantio</label>
+                            <div class="form-input">
+                              <label>Eficiência de distribuição da água do pivô-central:</label>
+                              <div style="display: inline-block;">
+                                <input class="" type="radio" value="2" name="optradio" id="efic2">
+                                <label class="" for="efic2">80%</label>
+                              </div>
+
+                              <div style="display: inline-block;">
+                                <input class="" type="radio" value="1" name="optradio" id="efic1" checked>
+                                <label class="" for="efic1">85%</label>
+                              </div>
+                              <!-- <span class="fa fa-info"></span> -->
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div class="col-sm-6">
+                          <div class="form-wrap">
+                            <div class="form-input">
+                              <label>Sistema de plantio:</label>
+                              <input class="" type="radio" value="1" name="optradio2" id="plantio1">
+                              <label class="" for="plantio1">Convencional</label>
+                              <input class="input" type="radio" value="2" name="optradio2" id="plantio2" checked>
+                              <label class="" for="plantio2">Direto</label>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                          <div class="form-wrap">
+                            <input class="form-input" name="norma" id="norma" placeholder="Lâmina aplicada a 100% do percentímetro (mm):" 
+                              type="number" min="2" max="7" data-constraints="@Required">
                           </div>
                         </div>
                       </div>
-                      <button class="button button-primary button-pipaluk" type="submit" onclick="verifica(document.form1.user_login.value, document.form1.senha_login.value)">Acessar</button>
+                      
+                      <span class="fa fa-question-circle-o fa-4x" style="color:#f1efeb;" onmouseover="showInfo()"></span>
+                      <button class="button button-primary button-pipaluk" style="float: right;" type="submit" onclick="verifica()">Acessar</button>
                     </form>
                   </div>
+
                   <div class="tab-pane fade" id="tabs-4-2">
                     <p style="text-align: justify;">1.&nbsp;Na <strong>data de transplantio do tomate</strong>, o solo deve estar <strong>&uacute;mido</strong>, com bom teor de &aacute;gua ("caixa cheia"). Por ser cultivado em per&iacute;odo de escassez de chuvas, pode ser necess&aacute;rio fazer irriga&ccedil;&atilde;o pr&eacute;via para fornecer &aacute;gua ao solo. Em termos m&eacute;dios, os solos do Cerrado ret&ecirc;m 30 mm de &aacute;gua em uma profundidade de 0-30 cm. A Planilha gerada pelo&nbsp;IrrigaTomate&nbsp;foi desenvolvida para solos de textura m&eacute;dia a argilosa. Para solos arenosos, que exigem irriga&ccedil;&otilde;es mais frequentes, o usu&aacute;rio pode elaborar sua pr&oacute;pria planilha, pois s&atilde;o apresentadas as l&acirc;minas di&aacute;rias de irriga&ccedil;&atilde;o.</p>
                     <p style="text-align: justify;">2.&nbsp;Ocorrendo <strong>chuva</strong> entre a &uacute;ltima irriga&ccedil;&atilde;o e a pr&oacute;xima (duas irriga&ccedil;&otilde;es consecutivas), a quantidade da precipita&ccedil;&atilde;o pluvial, em mm, medida por pluvi&ocirc;metro instalado na &aacute;rea, deve ser <strong>subtra&iacute;da da l&acirc;mina de &aacute;gua da pr&oacute;xima irriga&ccedil;&atilde;o</strong>. Se essa precipita&ccedil;&atilde;o pluvial for maior que a l&acirc;mina da pr&oacute;xima irriga&ccedil;&atilde;o, considerar essa irriga&ccedil;&atilde;o j&aacute; atendida e n&atilde;o computar cr&eacute;ditos dos mm de &aacute;gua excedentes em irriga&ccedil;&otilde;es futuras.</p>
@@ -832,8 +877,6 @@
                   </div>
                 </div>
               </div>
-              
-              
             </div>
           </div>
         </div>
@@ -942,6 +985,6 @@
     <!-- Javascript-->
     <script src="js/core.min.js"></script>
     <script src="js/script.js"></script>
-    <!-- coded by Ragnar-->
+    <script src="js/package/dist/sweetalert2.all.js"></script>
   </body>
 </html>

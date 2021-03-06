@@ -106,10 +106,12 @@
        
         }
 
+        $user = $_COOKIE["userTomate"];
         $idUser = $_COOKIE["idUser"];
         $sql = "select * from dadosPivotUserTomate where idUser = $idUser";
 
         $query = mysqli_query($conexao, $sql) ;
+
         if(!$query) {
 
              echo '
@@ -117,7 +119,7 @@
                <table border=0>
                      <tr><td><img SRC="imagens/embrapaArrozFeijao.png" ALT="Embrapa Arroz e Feij&atilde;o" BORDER=0></td></tr>
                      <tr><td><br><h3  style="background-color: green; font-size:24px; color:white; font-weight:bold; margin-left:0px; margin-right: 0px"><center> Planilha de irriga&ccedil;&atilde;o </center></h3></td></tr>
-                     <tr><td><br><h2  style="font-size:24px; color:green; font-weight:bold; margin-left:0px; margin-right: 0px"><center> Dados do pivot relacionados ao id do usu&aacute;rio $user nao foram encontrados ou cont&eacute;m erros. </center></h2></td></tr>
+                     <tr><td><br><h2  style="font-size:24px; color:green; font-weight:bold; margin-left:0px; margin-right: 0px"><center> Dados do pivot relacionados ao id do usu&aacute;rio ' . $user . ' nao foram encontrados ou cont&eacute;m erros. </center></h2></td></tr>
                      <tr><td><center><table border = 0>
                              <tr style="color:blue; font-weight: bold; font-size:20px;"><td><center><a href="login.html" >P&aacute;gina de Login</a><br></center></td><td><center><br></center></td><td><center></center></td><td><center></center></td><td><center></center></td></tr></table></center>
 
@@ -133,18 +135,18 @@
             $numLinhas = $query->num_rows;
 
             if( $numLinhas == 0 ) {
-
-               
                $sql = "insert into dadosPivotUserTomate(idUser, idCidade, identificacao, idPivot,  dataPlantio,  eficiencia, laminaAplicada, tipoPlantio, tipoSolo, AreaPivot) ";
                $sql = $sql . "values($idUser, $idCidade, \"$identificacao\", 1, \"$data\", $efic, $laminaAplicada, $sistemaDePlantio, $tipoSolo, $areaPivo );";
+              //  echo $sql;
                $query = mysqli_query($conexao, $sql) ;
+
                if(!$query) {
                  echo '
                   <center>
                   <table border=0>
                      <tr><td><img SRC="imagens/embrapaArrozFeijao.png" ALT="Embrapa Arroz e Feij&atilde;o" BORDER=0></td></tr>
                      <tr><td><br><h3  style="background-color: green; font-size:24px; color:white; font-weight:bold; margin-left:0px; margin-right: 0px"><center> Planilha de irriga&ccedil;&atilde;o </center></h3></td></tr>
-                     <tr><td><br><h2  style="font-size:24px; color:green; font-weight:bold; margin-left:0px; margin-right: 0px"><center> Dados do pivot relacionados ao id do usu&aacute;rio $user nao puderam ser inseridos na base de dados. </center></h2></td></tr>
+                     <tr><td><br><h2  style="font-size:24px; color:green; font-weight:bold; margin-left:0px; margin-right: 0px"><center> Dados do pivot relacionados ao id do usu&aacute;rio ' . $user . ' nao puderam ser inseridos na base de dados. </center></h2></td></tr>
                      <tr><td><center><table border = 0>
                              <tr style="color:blue; font-weight: bold; font-size:20px;"><td><center><a href="login.html" >P&aacute;gina de Login</a><br></center></td><td><center><br></center></td><td><center></center></td><td><center></center></td><td><center></center></td></tr></table></center>
 
@@ -215,6 +217,7 @@
                               $idPivotNew = (int)$linha[0] + 1;
                               $sql = "insert into dadosPivotUserTomate(idUser, idCidade, identificacao, idPivot,  dataPlantio,  eficiencia, laminaAplicada, tipoPlantio, tipoSolo, AreaPivot) ";
                               $sql = $sql . "values($idUser, $idCidade, \"$identificacao\", $idPivotNew, \"$data\", $efic, $laminaAplicada, $sistemaDePlantio, $tipoSolo, $areaPivo );";
+                              // echo $sql;
                               $query = mysqli_query($conexao, $sql) ;
                               if(!$query) {
                                 echo '
