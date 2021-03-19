@@ -595,6 +595,10 @@
         var areaPivotZ = [];
         var numRegistrosZ;
 
+        if(sessionStorage.getItem("numRegistrosZ") == undefined){
+          return;
+        }
+
         numRegistrosZ = sessionStorage.getItem("numRegistrosZ");
         idCidadeZ = sessionStorage.getItem("idCidadeZ").split(",");
         identificacaoZ = sessionStorage.getItem("identificacaoZ").split(",");
@@ -617,15 +621,20 @@
               i = numRegistrosZ + 1;
             }
           }
+          
+          if(j == undefined){
+            return;
+          }
 
-          if (document.getElementById("cidade").options.length !== null && document.getElementById("cidade").options.length !== undefined)
+          if (document.getElementById("cidade").options.length !== null && document.getElementById("cidade").options.length !== undefined){
             numCidades = document.getElementById("cidade").options.length;
-          for (i = 1; i <= numCidades; i++) {
 
-            if (document.getElementById("cidade").options[i].value == idCidadeZ[j]) {
-              s = i;
-              i = 7000;
-              break;
+            for (i = 1; i <= numCidades; i++) {
+              if (document.getElementById("cidade").options[i].value == idCidadeZ[j]) {
+                s = i;
+                i = 7000;
+                break;
+              }
             }
           }
 
@@ -638,7 +647,6 @@
           document.getElementById("arenoso").checked = false;
           document.getElementById("medio").checked = false;
           document.getElementById("argiloso").checked = false;
-
 
           if (tipoSoloZ[j] == 1)
             document.getElementById("arenoso").checked = true;

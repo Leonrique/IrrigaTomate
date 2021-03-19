@@ -107,33 +107,25 @@ function mostraSaidaId2() {
                 sessionStorage.setItem("tipoSoloZ", tipoSoloZ);
                 sessionStorage.setItem("areaPivotZ", areaPivotZ);
 
-            } else {
-
-                if (texto3 == 'B') {
-
-                    alert('codigo -> ' + texto3 + '\n\nO servidor de base de dados n\u00E3o est\u00E1 acess\u00EDvel!');
-
-                }
-                else
-                    if (texto3 == 'A') {
-
-                        alert('codigo -> ' + texto3 + '\n\nUsername ou senha n\u00E3o confere!');
-                    }
-                    else
-                        if (texto3 == 'D') {
-
-                            alert('codigo -> ' + texto3 + '\n\nUsername ou senha com caracter invalido ou nulo!');
-
-                        }
-                        else
-                            if (texto3 == 'F') {
-
-                                //alert('codigo -> '+ texto3 +'\n\nNenhum registro foi encontrado na base de dados!');
-
-                            }
-
-
-            }
+            } 
+            // else 
+            // {
+            //     if (texto3 == 'B') {
+            //         alert('codigo -> ' + texto3 + '\n\nO servidor de base de dados n\u00E3o est\u00E1 acess\u00EDvel!');
+            //     }
+            //     else
+            //         if (texto3 == 'A') {
+            //             alert('codigo -> ' + texto3 + '\n\nUsername ou senha n\u00E3o confere!');
+            //         }
+            //         else
+            //             if (texto3 == 'D') {
+            //                 alert('codigo -> ' + texto3 + '\n\nUsername ou senha com caracter invalido ou nulo!');
+            //             }
+            //             else
+            //                 if (texto3 == 'F') {
+            //                     //alert('codigo -> '+ texto3 +'\n\nNenhum registro foi encontrado na base de dados!');
+            //                 }
+            // }
         } else {
             alert('Problema na requisi\u00E7\u00E3o!');
         }
