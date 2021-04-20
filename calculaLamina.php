@@ -296,7 +296,7 @@
 
  
 
-     $sql= "select dia, mes, temMedia, eto from  evapoTranspiracaoTomateEstacao  where idCidade = $idCidade and  (mes = $mes and dia = $dia ) ;";
+     $sql= "select dia, mes, temMedia, eto from evapoTranspiracaoTomateEstacao  where idCidade = $idCidade and  (mes = $mes and dia = $dia ) ;";
 
      $query = mysqli_query($conexao, $sql);
      if(!$query) {
@@ -344,16 +344,18 @@
              $registroInicial = $registroInicial . '<input type = text value = '.$lamina.' size = 10 style = " color:green; border: none transparent; background: transparent; outline: none;  padding-left:9px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td><td>';
              $registroInicial = $registroInicial . '<input type = text value = "" size = 10 style = "border: none transparent; background: transparent; outline: none;  padding-left:9px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td></tr>';            
              //$registroInicial = $registroInicial . '<input type = text value = 100.00 size = 10 style = "border: none transparent; background: transparent; outline: none;  padding-left:9px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td></tr>';            
-
           }
-
      }
 
      date_default_timezone_set('America/Sao_Paulo');
      $ano = date("Y");
      $novaData =  date("m-j-Y", mktime(0, 0, 0, $mes, $dia + 1, $ano));
      list ($mes, $dia, $ano) = explode("-",$novaData);
-     $sql= "select dia, mes, temMedia, eto from  evapoTranspiracaoTomateEstacao  where idCidade = $idCidade and ( (mes = $mes and dia >= $dia ) or mes > $mes ) order by mes, dia;";
+     $sql= "select dia, mes, temMedia, eto 
+            from evapoTranspiracaoTomateEstacao
+            where idCidade = $idCidade and ( (mes = $mes and dia >= $dia ) or mes > $mes )
+            and ano = (select MAX(ano) from evapoTranspiracaoTomateEstacao where idCidade = $idCidade and ((mes = $mes and dia >= $dia ) or mes > $mes))
+            order by mes, dia;";
  
      //$query = mysql_query($sql) ;
      $query = mysqli_query($conexao, $sql) ;

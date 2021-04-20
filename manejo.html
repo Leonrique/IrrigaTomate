@@ -218,14 +218,12 @@
                     <p>Informe seu usuário e senha nos campos abaixo.</p>
                     <form class="rd-form rd-mailform" name="form2" method="post" action>
                       <div class="form-wrap">
-                        <input class="form-input" id="user_login" type="text" name="user_login" data-constraints="@Required">
-                        <label class="form-label" for="user_login">Informe seu usuário</label>
+                        <input class="form-input" id="user_login2" type="text" name="user_login2" placeholder="Informe seu usuário" data-constraints="@Required">
                       </div>
                       <div class="form-wrap">
-                        <input class="form-input" id="senha_login" type="password" name="senha_login" data-constraints="@Required">
-                        <label class="form-label" for="senha_login">Digite sua senha</label>
+                        <input class="form-input" id="senha_login2" type="password" name="senha_login2" placeholder="Digite sua senha" data-constraints="@Required">
                       </div>
-                      <button class="button button-block button-white" type="button" onclick="verificalogin(document.form2.user_login.value, document.form2.senha_login.value)">Acessar</button>
+                      <button class="button button-block button-white" type="button" onclick="verificalogin(document.form2.user_login2.value, document.form2.senha_login2.value)">Acessar</button>
                     </form>
                     <div class="group-lg group-middle">
                       <p class="text-white">Não possui conta? <a class="link-cadastro" href="cadastrar.html"> Cadastre-se</a></p>
