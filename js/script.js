@@ -891,9 +891,9 @@
 
 						form.clearForm();
 
-						if (select.length) {
-							select.select2("val", "");
-						}
+						// if (select.length) {
+						// 	select.select2("val", "");
+						// }
 
 						form.find('input, textarea').trigger('blur');
 

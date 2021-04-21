@@ -125,12 +125,12 @@
 //
                 include('dados.php');
 
-                if( $sistemaDePlantio == 1 ) { // 1 - convencional; 1
+                if( $sistemaDePlantio == 2 ) { // 1 - convencional; 1
 
                        $tipoPlantio = "Convencional";
                 }
                 else
-                  if( $sistemaDePlantio == 2 ) { // 2 - plantio direto
+                  if( $sistemaDePlantio == 1 ) { // 2 - plantio direto
 
                               $tipoPlantio = "Plantio direto";
                   }

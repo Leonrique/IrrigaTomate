@@ -419,9 +419,9 @@
                           <div class="form-wrap">
                             <div class="form-input">
                               <label>Sistema de plantio:</label>
-                              <input class="input" type="radio" value="1" name="optradio2" id="Ptconvencional">
+                              <input class="input" type="radio" value="2" name="optradio2" id="Ptconvencional">
                               <label class="" for="Ptconvencional">Convencional</label>
-                              <input class="input" type="radio" value="2" name="optradio2" id="Ptdireto" checked>
+                              <input class="input" type="radio" value="1" name="optradio2" id="Ptdireto" checked>
                               <label class="" for="Ptdireto">Direto</label>
                             </div>
                           </div>
@@ -612,130 +612,131 @@
 
         var i, j;
 
-          nomePivot = nomePivot.trim();
-          for (i = 1; i <= numRegistrosZ; i++) {
+        nomePivot = nomePivot.trim();
+        for (i = 1; i <= numRegistrosZ; i++) {
 
-            identificacaoZ[i] = identificacaoZ[i].trim();
-            if (nomePivot == identificacaoZ[i]) {
-              j = i;
-              i = numRegistrosZ + 1;
+          identificacaoZ[i] = identificacaoZ[i].trim();
+          if (nomePivot == identificacaoZ[i]) {
+            j = i;
+            i = numRegistrosZ + 1;
+          }
+        }
+        
+        if(j == undefined){
+          return;
+        }
+
+        if (document.getElementById("cidade").options.length !== null && document.getElementById("cidade").options.length !== undefined){
+          numCidades = document.getElementById("cidade").options.length;
+
+          for (i = 1; i <= numCidades; i++) {
+            if (document.getElementById("cidade").options[i].value == idCidadeZ[j]) {
+              s = i;
+              i = 7000;
+              break;
             }
           }
-          
-          if(j == undefined){
-            return;
-          }
+        }
 
-          if (document.getElementById("cidade").options.length !== null && document.getElementById("cidade").options.length !== undefined){
-            numCidades = document.getElementById("cidade").options.length;
+        document.getElementById("calendario").value = dataPlantioZ[j]; //verificar se eh i ou j
+        document.getElementById("area").value = areaPivotZ[j];
+        document.getElementById("ident").value = identificacaoZ[j];
+        document.getElementById("cidade").selectedIndex = s;
+        document.getElementById("norma").value = laminaAplicadaZ[j];
 
-            for (i = 1; i <= numCidades; i++) {
-              if (document.getElementById("cidade").options[i].value == idCidadeZ[j]) {
-                s = i;
-                i = 7000;
-                break;
-              }
-            }
-          }
-
-          document.getElementById("calendario").value = dataPlantioZ[j]; //verificar se eh i ou j
-          document.getElementById("area").value = areaPivotZ[j];
-          document.getElementById("ident").value = identificacaoZ[j];
-          document.getElementById("cidade").selectedIndex = s;
-          document.getElementById("norma").value = laminaAplicadaZ[j];
-
-          document.getElementById("arenoso").checked = false;
-          document.getElementById("medio").checked = false;
-          document.getElementById("argiloso").checked = false;
-
-          if (tipoSoloZ[j] == 1)
+        document.getElementById("arenoso").checked = false;
+        document.getElementById("medio").checked = false;
+        document.getElementById("argiloso").checked = false;
+        
+        switch(tipoSoloZ[j]){
+          case "1":
             document.getElementById("arenoso").checked = true;
-          else
-            if (tipoSoloZ[j] == 2)
-              document.getElementById("medio").checked = true;
-            else
-              if (tipoSoloZ[j] == 3)
-                document.getElementById("argiloso").checked = true;
+            break;
+          case "2":
+            document.getElementById("medio").checked = true;
+            break;
+          case "3":
+            document.getElementById("argiloso").checked = true;
+            break;
+        }
 
+        document.getElementById("Ptdireto").checked = false;
+        document.getElementById("Ptconvencional").checked = false;
 
-          document.getElementById("Ptdireto").checked = false;
-          document.getElementById("Ptconvencional").checked = false;
+        if (tipoPlantioZ[j] == 1){
+          document.getElementById("Ptdireto").checked = true;
+        }
+        else if (tipoPlantioZ[j] == 2){
+          document.getElementById("Ptconvencional").checked = true;
+        }
+        
+        document.getElementById("efic2").checked = false;
+        document.getElementById("efic1").checked = false;
 
-          if (tipoPlantioZ[j] == 2){
-            document.getElementById("Ptdireto").checked = true;
+        if (eficienciaZ[j] == 1){
+          document.getElementById("efic1").checked = true;
+        }
+        else if (eficienciaZ[j] == 2){
+          document.getElementById("efic2").checked = true;
+        }
+
+        document.getElementById("calendario").value = dataPlantioZ[j];
+      }
+
+      document.addEventListener('DOMContentLoaded', function () {
+        setUserIdentifications();
+      }, false);
+
+      function setUserIdentifications() {
+        var listOptions = '';
+        var userOptions = sessionStorage.getItem("selectBoxOptions2");
+
+        if (userOptions != undefined) {
+          userOptions = userOptions.split(";");
+
+          for (var i = 0; i < userOptions.length; i++) {
+            listOptions += '<option value="' + userOptions[i] + '" />';
           }
-          else{
-            if (tipoPlantioZ[j] == 1){
-              document.getElementById("Ptconvencional").checked = true;
-            }
-          }
 
-          document.getElementById("efic2").checked = false;
-          document.getElementById("efic1").checked = false;
-
-          if (eficienciaZ[j] == 1)
-            document.getElementById("efic1").checked = true;
-          else
-            if (eficienciaZ[j] == 2)
-              document.getElementById("efic2").checked = true;
-
-          document.getElementById("calendario").value = dataPlantioZ[j];
+          document.getElementById('userIdentifications').innerHTML = listOptions;
         }
+      }
 
-        document.addEventListener('DOMContentLoaded', function () {
-          setUserIdentifications();
-        }, false);
+      function selectOptionValue(input)
+      {
+        identificacaoPivot(input.value);
+      }
 
-        function setUserIdentifications() {
-          var listOptions = '';
-          var userOptions = sessionStorage.getItem("selectBoxOptions2");
+      function limparSelecaoPivo(input) {
+        input.value='';
+      }
 
-          if (userOptions != undefined) {
-            userOptions = userOptions.split(";");
+      function showInfo() {
+        var elementName = document.activeElement.name;
 
-            for (var i = 0; i < userOptions.length; i++) {
-              listOptions += '<option value="' + userOptions[i] + '" />';
-            }
-
-            document.getElementById('userIdentifications').innerHTML = listOptions;
-          }
-        }
-
-        function selectOptionValue(input)
-        {
-          identificacaoPivot(input.value);
-        }
-
-        function limparSelecaoPivo(input) {
-          input.value='';
-        }
-
-        function showInfo() {
-          var elementName = document.activeElement.name;
-
-          if (!(elementName == undefined)) {
-            switch (elementName) {
-              case "calendario":
-                msgDataPlantio();
-                break;
-              case "optradio":
-                textoEficiencia();
-                break;
-              case "optradio2":
-                msgPlantio();
-                break;
-              case "norma":
-                msgPercentimetro();
-                break;
-              case "optradio1":
-                msgTipoSolo();
-                break;
-              case "area":
-                textoAreaTotal();
-                break;
-            }
+        if (!(elementName == undefined)) {
+          switch (elementName) {
+            case "calendario":
+              msgDataPlantio();
+              break;
+            case "optradio":
+              textoEficiencia();
+              break;
+            case "optradio2":
+              msgPlantio();
+              break;
+            case "norma":
+              msgPercentimetro();
+              break;
+            case "optradio1":
+              msgTipoSolo();
+              break;
+            case "area":
+              textoAreaTotal();
+              break;
           }
         }
+      }
 
       function setDate(input) {
         var timestamp = Date.parse(input.value);

@@ -1,5 +1,9 @@
 <?php
-
+     if(!isset($_POST["cidade"])){
+       header('Location:'.'manejo.html');
+       exit(1);
+     }
+    
      $idCidade = $_POST["cidade"]; // municipio escolhido
      $identificacao = $_POST["ident"];
      $sistemaDePlantio = $_POST["optradio2"]; // 2 - convencional;  1- direto;
@@ -33,11 +37,10 @@
      $diaInicial2 = $hojeDia.'-'.$hojeMes.'-'.$hojeAno;
      $data2 = new DateTime($diaInicial2);
 
-     $data2->modify('-1 day');
+     $data2->modify('last day of this month');
      $ontemDia = $data2->format('d');
      $ontemMes = $data2->format('m');
      $ontemAno = $data2->format('Y');
- 
  
      if($efic == 1) {
        $eficiencia = 0.85;
@@ -66,8 +69,8 @@
      include($arquivoPath);
 
      $conexao = mysqli_connect(hostBancoPantanal, userDonoPantanal, senhaDonoPantanal, nomeBancoPantanal) ;
+     
      if (!$conexao) {
-
              echo '
                <center>
                <table border=0>
@@ -75,14 +78,13 @@
                      <tr><td><br><h3  style="background-color: green; font-size:24px; color:white; font-weight:bold; margin-left:0px; margin-right: 0px"><center> Planilha de irriga&ccedil;&atilde;o </center></h3></td></tr>
                      <tr><td><br><h2  style="font-size:24px; color:green; font-weight:bold; margin-left:0px; margin-right: 0px"><center> Problemas de acesso &agrave; base de dados do sistema. Tente mais tarde. </center></h2></td></tr>
                      <tr><td><center><table border = 0>
-                             <tr style="color:blue; font-weight: bold; font-size:20px;"><td><center><a href="login.html" >P&aacute;gina de Login</a><br></center></td><td><center><br></center></td><td><center></center></td><td><center></center></td><td><center></center></td></tr></table></center>
+                             <tr style="color:blue; font-weight: bold; font-size:20px;"><td><center><a href="manejo.html" >P&aacute;gina de Login</a><br></center></td><td><center><br></center></td><td><center></center></td><td><center></center></td><td><center></center></td></tr></table></center>
 
                </table>
                </center>
              ';
               mysqli_close($conexao);
               exit(1);
-
        }
 
      // Verificar se este usuario jah cadastrou o pivot
@@ -96,7 +98,7 @@
                      <tr><td><br><h3  style="background-color: green; font-size:24px; color:white; font-weight:bold; margin-left:0px; margin-right: 0px"><center> Planilha de irriga&ccedil;&atilde;o </center></h3></td></tr>
                      <tr><td><br><h2  style="font-size:24px; color:green; font-weight:bold; margin-left:0px; margin-right: 0px"><center> Seu username e senha expiraram ou n&atilde;o existem. Fa&ccedil;a o login novamente ou o seu cadastro. </center></h2></td></tr>
                      <tr><td><center><table border = 0>
-                             <tr style="color:blue; font-weight: bold; font-size:20px;"><td><center><a href="login.html" >P&aacute;gina de Login</a><br></center></td><td><center><br></center></td><td><center></center></td><td><center></center></td><td><center></center></td></tr></table></center>
+                             <tr style="color:blue; font-weight: bold; font-size:20px;"><td><center><a href="manejo.html" >P&aacute;gina de Login</a><br></center></td><td><center><br></center></td><td><center></center></td><td><center></center></td><td><center></center></td></tr></table></center>
 
                </table>
                </center>
@@ -121,7 +123,7 @@
                      <tr><td><br><h3  style="background-color: green; font-size:24px; color:white; font-weight:bold; margin-left:0px; margin-right: 0px"><center> Planilha de irriga&ccedil;&atilde;o </center></h3></td></tr>
                      <tr><td><br><h2  style="font-size:24px; color:green; font-weight:bold; margin-left:0px; margin-right: 0px"><center> Dados do pivot relacionados ao id do usu&aacute;rio ' . $user . ' nao foram encontrados ou cont&eacute;m erros. </center></h2></td></tr>
                      <tr><td><center><table border = 0>
-                             <tr style="color:blue; font-weight: bold; font-size:20px;"><td><center><a href="login.html" >P&aacute;gina de Login</a><br></center></td><td><center><br></center></td><td><center></center></td><td><center></center></td><td><center></center></td></tr></table></center>
+                             <tr style="color:blue; font-weight: bold; font-size:20px;"><td><center><a href="manejo.html" >P&aacute;gina de Login</a><br></center></td><td><center><br></center></td><td><center></center></td><td><center></center></td><td><center></center></td></tr></table></center>
 
                </table>
                </center>
@@ -148,19 +150,16 @@
                      <tr><td><br><h3  style="background-color: green; font-size:24px; color:white; font-weight:bold; margin-left:0px; margin-right: 0px"><center> Planilha de irriga&ccedil;&atilde;o </center></h3></td></tr>
                      <tr><td><br><h2  style="font-size:24px; color:green; font-weight:bold; margin-left:0px; margin-right: 0px"><center> Dados do pivot relacionados ao id do usu&aacute;rio ' . $user . ' nao puderam ser inseridos na base de dados. </center></h2></td></tr>
                      <tr><td><center><table border = 0>
-                             <tr style="color:blue; font-weight: bold; font-size:20px;"><td><center><a href="login.html" >P&aacute;gina de Login</a><br></center></td><td><center><br></center></td><td><center></center></td><td><center></center></td><td><center></center></td></tr></table></center>
-
+                             <tr style="color:blue; font-weight: bold; font-size:20px;"><td><center><a href="manejo.html" >P&aacute;gina de Login</a><br></center></td><td><center><br></center></td><td><center></center></td><td><center></center></td><td><center></center></td></tr></table></center>
                   </table>
                   </center>
                  ';
  
                   mysqli_close($conexao);
                   exit(1);
-
                }
             }
             else {
-
                 // Ver se este pivot nao existe, isto eh, se a identificacao
                 // eh diferente
                 $identificacao = trim($identificacao);
@@ -177,7 +176,7 @@
                      <tr><td><br><h3  style="background-color: green; font-size:24px; color:white; font-weight:bold; margin-left:0px; margin-right: 0px"><center> Planilha de irriga&ccedil;&atilde;o </center></h3></td></tr>
                      <tr><td><br><h2  style="font-size:24px; color:green; font-weight:bold; margin-left:0px; margin-right: 0px"><center> A consulta <br>$sql <br>retornou um erro! </center></h2></td></tr>
                      <tr><td><center><table border = 0>
-                             <tr style="color:blue; font-weight: bold; font-size:20px;"><td><center><a href="login.html" >P&aacute;gina de Login</a><br></center></td><td><center><br></center></td><td><center></center></td><td><center></center></td><td><center></center></td></tr></table></center>
+                             <tr style="color:blue; font-weight: bold; font-size:20px;"><td><center><a href="manejo.html" >P&aacute;gina de Login</a><br></center></td><td><center><br></center></td><td><center></center></td><td><center></center></td><td><center></center></td></tr></table></center>
 
                   </table>
                   </center>
@@ -201,7 +200,7 @@
                                 <tr><td><br><h3  style="background-color: green; font-size:24px; color:white; font-weight:bold; margin-left:0px; margin-right: 0px"><center> Planilha de irriga&ccedil;&atilde;o </center></h3></td></tr>
                                 <tr><td><br><h2  style="font-size:24px; color:green; font-weight:bold; margin-left:0px; margin-right: 0px"><center> A consulta <br>$sql <br>retornou um erro! </center></h2></td></tr>
                                 <tr><td><center><table border = 0>
-                                        <tr style="color:blue; font-weight: bold; font-size:20px;"><td><center><a href="login.html" >P&aacute;gina de Login</a><br></center></td><td><center><br></center></td><td><center></center></td><td><center></center></td><td><center></center></td></tr></table></center>
+                                        <tr style="color:blue; font-weight: bold; font-size:20px;"><td><center><a href="manejo.html" >P&aacute;gina de Login</a><br></center></td><td><center><br></center></td><td><center></center></td><td><center></center></td><td><center></center></td></tr></table></center>
 
                              </table>
                              </center>
