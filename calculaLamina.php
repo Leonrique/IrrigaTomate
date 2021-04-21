@@ -1,288 +1,212 @@
 <?php
-     if(!isset($_POST["cidade"])){
-       header('Location:'.'manejo.html');
-       exit(1);
-     }
+    if (!isset($_POST["cidade"])) {
+      header('Location:' . 'manejo.html');
+      exit(1);
+    }
+     
+    $message = "";
+    $idCidade = $_POST["cidade"]; // municipio escolhido
+    $identificacao = $_POST["ident"];
+    $sistemaDePlantio = $_POST["optradio2"]; // 2 - convencional;  1- direto;
+    $tipoSolo = $_POST["optradio1"]; // 1 - arenoso, 2 - medio, 3 - argiloso
+    $data = $_POST["calendario"]; // data de plantio
+    $efic = $_POST["optradio"]; // eficiencia de distribuicao de agua do pivo
+    $laminaAplicada = $_POST["norma"];
+    $areaPivo = $_POST["area"]; // Area total do Pivot (ha)
+    $regula = $_POST["norma"];
+
+    $pieces = explode("/", $data);
+    $mesInicial = (int)$pieces[1];
+    $diaInicial = (int)$pieces[0];
+
+    if(strlen($mesInicial) == 1 )
+        $mes =  '0'.$mesInicial;
+    else
+        $mes =  $mesInicial;
+
+    if(strlen($diaInicial) == 1 )
+        $dia =  '0'.$diaInicial;
+    else
+        $dia = $diaInicial;
     
-     $idCidade = $_POST["cidade"]; // municipio escolhido
-     $identificacao = $_POST["ident"];
-     $sistemaDePlantio = $_POST["optradio2"]; // 2 - convencional;  1- direto;
-     $tipoSolo = $_POST["optradio1"]; // 1 - arenoso, 2 - medio, 3 - argiloso
-     $data = $_POST["calendario"]; // data de plantio
-     $efic = $_POST["optradio"]; // eficiencia de distribuicao de agua do pivo
-     $laminaAplicada = $_POST["norma"];
-     $areaPivo = $_POST["area"]; // Area total do Pivot (ha)
-     $regula = $_POST["norma"];
+    date_default_timezone_set('America/Sao_Paulo');
+    $hojeDia = date('d');
+    $hojeMes = date('m');
+    $hojeAno = date('Y');
 
-     $pieces = explode("/", $data);
-     $mesInicial = (int)$pieces[1];
-     $diaInicial = (int)$pieces[0];
- 
-     if(strlen($mesInicial) == 1 )
-         $mes =  '0'.$mesInicial;
-     else
-         $mes =  $mesInicial;
+    $diaInicial2 = $hojeDia.'-'.$hojeMes.'-'.$hojeAno;
+    $data2 = new DateTime($diaInicial2);
 
-     if(strlen($diaInicial) == 1 )
-         $dia =  '0'.$diaInicial;
-     else
-         $dia = $diaInicial;
- 
-     
-     date_default_timezone_set('America/Sao_Paulo');
-     $hojeDia = date('d');
-     $hojeMes = date('m');
-     $hojeAno = date('Y');
- 
-     $diaInicial2 = $hojeDia.'-'.$hojeMes.'-'.$hojeAno;
-     $data2 = new DateTime($diaInicial2);
+    $data2->modify('last day of this month');
+    $ontemDia = $data2->format('d');
+    $ontemMes = $data2->format('m');
+    $ontemAno = $data2->format('Y');
 
-     $data2->modify('last day of this month');
-     $ontemDia = $data2->format('d');
-     $ontemMes = $data2->format('m');
-     $ontemAno = $data2->format('Y');
- 
-     if($efic == 1) {
-       $eficiencia = 0.85;
-       $eficiencia2 = 85;
-     }
-     else {
-       $eficiencia = 0.80;
-       $eficiencia2 = 80;
-     }
+    if($efic == 1) {
+      $eficiencia = 0.85;
+      $eficiencia2 = 85;
+    }
+    else {
+      $eficiencia = 0.80;
+      $eficiencia2 = 80;
+    }
 
-     $mesNovo[1] = "janeiro";
-     $mesNovo[2] = "fevereiro";
-     $mesNovo[3] = "mar&ccedil;o";
-     $mesNovo[4] = "abril";
-     $mesNovo[5] = "maio";
-     $mesNovo[6] = "junho";
-     $mesNovo[7] = "julho";
-     $mesNovo[8] = "agosto";
-     $mesNovo[9] = "setembro";
-     $mesNovo[10] = "outubro";
-     $mesNovo[11] = "novembro";
-     $mesNovo[12] = "dezembro";
+    $mesNovo[1] = "janeiro";
+    $mesNovo[2] = "fevereiro";
+    $mesNovo[3] = "mar&ccedil;o";
+    $mesNovo[4] = "abril";
+    $mesNovo[5] = "maio";
+    $mesNovo[6] = "junho";
+    $mesNovo[7] = "julho";
+    $mesNovo[8] = "agosto";
+    $mesNovo[9] = "setembro";
+    $mesNovo[10] = "outubro";
+    $mesNovo[11] = "novembro";
+    $mesNovo[12] = "dezembro";
 
-     include 'pathConfig.php';
-     $arquivoPath = configPath;
-     include($arquivoPath);
+    include 'pathConfig.php';
+    $arquivoPath = configPath;
+    include($arquivoPath);
 
-     $conexao = mysqli_connect(hostBancoPantanal, userDonoPantanal, senhaDonoPantanal, nomeBancoPantanal) ;
-     
-     if (!$conexao) {
-             echo '
-               <center>
-               <table border=0>
-                     <tr><td><img SRC="imagens/embrapaArrozFeijao.png" ALT="Embrapa Arroz e Feij&atilde;o" BORDER=0></td></tr>
-                     <tr><td><br><h3  style="background-color: green; font-size:24px; color:white; font-weight:bold; margin-left:0px; margin-right: 0px"><center> Planilha de irriga&ccedil;&atilde;o </center></h3></td></tr>
-                     <tr><td><br><h2  style="font-size:24px; color:green; font-weight:bold; margin-left:0px; margin-right: 0px"><center> Problemas de acesso &agrave; base de dados do sistema. Tente mais tarde. </center></h2></td></tr>
-                     <tr><td><center><table border = 0>
-                             <tr style="color:blue; font-weight: bold; font-size:20px;"><td><center><a href="manejo.html" >P&aacute;gina de Login</a><br></center></td><td><center><br></center></td><td><center></center></td><td><center></center></td><td><center></center></td></tr></table></center>
+    $conexao = mysqli_connect(hostBancoPantanal, userDonoPantanal, senhaDonoPantanal, nomeBancoPantanal) ;
+    
+    if (!$conexao) {
+        $message = "Problemas de acesso &agrave; base de dados do sistema. Tente mais tarde.";
+        include 'Validacao.php';
 
-               </table>
-               </center>
-             ';
-              mysqli_close($conexao);
-              exit(1);
-       }
+        mysqli_close($conexao);
+        exit(1);
+  }
 
-     // Verificar se este usuario jah cadastrou o pivot
+    // Verificar se este usuario jah cadastrou o pivot
 
-        if(!isset($_COOKIE["idUser"])) {
+    if (!isset($_COOKIE["idUser"])) {
+      $message = "Seu username e senha expiraram ou n&atilde;o existem. Fa&ccedil;a o login novamente ou o seu cadastro.";
+      include 'Validacao.php';
 
-             echo '
-               <center>
-               <table border=0>
-                     <tr><td><img SRC="imagens/embrapaArrozFeijao.png" ALT="Embrapa Arroz e Feij&atilde;o" BORDER=0></td></tr>
-                     <tr><td><br><h3  style="background-color: green; font-size:24px; color:white; font-weight:bold; margin-left:0px; margin-right: 0px"><center> Planilha de irriga&ccedil;&atilde;o </center></h3></td></tr>
-                     <tr><td><br><h2  style="font-size:24px; color:green; font-weight:bold; margin-left:0px; margin-right: 0px"><center> Seu username e senha expiraram ou n&atilde;o existem. Fa&ccedil;a o login novamente ou o seu cadastro. </center></h2></td></tr>
-                     <tr><td><center><table border = 0>
-                             <tr style="color:blue; font-weight: bold; font-size:20px;"><td><center><a href="manejo.html" >P&aacute;gina de Login</a><br></center></td><td><center><br></center></td><td><center></center></td><td><center></center></td><td><center></center></td></tr></table></center>
+      mysqli_close($conexao);
+      exit(1);
+    }
 
-               </table>
-               </center>
-             ';
-            mysqli_close($conexao);
-            exit(1);
-       
-        }
+  $user = $_COOKIE["userTomate"];
+  $idUser = $_COOKIE["idUser"];
+  $sql = "select * from dadosPivotUserTomate where idUser = $idUser";
 
-        $user = $_COOKIE["userTomate"];
-        $idUser = $_COOKIE["idUser"];
-        $sql = "select * from dadosPivotUserTomate where idUser = $idUser";
+  $query = mysqli_query($conexao, $sql) ;
 
+  if(!$query) {
+    $message = "Dados do pivot relacionados ao id do usu&aacute;rio ' . $user . ' nao foram encontrados ou cont&eacute;m erros.";
+    include 'Validacao.php';
+
+    mysqli_close($conexao);
+    exit(1);
+  }
+  else {
+    $numLinhas = $query->num_rows;
+
+    if( $numLinhas == 0 ) {
+        $sql = "insert into dadosPivotUserTomate(idUser, idCidade, identificacao, idPivot,  dataPlantio,  eficiencia, laminaAplicada, tipoPlantio, tipoSolo, AreaPivot) ";
+        $sql = $sql . "values($idUser, $idCidade, \"$identificacao\", 1, \"$data\", $efic, $laminaAplicada, $sistemaDePlantio, $tipoSolo, $areaPivo );";
+      //  echo $sql;
         $query = mysqli_query($conexao, $sql) ;
 
         if(!$query) {
+          $message = "Dados do pivot relacionados ao id do usu&aacute;rio ' . $user . ' nao puderam ser inseridos na base de dados.";
+          include 'Validacao.php';
 
-             echo '
-               <center>
-               <table border=0>
-                     <tr><td><img SRC="imagens/embrapaArrozFeijao.png" ALT="Embrapa Arroz e Feij&atilde;o" BORDER=0></td></tr>
-                     <tr><td><br><h3  style="background-color: green; font-size:24px; color:white; font-weight:bold; margin-left:0px; margin-right: 0px"><center> Planilha de irriga&ccedil;&atilde;o </center></h3></td></tr>
-                     <tr><td><br><h2  style="font-size:24px; color:green; font-weight:bold; margin-left:0px; margin-right: 0px"><center> Dados do pivot relacionados ao id do usu&aacute;rio ' . $user . ' nao foram encontrados ou cont&eacute;m erros. </center></h2></td></tr>
-                     <tr><td><center><table border = 0>
-                             <tr style="color:blue; font-weight: bold; font-size:20px;"><td><center><a href="manejo.html" >P&aacute;gina de Login</a><br></center></td><td><center><br></center></td><td><center></center></td><td><center></center></td><td><center></center></td></tr></table></center>
+          mysqli_close($conexao);
+          exit(1);
+        }
+    }
+    else {
+      // Ver se este pivot nao existe, isto eh, se a identificacao
+      // eh diferente
+      $identificacao = trim($identificacao);
+      $identificacao2 = strtoupper($identificacao);
+      $sql = "select idPivot from dadosPivotUserTomate where idUser = $idUser and UPPER(identificacao) = \"$identificacao2\";";
 
-               </table>
-               </center>
-             ';
-             mysqli_close($conexao);
+      $query = mysqli_query($conexao, $sql) ;
+      if(!$query) {
+        $message = "A consulta <br>$sql<br>retornou um erro!";
+        include 'Validacao.php';
+
+        mysqli_close($conexao);
+        exit(1);
+      }
+      else {
+        $num = $query->num_rows;
+        if($num == 0) {
+          $sql = "select max(idPivot) from dadosPivotUserTomate where idUser = $idUser";
+          $query = mysqli_query($conexao, $sql) ;
+          
+          if(!$query) {
+            $message = "A consulta <br>$sql <br>retornou um erro!";
+            include 'Validacao.php';
+
+            mysqli_close($conexao);
             exit(1);
-
+          }
+          
+          $linha=$query->fetch_row() ;
+          $idPivotNew = (int)$linha[0] + 1;
+          $sql = "insert into dadosPivotUserTomate(idUser, idCidade, identificacao, idPivot,  dataPlantio,  eficiencia, laminaAplicada, tipoPlantio, tipoSolo, AreaPivot) ";
+          $sql = $sql . "values($idUser, $idCidade, \"$identificacao\", $idPivotNew, \"$data\", $efic, $laminaAplicada, $sistemaDePlantio, $tipoSolo, $areaPivo );";
+          
+          $query = mysqli_query($conexao, $sql) ;
+          if(!$query) {
+            $message = "Dados do pivot relacionados ao id do usu&aacute;rio $user nao puderam ser inseridos na base de dados.";
+            include 'Validacao.php';
+            mysqli_close($conexao);
+            exit(1);
+          }
         }
         else {
+          $linha=$query->fetch_row() ;
+          $idPivotNew = (int)$linha[0];
+          
+          $sql = "update dadosPivotUserTomate 
+                  set idCidade = $idCidade, identificacao = \"$identificacao\", dataPlantio = \"$data\", eficiencia = $efic, laminaAplicada = $laminaAplicada, tipoPlantio =  $sistemaDePlantio, tipoSolo = $tipoSolo, AreaPivot = $areaPivo
+                  where idUser = $idUser
+                  and UPPER(identificacao) = \"$identificacao2\"
+                  and idPivot = $idPivotNew";
 
-            $numLinhas = $query->num_rows;
-
-            if( $numLinhas == 0 ) {
-               $sql = "insert into dadosPivotUserTomate(idUser, idCidade, identificacao, idPivot,  dataPlantio,  eficiencia, laminaAplicada, tipoPlantio, tipoSolo, AreaPivot) ";
-               $sql = $sql . "values($idUser, $idCidade, \"$identificacao\", 1, \"$data\", $efic, $laminaAplicada, $sistemaDePlantio, $tipoSolo, $areaPivo );";
-              //  echo $sql;
-               $query = mysqli_query($conexao, $sql) ;
-
-               if(!$query) {
-                 echo '
-                  <center>
-                  <table border=0>
-                     <tr><td><img SRC="imagens/embrapaArrozFeijao.png" ALT="Embrapa Arroz e Feij&atilde;o" BORDER=0></td></tr>
-                     <tr><td><br><h3  style="background-color: green; font-size:24px; color:white; font-weight:bold; margin-left:0px; margin-right: 0px"><center> Planilha de irriga&ccedil;&atilde;o </center></h3></td></tr>
-                     <tr><td><br><h2  style="font-size:24px; color:green; font-weight:bold; margin-left:0px; margin-right: 0px"><center> Dados do pivot relacionados ao id do usu&aacute;rio ' . $user . ' nao puderam ser inseridos na base de dados. </center></h2></td></tr>
-                     <tr><td><center><table border = 0>
-                             <tr style="color:blue; font-weight: bold; font-size:20px;"><td><center><a href="manejo.html" >P&aacute;gina de Login</a><br></center></td><td><center><br></center></td><td><center></center></td><td><center></center></td><td><center></center></td></tr></table></center>
-                  </table>
-                  </center>
-                 ';
- 
-                  mysqli_close($conexao);
-                  exit(1);
-               }
-            }
-            else {
-                // Ver se este pivot nao existe, isto eh, se a identificacao
-                // eh diferente
-                $identificacao = trim($identificacao);
-                $identificacao2 = strtoupper($identificacao);
-                $sql = "select idPivot from dadosPivotUserTomate where idUser = $idUser and UPPER(identificacao) = \"$identificacao2\";";
-
-                $query = mysqli_query($conexao, $sql) ;
-                if(!$query) {
-
-                 echo '
-                  <center>
-                  <table border=0>
-                     <tr><td><img SRC="imagens/embrapaArrozFeijao.png" ALT="Embrapa Arroz e Feij&atilde;o" BORDER=0></td></tr>
-                     <tr><td><br><h3  style="background-color: green; font-size:24px; color:white; font-weight:bold; margin-left:0px; margin-right: 0px"><center> Planilha de irriga&ccedil;&atilde;o </center></h3></td></tr>
-                     <tr><td><br><h2  style="font-size:24px; color:green; font-weight:bold; margin-left:0px; margin-right: 0px"><center> A consulta <br>$sql <br>retornou um erro! </center></h2></td></tr>
-                     <tr><td><center><table border = 0>
-                             <tr style="color:blue; font-weight: bold; font-size:20px;"><td><center><a href="manejo.html" >P&aacute;gina de Login</a><br></center></td><td><center><br></center></td><td><center></center></td><td><center></center></td><td><center></center></td></tr></table></center>
-
-                  </table>
-                  </center>
-                 ';
-
-                }
-                else {
-
-                     $num = $query->num_rows;
-                     if($num == 0) {
-
-
-
-                           $sql = "select max(idPivot) from dadosPivotUserTomate where idUser = $idUser";
-                           $query = mysqli_query($conexao, $sql) ;
-                           if(!$query) {
-                            echo '
-                             <center>
-                             <table border=0>
-                                <tr><td><img SRC="imagens/embrapaArrozFeijao.png" ALT="Embrapa Arroz e Feij&atilde;o" BORDER=0></td></tr>
-                                <tr><td><br><h3  style="background-color: green; font-size:24px; color:white; font-weight:bold; margin-left:0px; margin-right: 0px"><center> Planilha de irriga&ccedil;&atilde;o </center></h3></td></tr>
-                                <tr><td><br><h2  style="font-size:24px; color:green; font-weight:bold; margin-left:0px; margin-right: 0px"><center> A consulta <br>$sql <br>retornou um erro! </center></h2></td></tr>
-                                <tr><td><center><table border = 0>
-                                        <tr style="color:blue; font-weight: bold; font-size:20px;"><td><center><a href="manejo.html" >P&aacute;gina de Login</a><br></center></td><td><center><br></center></td><td><center></center></td><td><center></center></td><td><center></center></td></tr></table></center>
-
-                             </table>
-                             </center>
-                            ';
- 
-                             mysqli_close($conexao);
-                             exit(1);
-
-                           }
-                           else {
-
-                              $linha=$query->fetch_row() ;
-                              $idPivotNew = (int)$linha[0] + 1;
-                              $sql = "insert into dadosPivotUserTomate(idUser, idCidade, identificacao, idPivot,  dataPlantio,  eficiencia, laminaAplicada, tipoPlantio, tipoSolo, AreaPivot) ";
-                              $sql = $sql . "values($idUser, $idCidade, \"$identificacao\", $idPivotNew, \"$data\", $efic, $laminaAplicada, $sistemaDePlantio, $tipoSolo, $areaPivo );";
-                              // echo $sql;
-                              $query = mysqli_query($conexao, $sql) ;
-                              if(!$query) {
-                                echo '
-                                 <center>
-                                 <table border=0>
-                                    <tr><td><img SRC="imagens/embrapaArrozFeijao.png" ALT="Embrapa Arroz e Feij&atilde;o" BORDER=0></td></tr>
-                                    <tr><td><br><h3  style="background-color: green; font-size:24px; color:white; font-weight:bold; margin-left:0px; margin-right: 0px"><center> Planilha de irriga&ccedil;&atilde;o </center></h3></td></tr>
-                                    <tr><td><br><h2  style="font-size:24px; color:green; font-weight:bold; margin-left:0px; margin-right: 0px"><center> Dados do pivot relacionados ao id do usu&aacute;rio $user nao puderam ser inseridos na base de dados. </center></h2></td></tr>
-                                    <tr><td><center><table border = 0>
-                                     <tr style="color:blue; font-weight: bold; font-size:20px;"><td><center><a href="manejo.html" >P&aacute;gina de Login</a><br></center></td><td><center><br></center></td><td><center></center></td><td><center></center></td><td><center></center></td></tr></table></center>
-
-                                 </table>
-                                 </center>
-                                ';
-       
-                                 mysqli_close($conexao);
-                                 exit(1);
-                              }
-
-                           }
-
-
-                     }
-                     else {
-
-                              $linha=$query->fetch_row() ;
-                              $idPivotNew = (int)$linha[0];
-
-                     }
-                 
-                }
-               
-            }
+          $query = mysqli_query($conexao, $sql);
+          if(!$query) {
+            $message = "Dados do pivot relacionados ao id do usu&aacute;rio $user nao puderam ser atualizados na base de dados.";
+            include 'Validacao.php';
+            mysqli_close($conexao);
+            exit(1);
+          }
         }
+      }
+    }
+  }
            
+  //
+  // A partir daqui, obter os dados a partir da data de plantio ateh
+  // a data de hoje e fazer os calculos.
+  //
 
-     //
-     // A partir daqui, obter os dados a partir da data de plantio ateh
-     // a data de hoje e fazer os calculos.
-     //
+  $sql = "select cidadeHTML from municipios where id = $idCidade and idEstado = 9;"; //Estado de Goias
 
-     $sql = "select cidadeHTML from municipios where id = $idCidade and idEstado = 9;"; //Estado de Goias
+  $query = mysqli_query($conexao, $sql) ;
+  if(!$query){
+    $nomeCidade = "";
+    $sigla = "";
+  } else {
+    $numLinhas = $query->num_rows;
 
-     $query = mysqli_query($conexao, $sql) ;
-     if(!$query)
-           {
-                    $nomeCidade = "";
-                    $sigla = "";
-           }
-     else {
+    if( $numLinhas > 0 ) {
+      $linha=$query->fetch_row() ;
+      $nomeCidade = $linha[0];
+      $sigla = "GO";
+    }
+    else {
+      $nomeCidade = "";
+      $sigla = "";
+    }
+  }
 
-            $numLinhas = $query->num_rows;
-
-            if( $numLinhas > 0 ) {
-
-                   $linha=$query->fetch_row() ;
-                   $nomeCidade = $linha[0];
-                   $sigla = "GO";
-            }
-            else {
-
-                    $nomeCidade = "";
-                    $sigla = "";
-            }
-
-     }
 //
 //  A partir deste trecho comecam os calculos e a montagem da planilha
 //
@@ -307,10 +231,10 @@
              $eto = 0;
              $lamina = 0.00;
              $registroInicial =  '<tr><td>'.$dia.'/'.$mesNovo[(int)$mes].'</td><td>0</td><td>0</td><td>0</td><td>';
-             $registroInicial = $registroInicial . '<input type = text value = 15.00 size = 10 style = "color:"green"; border: none transparent; background: transparent; outline: none;  padding-left:9px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td><td>';
-             $registroInicial = $registroInicial . '<input type = text value = 0 size = 10 style = "border: none transparent; background: transparent; outline: none;  padding-left:9px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td><td>';
-             $registroInicial = $registroInicial . '<input type = text value = "" size = 10 style = "border: none transparent; background: transparent; outline: none;  padding-left:9px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td></tr>';            
-             //$registroInicial = $registroInicial . '<input type = text value = 100.00 size = 10 style = "border: none transparent; background: transparent; outline: none;  padding-left:9px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td></tr>';            
+             $registroInicial = $registroInicial . '<input type = text value = 15.00 size = 10 style = "color:"green"; border: none transparent; background: transparent; outline: none;  padding-left:9px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td><td>';
+             $registroInicial = $registroInicial . '<input type = text value = 0 size = 10 style = "border: none transparent; background: transparent; outline: none;  padding-left:9px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td><td>';
+             $registroInicial = $registroInicial . '<input type = text value = "" size = 10 style = "border: none transparent; background: transparent; outline: none;  padding-left:9px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td></tr>';            
+             //$registroInicial = $registroInicial . '<input type = text value = 100.00 size = 10 style = "border: none transparent; background: transparent; outline: none;  padding-left:9px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td></tr>';            
 
              //
              // Inserir mensagem de erro, isto eh, nao tem dados
@@ -339,10 +263,10 @@
              $necessidadeInicial = $eto;
  
              $registroInicial =  '<tr><td>'.$dia.'/'.$mesNovo[(int)$mes].'</td><td>0</td><td>'.$eto2.'</td><td>--</td><td>';
-             $registroInicial = $registroInicial . '<input type = text value = 15.00 size = 10 style = " color:green; border: none transparent; background: transparent; outline: none;  padding-left:9px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td><td>';
-             $registroInicial = $registroInicial . '<input type = text value = '.$lamina.' size = 10 style = " color:green; border: none transparent; background: transparent; outline: none;  padding-left:9px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td><td>';
-             $registroInicial = $registroInicial . '<input type = text value = "" size = 10 style = "border: none transparent; background: transparent; outline: none;  padding-left:9px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td></tr>';            
-             //$registroInicial = $registroInicial . '<input type = text value = 100.00 size = 10 style = "border: none transparent; background: transparent; outline: none;  padding-left:9px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td></tr>';            
+             $registroInicial = $registroInicial . '<input type = text value = 15.00 size = 10 style = " color:green; border: none transparent; background: transparent; outline: none;  padding-left:9px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td><td>';
+             $registroInicial = $registroInicial . '<input type = text value = '.$lamina.' size = 10 style = " color:green; border: none transparent; background: transparent; outline: none;  padding-left:9px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td><td>';
+             $registroInicial = $registroInicial . '<input type = text value = "" size = 10 style = "border: none transparent; background: transparent; outline: none;  padding-left:9px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td></tr>';            
+             //$registroInicial = $registroInicial . '<input type = text value = 100.00 size = 10 style = "border: none transparent; background: transparent; outline: none;  padding-left:9px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td></tr>';            
           }
      }
 
@@ -473,14 +397,14 @@
                    var m_13 = new Array(colunas);
                    for (var i2 = 0; i2 < colunas; i2++) {
 
-            m_20[i2] = new Array(linhas);
-            m_19[i2] = new Array(linhas);
-            m_18[i2] = new Array(linhas);
-            m_17[i2] = new Array(linhas);
-            m_16[i2] = new Array(linhas);
-            m_15[i2] = new Array(linhas);
-            m_14[i2] = new Array(linhas);
-            m_13[i2] = new Array(linhas);
+                    m_20[i2] = new Array(linhas);
+                    m_19[i2] = new Array(linhas);
+                    m_18[i2] = new Array(linhas);
+                    m_17[i2] = new Array(linhas);
+                    m_16[i2] = new Array(linhas);
+                    m_15[i2] = new Array(linhas);
+                    m_14[i2] = new Array(linhas);
+                    m_13[i2] = new Array(linhas);
 
 
                    }
@@ -975,9 +899,9 @@ $sistemaDePlantio ==>1- direto;  2 - convencional;
                    if($valorFase1  != $i && $valorFase2  != $i && $valorFase3 != $i && $valorFase4 != $i ) {
  
                      if($regulagemPivot2 >= 0)
-                         echo '<tr><td   onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)" >'.$dataNova.'</td><td   onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)">'.$contaDiasAposTransplantio.'</td><td   onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)" >'.$etc2.'</td><td><input type = text value ='.$qtdeChuva.' style="font-size: 16px;"  maxlength="8" size = 8 id = "'.$idChuva.'"   onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)" ></td><td><input type = text value ='.$qtdeIrrigacao.' maxlength="8" style="font-size: 16px;" size = 8 id = "'.$idIrrigacao.'"  onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)"   ></td><td style="color:'.$color.'; " ><input type = text value = '.$laminaRecomendada2.' id = '.$idLamina.'   size = 10 style = "color:'.$color.'; border: none transparent; background: transparent; outline: none;  margin-left:5px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td><td><input type = text value = '.$regulagemPivot2.' id = "'.$idRegulagem.'" size = 10 style = "border: none transparent; background: transparent; outline: none;  padding-left:9px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td></tr>';
+                         echo '<tr><td   onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)" >'.$dataNova.'</td><td   onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)">'.$contaDiasAposTransplantio.'</td><td   onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)" >'.$etc2.'</td><td><input type = text value ='.$qtdeChuva.' style="font-size: 16px;"  maxlength="8" size = 8 id = "'.$idChuva.'"   onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)" ></td><td><input type = text value ='.$qtdeIrrigacao.' maxlength="8" style="font-size: 16px;" size = 8 id = "'.$idIrrigacao.'"  onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)"   ></td><td style="color:'.$color.'; " ><input type = text value = '.$laminaRecomendada2.' id = '.$idLamina.'   size = 10 style = "color:'.$color.'; border: none transparent; background: transparent; outline: none;  margin-left:5px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td><td><input type = text value = '.$regulagemPivot2.' id = "'.$idRegulagem.'" size = 10 style = "border: none transparent; background: transparent; outline: none;  padding-left:9px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td></tr>';
                      else
-                         echo '<tr><td   onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)" >'.$dataNova.'</td><td   onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)">'.$contaDiasAposTransplantio.'</td><td   onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)" >'.$etc2.'</td><td><input type = text value ='.$qtdeChuva.' style="font-size: 16px;"  maxlength="8" size = 8 id = "'.$idChuva.'"   onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)" ></td><td><input type = text value ='.$qtdeIrrigacao.' maxlength="8" style="font-size: 16px;" size = 8 id = "'.$idIrrigacao.'"  onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)"   ></td><td style="color:'.$color.'; " ><input type = text value = '.$laminaRecomendada2.' id = '.$idLamina.'   size = 10 style = "color:'.$color.'; border: none transparent; background: transparent; outline: none;  margin-left:5px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td><td><input type = text value = "" id = "'.$idRegulagem.'" size = 10 style = "border: none transparent; background: transparent; outline: none;  padding-left:9px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td></tr>';
+                         echo '<tr><td   onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)" >'.$dataNova.'</td><td   onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)">'.$contaDiasAposTransplantio.'</td><td   onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)" >'.$etc2.'</td><td><input type = text value ='.$qtdeChuva.' style="font-size: 16px;"  maxlength="8" size = 8 id = "'.$idChuva.'"   onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)" ></td><td><input type = text value ='.$qtdeIrrigacao.' maxlength="8" style="font-size: 16px;" size = 8 id = "'.$idIrrigacao.'"  onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)"   ></td><td style="color:'.$color.'; " ><input type = text value = '.$laminaRecomendada2.' id = '.$idLamina.'   size = 10 style = "color:'.$color.'; border: none transparent; background: transparent; outline: none;  margin-left:5px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td><td><input type = text value = "" id = "'.$idRegulagem.'" size = 10 style = "border: none transparent; background: transparent; outline: none;  padding-left:9px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td></tr>';
 
 
                    }
@@ -988,12 +912,12 @@ $sistemaDePlantio ==>1- direto;  2 - convencional;
                          $dataFase1 = $dataNova;
 
                          if($regulagemPivot2 >= 0)
-                              echo  '<tr><td   style="background-color:lightgreen" onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)" ><a href="#C1">'.$dataNova.'</a></td><td   onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  onmouseover="primeiraFase()" style="background-color:lightgreen" ><a href="#C2">'.$contaDiasAposTransplantio.'</a></td><td   onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)" >'.$etc2.'</td><td><input type = text value ='.$qtdeChuva.' style="font-size: 16px;"  maxlength="8" size = 8 id = "'.$idChuva.'"   onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)" ></td><td><input type = text value ='.$qtdeIrrigacao.' maxlength="8" style="font-size: 16px;" size = 8 id = "'.$idIrrigacao.'"  onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)"   ></td><td style="color:'.$color.'; " ><input type = text value = '.$laminaRecomendada2.' id = '.$idLamina.'   size = 10 style = "color:'.$color.'; border: none transparent; background: transparent; outline: none;  margin-left:5px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td><td><input type = text value = '.$regulagemPivot2.' id = "'.$idRegulagem.'" size = 10 style = "border: none transparent; background: transparent; outline: none;  padding-left:9px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td></tr>';
+                              echo  '<tr><td   style="background-color:lightgreen" onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)" ><a href="#C1">'.$dataNova.'</a></td><td   onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  onmouseover="primeiraFase()" style="background-color:lightgreen" ><a href="#C2">'.$contaDiasAposTransplantio.'</a></td><td   onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)" >'.$etc2.'</td><td><input type = text value ='.$qtdeChuva.' style="font-size: 16px;"  maxlength="8" size = 8 id = "'.$idChuva.'"   onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)" ></td><td><input type = text value ='.$qtdeIrrigacao.' maxlength="8" style="font-size: 16px;" size = 8 id = "'.$idIrrigacao.'"  onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)"   ></td><td style="color:'.$color.'; " ><input type = text value = '.$laminaRecomendada2.' id = '.$idLamina.'   size = 10 style = "color:'.$color.'; border: none transparent; background: transparent; outline: none;  margin-left:5px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td><td><input type = text value = '.$regulagemPivot2.' id = "'.$idRegulagem.'" size = 10 style = "border: none transparent; background: transparent; outline: none;  padding-left:9px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td></tr>';
                          else
-                              echo  '<tr><td   style="background-color:lightgreen" onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)" ><a href="#C1">'.$dataNova.'</a></td><td   onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  onmouseover="primeiraFase()" style="background-color:lightgreen" ><a href="#C2">'.$contaDiasAposTransplantio.'</a></td><td   onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)" >'.$etc2.'</td><td><input type = text value ='.$qtdeChuva.' style="font-size: 16px;"  maxlength="8" size = 8 id = "'.$idChuva.'"   onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)" ></td><td><input type = text value ='.$qtdeIrrigacao.' maxlength="8" style="font-size: 16px;" size = 8 id = "'.$idIrrigacao.'"  onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)"   ></td><td style="color:'.$color.'; " ><input type = text value = '.$laminaRecomendada2.' id = '.$idLamina.'   size = 10 style = "color:'.$color.'; border: none transparent; background: transparent; outline: none;  margin-left:5px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td><td><input type = text value = ""  id = "'.$idRegulagem.'" size = 10 style = "border: none transparent; background: transparent; outline: none;  padding-left:9px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td></tr>';
+                              echo  '<tr><td   style="background-color:lightgreen" onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)" ><a href="#C1">'.$dataNova.'</a></td><td   onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  onmouseover="primeiraFase()" style="background-color:lightgreen" ><a href="#C2">'.$contaDiasAposTransplantio.'</a></td><td   onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)" >'.$etc2.'</td><td><input type = text value ='.$qtdeChuva.' style="font-size: 16px;"  maxlength="8" size = 8 id = "'.$idChuva.'"   onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)" ></td><td><input type = text value ='.$qtdeIrrigacao.' maxlength="8" style="font-size: 16px;" size = 8 id = "'.$idIrrigacao.'"  onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)"   ></td><td style="color:'.$color.'; " ><input type = text value = '.$laminaRecomendada2.' id = '.$idLamina.'   size = 10 style = "color:'.$color.'; border: none transparent; background: transparent; outline: none;  margin-left:5px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td><td><input type = text value = ""  id = "'.$idRegulagem.'" size = 10 style = "border: none transparent; background: transparent; outline: none;  padding-left:9px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td></tr>';
 
 /*
-                         $msg =  '<tr><td   style="background-color:lightgreen" onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)" ><a href="#C1">'.$dataNova.'</a></td><td   onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  onmouseover="primeiraFase()" style="background-color:lightgreen" ><a href="#C2">'.$contaDiasAposTransplantio.'</a></td><td   onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)" >'.$etc2.'</td><td><input type = text value ='.$qtdeChuva.' style="font-size: 16px;"  maxlength="8" size = 8 id = "'.$idChuva.'"   onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)" ></td><td><input type = text value ='.$qtdeIrrigacao.' maxlength="8" style="font-size: 16px;" size = 8 id = "'.$idIrrigacao.'"  onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)"   ></td><td style="color:'.$color.'; " ><input type = text value = '.$laminaRecomendada2.' id = '.$idLamina.'   size = 10 style = "color:'.$color.'; border: none transparent; background: transparent; outline: none;  margin-left:5px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td><td><input type = text value = ';
+                         $msg =  '<tr><td   style="background-color:lightgreen" onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)" ><a href="#C1">'.$dataNova.'</a></td><td   onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  onmouseover="primeiraFase()" style="background-color:lightgreen" ><a href="#C2">'.$contaDiasAposTransplantio.'</a></td><td   onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)" >'.$etc2.'</td><td><input type = text value ='.$qtdeChuva.' style="font-size: 16px;"  maxlength="8" size = 8 id = "'.$idChuva.'"   onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)" ></td><td><input type = text value ='.$qtdeIrrigacao.' maxlength="8" style="font-size: 16px;" size = 8 id = "'.$idIrrigacao.'"  onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)"   ></td><td style="color:'.$color.'; " ><input type = text value = '.$laminaRecomendada2.' id = '.$idLamina.'   size = 10 style = "color:'.$color.'; border: none transparent; background: transparent; outline: none;  margin-left:5px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td><td><input type = text value = ';
 
 
                          if( $regulagemPivot2 >= 100.0)
@@ -1001,7 +925,7 @@ $sistemaDePlantio ==>1- direto;  2 - convencional;
                          else
                           $msg = $msg. $regulagemPivot2;
  
-                         $msg = $msg. ' id = "'.$idRegulagem.'" size = 10 style = "border: none transparent; background: transparent; outline: none;  padding-left:9px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td></tr>';
+                         $msg = $msg. ' id = "'.$idRegulagem.'" size = 10 style = "border: none transparent; background: transparent; outline: none;  padding-left:9px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td></tr>';
 
                          echo $msg;
 */
@@ -1012,19 +936,19 @@ $sistemaDePlantio ==>1- direto;  2 - convencional;
                          $valorFase2 = 0;
                          $dataFase2 = $dataNova;
                          if($regulagemPivot2 >= 0)
-                             echo '<tr><td   style="background-color:lightgreen" onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)" ><a href="#C2">'.$dataNova.'</a></td><td   onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  onmouseover="segundaFase()" style="background-color:lightgreen" ><a href="#C3">'.$contaDiasAposTransplantio.'</a></td><td   onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)" >'.$etc2.'</td><td><input type = text value ='.$qtdeChuva.' style="font-size: 16px;"  maxlength="8" size = 8 id = "'.$idChuva.'"   onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)" ></td><td><input type = text value ='.$qtdeIrrigacao.' maxlength="8" style="font-size: 16px;" size = 8 id = "'.$idIrrigacao.'"  onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)"   ></td><td style="color:'.$color.'; " ><input type = text value = '.$laminaRecomendada2.' id = '.$idLamina.'   size = 10 style = "color:'.$color.'; border: none transparent; background: transparent; outline: none;  margin-left:5px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td><td><input type = text value = '.$regulagemPivot2.' id = "'.$idRegulagem.'" size = 10 style = "border: none transparent; background: transparent; outline: none;  padding-left:9px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td></tr>';
+                             echo '<tr><td   style="background-color:lightgreen" onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)" ><a href="#C2">'.$dataNova.'</a></td><td   onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  onmouseover="segundaFase()" style="background-color:lightgreen" ><a href="#C3">'.$contaDiasAposTransplantio.'</a></td><td   onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)" >'.$etc2.'</td><td><input type = text value ='.$qtdeChuva.' style="font-size: 16px;"  maxlength="8" size = 8 id = "'.$idChuva.'"   onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)" ></td><td><input type = text value ='.$qtdeIrrigacao.' maxlength="8" style="font-size: 16px;" size = 8 id = "'.$idIrrigacao.'"  onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)"   ></td><td style="color:'.$color.'; " ><input type = text value = '.$laminaRecomendada2.' id = '.$idLamina.'   size = 10 style = "color:'.$color.'; border: none transparent; background: transparent; outline: none;  margin-left:5px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td><td><input type = text value = '.$regulagemPivot2.' id = "'.$idRegulagem.'" size = 10 style = "border: none transparent; background: transparent; outline: none;  padding-left:9px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td></tr>';
                          else
-                             echo '<tr><td   style="background-color:lightgreen" onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)" ><a href="#C2">'.$dataNova.'</a></td><td   onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  onmouseover="segundaFase()" style="background-color:lightgreen" ><a href="#C3">'.$contaDiasAposTransplantio.'</a></td><td   onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)" >'.$etc2.'</td><td><input type = text value ='.$qtdeChuva.' style="font-size: 16px;"  maxlength="8" size = 8 id = "'.$idChuva.'"   onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)" ></td><td><input type = text value ='.$qtdeIrrigacao.' maxlength="8" style="font-size: 16px;" size = 8 id = "'.$idIrrigacao.'"  onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)"   ></td><td style="color:'.$color.'; " ><input type = text value = '.$laminaRecomendada2.' id = '.$idLamina.'   size = 10 style = "color:'.$color.'; border: none transparent; background: transparent; outline: none;  margin-left:5px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td><td><input type = text value = "" id = "'.$idRegulagem.'" size = 10 style = "border: none transparent; background: transparent; outline: none;  padding-left:9px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td></tr>';
+                             echo '<tr><td   style="background-color:lightgreen" onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)" ><a href="#C2">'.$dataNova.'</a></td><td   onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  onmouseover="segundaFase()" style="background-color:lightgreen" ><a href="#C3">'.$contaDiasAposTransplantio.'</a></td><td   onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)" >'.$etc2.'</td><td><input type = text value ='.$qtdeChuva.' style="font-size: 16px;"  maxlength="8" size = 8 id = "'.$idChuva.'"   onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)" ></td><td><input type = text value ='.$qtdeIrrigacao.' maxlength="8" style="font-size: 16px;" size = 8 id = "'.$idIrrigacao.'"  onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)"   ></td><td style="color:'.$color.'; " ><input type = text value = '.$laminaRecomendada2.' id = '.$idLamina.'   size = 10 style = "color:'.$color.'; border: none transparent; background: transparent; outline: none;  margin-left:5px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td><td><input type = text value = "" id = "'.$idRegulagem.'" size = 10 style = "border: none transparent; background: transparent; outline: none;  padding-left:9px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td></tr>';
 
 /*
-                         $msg =  '<tr><td   style="background-color:lightgreen" onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)" ><a href="#C2">'.$dataNova.'</a></td><td   onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  onmouseover="segundaFase()" style="background-color:lightgreen" ><a href="#C3">'.$contaDiasAposTransplantio.'</a></td><td   onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)" >'.$etc2.'</td><td><input type = text value ='.$qtdeChuva.' style="font-size: 16px;"  maxlength="8" size = 8 id = "'.$idChuva.'"   onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)" ></td><td><input type = text value ='.$qtdeIrrigacao.' maxlength="8" style="font-size: 16px;" size = 8 id = "'.$idIrrigacao.'"  onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)"   ></td><td style="color:'.$color.'; " ><input type = text value = '.$laminaRecomendada2.' id = '.$idLamina.'   size = 10 style = "color:'.$color.'; border: none transparent; background: transparent; outline: none;  margin-left:5px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td><td><input type = text value = ';
+                         $msg =  '<tr><td   style="background-color:lightgreen" onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)" ><a href="#C2">'.$dataNova.'</a></td><td   onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  onmouseover="segundaFase()" style="background-color:lightgreen" ><a href="#C3">'.$contaDiasAposTransplantio.'</a></td><td   onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)" >'.$etc2.'</td><td><input type = text value ='.$qtdeChuva.' style="font-size: 16px;"  maxlength="8" size = 8 id = "'.$idChuva.'"   onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)" ></td><td><input type = text value ='.$qtdeIrrigacao.' maxlength="8" style="font-size: 16px;" size = 8 id = "'.$idIrrigacao.'"  onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)"   ></td><td style="color:'.$color.'; " ><input type = text value = '.$laminaRecomendada2.' id = '.$idLamina.'   size = 10 style = "color:'.$color.'; border: none transparent; background: transparent; outline: none;  margin-left:5px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td><td><input type = text value = ';
 
                          if( $regulagemPivot2 >= 100.0)
                           $msg = $msg. " ";
                          else
                           $msg = $msg. $regulagemPivot2;
 
-                         $msg = $msg. ' id = "'.$idRegulagem.'" size = 10 style = "border: none transparent; background: transparent; outline: none;  padding-left:9px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td></tr>';
+                         $msg = $msg. ' id = "'.$idRegulagem.'" size = 10 style = "border: none transparent; background: transparent; outline: none;  padding-left:9px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td></tr>';
 
                          echo $msg;
 */
@@ -1036,12 +960,12 @@ $sistemaDePlantio ==>1- direto;  2 - convencional;
                             $valorFase3 = 0;
                             $dataFase3 = $dataNova;
                             if($regulagemPivot2 >= 0)
-                                echo '<tr><td   style="background-color:lightgreen" onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)" ><a href="#C3">'.$dataNova.'</a></td><td   onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  onmouseover="terceiraFase()" style="background-color:lightgreen" ><a href="#C4">'.$contaDiasAposTransplantio.'</a></td><td   onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)" >'.$etc2.'</td><td><input type = text value ='.$qtdeChuva.' style="font-size: 16px;"  maxlength="8" size = 8 id = "'.$idChuva.'"   onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)" ></td><td><input type = text value ='.$qtdeIrrigacao.' maxlength="8" style="font-size: 16px;" size = 8 id = "'.$idIrrigacao.'"  onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)"   ></td><td style="color:'.$color.'; " ><input type = text value = '.$laminaRecomendada2.' id = '.$idLamina.'   size = 10 style = "color:'.$color.'; border: none transparent; background: transparent; outline: none;  margin-left:5px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td><td><input type = text value = '.$regulagemPivot2.' id = "'.$idRegulagem.'" size = 10 style = "border: none transparent; background: transparent; outline: none;  padding-left:9px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td></tr>';
+                                echo '<tr><td   style="background-color:lightgreen" onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)" ><a href="#C3">'.$dataNova.'</a></td><td   onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  onmouseover="terceiraFase()" style="background-color:lightgreen" ><a href="#C4">'.$contaDiasAposTransplantio.'</a></td><td   onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)" >'.$etc2.'</td><td><input type = text value ='.$qtdeChuva.' style="font-size: 16px;"  maxlength="8" size = 8 id = "'.$idChuva.'"   onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)" ></td><td><input type = text value ='.$qtdeIrrigacao.' maxlength="8" style="font-size: 16px;" size = 8 id = "'.$idIrrigacao.'"  onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)"   ></td><td style="color:'.$color.'; " ><input type = text value = '.$laminaRecomendada2.' id = '.$idLamina.'   size = 10 style = "color:'.$color.'; border: none transparent; background: transparent; outline: none;  margin-left:5px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td><td><input type = text value = '.$regulagemPivot2.' id = "'.$idRegulagem.'" size = 10 style = "border: none transparent; background: transparent; outline: none;  padding-left:9px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td></tr>';
                             else
-                                echo '<tr><td   style="background-color:lightgreen" onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)" ><a href="#C3">'.$dataNova.'</a></td><td   onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  onmouseover="terceiraFase()" style="background-color:lightgreen" ><a href="#C4">'.$contaDiasAposTransplantio.'</a></td><td   onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)" >'.$etc2.'</td><td><input type = text value ='.$qtdeChuva.' style="font-size: 16px;"  maxlength="8" size = 8 id = "'.$idChuva.'"   onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)" ></td><td><input type = text value ='.$qtdeIrrigacao.' maxlength="8" style="font-size: 16px;" size = 8 id = "'.$idIrrigacao.'"  onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)"   ></td><td style="color:'.$color.'; " ><input type = text value = '.$laminaRecomendada2.' id = '.$idLamina.'   size = 10 style = "color:'.$color.'; border: none transparent; background: transparent; outline: none;  margin-left:5px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td><td><input type = text value = "" id = "'.$idRegulagem.'" size = 10 style = "border: none transparent; background: transparent; outline: none;  padding-left:9px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td></tr>';
+                                echo '<tr><td   style="background-color:lightgreen" onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)" ><a href="#C3">'.$dataNova.'</a></td><td   onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  onmouseover="terceiraFase()" style="background-color:lightgreen" ><a href="#C4">'.$contaDiasAposTransplantio.'</a></td><td   onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)" >'.$etc2.'</td><td><input type = text value ='.$qtdeChuva.' style="font-size: 16px;"  maxlength="8" size = 8 id = "'.$idChuva.'"   onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)" ></td><td><input type = text value ='.$qtdeIrrigacao.' maxlength="8" style="font-size: 16px;" size = 8 id = "'.$idIrrigacao.'"  onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)"   ></td><td style="color:'.$color.'; " ><input type = text value = '.$laminaRecomendada2.' id = '.$idLamina.'   size = 10 style = "color:'.$color.'; border: none transparent; background: transparent; outline: none;  margin-left:5px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td><td><input type = text value = "" id = "'.$idRegulagem.'" size = 10 style = "border: none transparent; background: transparent; outline: none;  padding-left:9px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td></tr>';
 
 /*
-                            $msg =  '<tr><td   style="background-color:lightgreen" onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)" ><a href="#C3">'.$dataNova.'</a></td><td   onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  onmouseover="terceiraFase()" style="background-color:lightgreen" ><a href="#C4">'.$contaDiasAposTransplantio.'</a></td><td   onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)" >'.$etc2.'</td><td><input type = text value ='.$qtdeChuva.' style="font-size: 16px;"  maxlength="8" size = 8 id = "'.$idChuva.'"   onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)" ></td><td><input type = text value ='.$qtdeIrrigacao.' maxlength="8" style="font-size: 16px;" size = 8 id = "'.$idIrrigacao.'"  onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)"   ></td><td style="color:'.$color.'; " ><input type = text value = '.$laminaRecomendada2.' id = '.$idLamina.'   size = 10 style = "color:'.$color.'; border: none transparent; background: transparent; outline: none;  margin-left:5px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td><td><input type = text value = ';
+                            $msg =  '<tr><td   style="background-color:lightgreen" onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)" ><a href="#C3">'.$dataNova.'</a></td><td   onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  onmouseover="terceiraFase()" style="background-color:lightgreen" ><a href="#C4">'.$contaDiasAposTransplantio.'</a></td><td   onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)" >'.$etc2.'</td><td><input type = text value ='.$qtdeChuva.' style="font-size: 16px;"  maxlength="8" size = 8 id = "'.$idChuva.'"   onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)" ></td><td><input type = text value ='.$qtdeIrrigacao.' maxlength="8" style="font-size: 16px;" size = 8 id = "'.$idIrrigacao.'"  onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)"   ></td><td style="color:'.$color.'; " ><input type = text value = '.$laminaRecomendada2.' id = '.$idLamina.'   size = 10 style = "color:'.$color.'; border: none transparent; background: transparent; outline: none;  margin-left:5px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td><td><input type = text value = ';
 
 
                                  if( $regulagemPivot2 >= 100.0)
@@ -1049,7 +973,7 @@ $sistemaDePlantio ==>1- direto;  2 - convencional;
                                  else
                                  $msg = $msg. $regulagemPivot2;
 
-                                 $msg = $msg. ' id = "'.$idRegulagem.'" size = 10 style = "border: none transparent; background: transparent; outline: none;  padding-left:9px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td></tr>';
+                                 $msg = $msg. ' id = "'.$idRegulagem.'" size = 10 style = "border: none transparent; background: transparent; outline: none;  padding-left:9px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td></tr>';
 
                                  echo $msg;
 */
@@ -1061,9 +985,9 @@ $sistemaDePlantio ==>1- direto;  2 - convencional;
                                 $valorFase4 = 0;
                                 $dataFase4 = $dataNova;
                                 if($regulagemPivot2 >= 0)
-                                   echo '<tr><td   style="background-color:lightgreen" onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)" ><a href="#C4">'.$dataNova.'</a></td><td   onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  onmouseover="quartaFase()" style="background-color:lightgreen" ><a href="#C4">'.$contaDiasAposTransplantio.'</a></td><td   onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)" >'.$etc2.'</td><td><input type = text value ='.$qtdeChuva.' style="font-size: 16px;"  maxlength="8" size = 8 id = "'.$idChuva.'"   onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)" ></td><td><input type = text value ='.$qtdeIrrigacao.' maxlength="8" style="font-size: 16px;" size = 8 id = "'.$idIrrigacao.'"  onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)"   ></td><td style="color:'.$color.'; " ><input type = text value = '.$laminaRecomendada2.' id = '.$idLamina.'   size = 10 style = "color:'.$color.'; border: none transparent; background: transparent; outline: none;  margin-left:5px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td><td><input type = text value = '.$regulagemPivot2.' id = "'.$idRegulagem.'" size = 10 style = "border: none transparent; background: transparent; outline: none;  padding-left:9px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td></tr>';
+                                   echo '<tr><td   style="background-color:lightgreen" onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)" ><a href="#C4">'.$dataNova.'</a></td><td   onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  onmouseover="quartaFase()" style="background-color:lightgreen" ><a href="#C4">'.$contaDiasAposTransplantio.'</a></td><td   onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)" >'.$etc2.'</td><td><input type = text value ='.$qtdeChuva.' style="font-size: 16px;"  maxlength="8" size = 8 id = "'.$idChuva.'"   onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)" ></td><td><input type = text value ='.$qtdeIrrigacao.' maxlength="8" style="font-size: 16px;" size = 8 id = "'.$idIrrigacao.'"  onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)"   ></td><td style="color:'.$color.'; " ><input type = text value = '.$laminaRecomendada2.' id = '.$idLamina.'   size = 10 style = "color:'.$color.'; border: none transparent; background: transparent; outline: none;  margin-left:5px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td><td><input type = text value = '.$regulagemPivot2.' id = "'.$idRegulagem.'" size = 10 style = "border: none transparent; background: transparent; outline: none;  padding-left:9px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td></tr>';
                                 else
-                                   echo '<tr><td   style="background-color:lightgreen" onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)" ><a href="#C4">'.$dataNova.'</a></td><td   onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  onmouseover="quartaFase()" style="background-color:lightgreen" ><a href="#C4">'.$contaDiasAposTransplantio.'</a></td><td   onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)" >'.$etc2.'</td><td><input type = text value ='.$qtdeChuva.' style="font-size: 16px;"  maxlength="8" size = 8 id = "'.$idChuva.'"   onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)" ></td><td><input type = text value ='.$qtdeIrrigacao.' maxlength="8" style="font-size: 16px;" size = 8 id = "'.$idIrrigacao.'"  onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)"   ></td><td style="color:'.$color.'; " ><input type = text value = '.$laminaRecomendada2.' id = '.$idLamina.'   size = 10 style = "color:'.$color.'; border: none transparent; background: transparent; outline: none;  margin-left:5px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td><td><input type = text value = "" id = "'.$idRegulagem.'" size = 10 style = "border: none transparent; background: transparent; outline: none;  padding-left:9px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onmouseout="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td></tr>';
+                                   echo '<tr><td   style="background-color:lightgreen" onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)" ><a href="#C4">'.$dataNova.'</a></td><td   onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  onmouseover="quartaFase()" style="background-color:lightgreen" ><a href="#C4">'.$contaDiasAposTransplantio.'</a></td><td   onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)" >'.$etc2.'</td><td><input type = text value ='.$qtdeChuva.' style="font-size: 16px;"  maxlength="8" size = 8 id = "'.$idChuva.'"   onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)" ></td><td><input type = text value ='.$qtdeIrrigacao.' maxlength="8" style="font-size: 16px;" size = 8 id = "'.$idIrrigacao.'"  onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)"   ></td><td style="color:'.$color.'; " ><input type = text value = '.$laminaRecomendada2.' id = '.$idLamina.'   size = 10 style = "color:'.$color.'; border: none transparent; background: transparent; outline: none;  margin-left:5px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td><td><input type = text value = "" id = "'.$idRegulagem.'" size = 10 style = "border: none transparent; background: transparent; outline: none;  padding-left:9px; font-size: 16px;" readonly  onclick="atualizaDados(0)" onblur="atualizaDados(5)"   onkeyup="inputKeyUp(event)"  ></td></tr>';
 
 
                            }
@@ -1089,7 +1013,7 @@ $sistemaDePlantio ==>1- direto;  2 - convencional;
 
                echo '
 
-                       <tr><td colspan="3"><th>Total</th><th><input type=text id="resultadoFinal" style="width: 100px; font-weight: bold; border: none transparent; background: transparent; outline: none;   font-size: 16px; color:white"  ></th><th style="background-color:\'#669900\'; color:\'white\'; border: 3px solid white;" onmouseout="this.style.backgroundColor=\'#669900\'; this.style.color=\'white\'; this.style.border=\'2px solid white\'"  onMouseOver="this.style.backgroundColor=\'white\' ; this.style.color=\'#669900\'; this.style.border=\' 2px solid #669900\'; msgEscoamento();"  onclick="formEscoamentoOnClick()"  onkeyup="formEscoamento(event); " >Escoamento de &aacute;gua no solo</th><td colspan="1" style="background-color:#e8f0d9;"></td></tr>
+                       <tr><td colspan="3"><th>Total</th><th><input type=text id="resultadoFinal" style="width: 100px; font-weight: bold; border: none transparent; background: transparent; outline: none;   font-size: 16px; color:white"  ></th><th style="background-color:\'#669900\'; color:\'white\'; border: 3px solid white;" onblur="this.style.backgroundColor=\'#669900\'; this.style.color=\'white\'; this.style.border=\'2px solid white\'"  onMouseOver="this.style.backgroundColor=\'white\' ; this.style.color=\'#669900\'; this.style.border=\' 2px solid #669900\'; msgEscoamento();"  onclick="formEscoamentoOnClick()"  onkeyup="formEscoamento(event); " >Escoamento de &aacute;gua no solo</th><td colspan="1" style="background-color:#e8f0d9;"></td></tr>
                     </tbody>
                     </table>
                     <center>

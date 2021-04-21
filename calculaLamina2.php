@@ -41,7 +41,7 @@
                </table>
                </center>
              ';
-              mysql_close($conexao);
+              mysqli_close($conexao);
               exit(1);
 
        }
@@ -117,7 +117,7 @@
                </table>
                </center>
           ';
-               mysql_close($conexao);
+               mysqli_close($conexao);
                exit(1);
       }
 
@@ -163,7 +163,7 @@
                         </table>
                         </center>
                    ';
-                   mysql_close($conexao);
+                   mysqli_close($conexao);
                    exit(1);
                 }
 
