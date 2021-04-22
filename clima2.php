@@ -1,4 +1,4 @@
-<?php
+  <?php
 
        include 'pathConfig.php';
        $arquivoPath = configPath;
@@ -6,6 +6,8 @@
 
        $idCidade = $_GET["idCidade"];
        $nomeCidade = $_GET["nome"];
+       $diaPlantio = $_GET["dia"]; // Novo
+       $mesPlantio = $_GET["mes"]; // Novo
 
        $conexao = mysqli_connect(hostBancoPantanal, userDonoPantanal, senhaDonoPantanal, nomeBancoPantanal) ;
        if (!$conexao) {
@@ -44,7 +46,7 @@
                     <script src="https://code.jquery.com/ui/1.9.0/jquery-ui.js"></script>
 
                  </head>
-                 <body onload="getDadosClimaticos('.$idCidade.')">
+                 <body onload="getDadosClimaticos('.$idCidade.', '.$diaPlantio.', '.$mesPlantio.')">
                  <!-- Barra dos logotipos -->
                  <div id="barraLogotipos">
                    <!-- Logo irrigaFeijao  -->

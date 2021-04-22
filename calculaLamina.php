@@ -276,7 +276,8 @@
      list ($mes, $dia, $ano) = explode("-",$novaData);
      $sql= "select dia, mes, temMedia, eto 
             from evapoTranspiracaoTomateEstacao
-            where idCidade = $idCidade and ( (mes = $mes and dia >= $dia ) or mes > $mes )
+            where idCidade = $idCidade 
+            and ((mes = $mes and dia >= $dia ) or mes > $mes )
             and ano = (select MAX(ano) from evapoTranspiracaoTomateEstacao where idCidade = $idCidade and ((mes = $mes and dia >= $dia ) or mes > $mes))
             order by mes, dia;";
  
@@ -411,13 +412,16 @@
 
                    function clima(nomeCidade) {
 
-                     window.document.form1.enctype = "multipart/form-data";
-                     window.document.form1.method = "post";
-                     window.document.form1.target = "_blank";
-                     window.document.form1.action = "clima2.php?idCidade='. $idCidade.'&nome=" + nomeCidade; // mostra variaveis climaticas do ano ou dos ultimos 30 anos
-                     window.document.form1.submit();
+                    window.document.form1.enctype = "multipart/form-data";
+                    window.document.form1.method = "post";
+                    window.document.form1.target = "_blank";
+                    argClima = "clima2.php?idCidade='.$idCidade.'&nome=" + nomeCidade + "&dia='.$diaInicial.'&mes='.$mesInicial.'"; // mostra variaveis climaticas do ano ou dos ultimos 30 anos                    
+                    window.document.form1.action = argClima;
+                    //window.document.form1.action = "clima2.php?idCidade='. $idCidade.'&nome=" + nomeCidade; // mostra variaveis climaticas do ano ou dos ultimos 30 anos
+                    window.document.form1.submit();
 
                    }
+
                    function formEscoamentoOnClick() {
 
                       document.getElementById("hrId").style.visibility = "visible";
@@ -596,7 +600,7 @@
                if( (int)$mesInicial == (int)$hojeMes && (int)$diaInicial == (int)$hojeDia ) {
 
                    $dataNova = "$dia/$mes";
-                   echo '<tr><td>'.$dataNova.'</td><td>1</td><td>--</td><td> '.$chuva.'</td><td>'.$irrigacao.'</td><td>--</td><td>--</td></tr>';
+                   echo '<tr><td>'.$dataNova.'</td><td>1</td><td>--</td><td>--</td><td>--</td><td>--</td><td>--</td></tr>';
  
                }
  
