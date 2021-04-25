@@ -48,7 +48,7 @@ function mostraSaida() {
                     texto3 = texto3.trim();
 
         	    if(texto3 == '4') {
-			   alert("Cadastro feito com sucesso!");
+			          alert("Cadastro realizado com sucesso!");
              	   } else 
                         {
 

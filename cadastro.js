@@ -53,7 +53,7 @@ function mostraSaidaCadastro() {
               texto3 = texto3.trim();
 
               if (texto3 == "4") {
-                 alert("Cadastro feito com sucesso.");
+                 alert("Cadastro realizado com sucesso.");
               } else {
                  if (texto3 == "1") {
                     alert("codigo -> " + texto3 + "\n\nO servidor ou a base de dados n\u00E3o est\u00E1 acess\u00EDvel. \nTente mais tarde.");

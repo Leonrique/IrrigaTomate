@@ -105,7 +105,7 @@
   $query = mysqli_query($conexao, $sql) ;
 
   if(!$query) {
-    $message = "Dados do pivot relacionados ao id do usu&aacute;rio ' . $user . ' nao foram encontrados ou cont&eacute;m erros.";
+    $message = "Dados do pivot relacionados ao id do usu&aacute;rio ' . $user . ' n&atilde;o foram encontrados ou cont&eacute;m erros.";
     include 'Validacao.php';
 
     mysqli_close($conexao);
@@ -121,7 +121,7 @@
         $query = mysqli_query($conexao, $sql) ;
 
         if(!$query) {
-          $message = "Dados do pivot relacionados ao id do usu&aacute;rio ' . $user . ' nao puderam ser inseridos na base de dados.";
+          $message = "Dados do pivot relacionados ao id do usu&aacute;rio ' . $user . ' n&atilde;o puderam ser inseridos na base de dados.";
           include 'Validacao.php';
 
           mysqli_close($conexao);
@@ -164,7 +164,7 @@
           
           $query = mysqli_query($conexao, $sql) ;
           if(!$query) {
-            $message = "Dados do pivot relacionados ao id do usu&aacute;rio $user nao puderam ser inseridos na base de dados.";
+            $message = "Dados do pivot relacionados ao id do usu&aacute;rio $user n&atilde;o puderam ser inseridos na base de dados.";
             include 'Validacao.php';
             mysqli_close($conexao);
             exit(1);
@@ -182,7 +182,7 @@
 
           $query = mysqli_query($conexao, $sql);
           if(!$query) {
-            $message = "Dados do pivot relacionados ao id do usu&aacute;rio $user nao puderam ser atualizados na base de dados.";
+            $message = "Dados do pivot relacionados ao id do usu&aacute;rio $user n&atilde;o puderam ser atualizados na base de dados.";
             include 'Validacao.php';
             mysqli_close($conexao);
             exit(1);
@@ -1107,7 +1107,7 @@ $sistemaDePlantio ==>1- direto;  2 - convencional;
 
                    function  msgEscoamento() {
 
-                     msg = "<b>Click aqui para calcular a l&acirc;mina m&aacute;xima sem risco de escoamento de &aacute;gua no solo.</b>";
+                     msg = "<b>Clique aqui para calcular a l&acirc;mina m&aacute;xima sem risco de escoamento de &aacute;gua no solo.</b>";
                      document.getElementById("msgEscoamento").style.display = "inline";
                      document.getElementById("msgEscoamento").style.color = "black";
                      document.getElementById("msgEscoamento").style.backgroundColor = "#dff0d8";
@@ -1413,8 +1413,7 @@ $sistemaDePlantio ==>1- direto;  2 - convencional;
 
                        if(idBaixarPlanilha == 1) {
                           atualizacao = verificaMudanca('.$totalElementos.', 10);
-                          setTimeout(  function() { salvaDadosUser(chuvaW, irrigacaoW);  setTimeout( function() { saidaHtmlX = "Dados salvos com sucesso !" ;  Swal.fire({ html:  saidaHtmlX }); } , 700 ); }, 100);
-
+                          setTimeout(  function() { salvaDadosUser(chuvaW, irrigacaoW);  setTimeout( function() { saidaHtmlX = "Dados salvos com sucesso!" ;  Swal.fire({ html:  saidaHtmlX }); } , 700 ); }, 100);
                        }
 
                        if(menorValor >= 0)
@@ -1469,7 +1468,7 @@ $sistemaDePlantio ==>1- direto;  2 - convencional;
 
         function quartaFase() {
                      
-                       mensagem = "<b style=\"color:green\";>IMPORTANTE!!</b><br><br><p style=\"color:black; text-align: justify;\">Excesso de &aacute;gua, na maturacao dos frutos, prejudica a qualidade dos frutos para a ind&uacute;stria, reduzindo colora&ccedil;&atilde;o, acidez, e Brix, al&eacute;m de aumentar o n&uacute;mero de frutos podres na colheita <br><br>";
+                       mensagem = "<b style=\"color:green\";>IMPORTANTE!!</b><br><br><p style=\"color:black; text-align: justify;\">Excesso de &aacute;gua, na matura&ccedil;&atilde;o dos frutos, prejudica a qualidade dos frutos para a ind&uacute;stria, reduzindo colora&ccedil;&atilde;o, acidez, e Brix, al&eacute;m de aumentar o n&uacute;mero de frutos podres na colheita <br><br>";
                        mensagem = mensagem + "Nas condi&ccedil;&otilde;es goianas, maior rendimento de polpa pode ser obtido paralisando as irriga&ccedil;&otilde;es quando a cultura apresentar entre ";
                        mensagem = mensagem + "40 e 50% de frutos maduros (10 a 15 dias da colheita). <br><br>J&aacute; a m&aacute;xima produtividade de frutos ";
                        mensagem = mensagem + "somente &eacute; atingida irrigando-se at&eacute; mais pr&oacute;ximo &agrave; colheita, com 60 a 90% de frutos maduros (5 a 10 dias antes  da colheita).</p>";

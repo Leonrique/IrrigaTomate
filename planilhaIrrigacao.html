@@ -150,7 +150,7 @@
                         
                         <div class="col-sm-6">
                           <div class="form-wrap">
-                            <input class="form-input" name="calendario" id="calendario" maxlength="10" placeholder="Data de transplantio" type="text" onfocus="(this.type='date')" onblur="setDate(this)" data-constraints="@Required">
+                            <input class="form-input" name="calendario" id="calendario" maxlength="10" placeholder="Data de transplantio" type="text" onfocus="(this.type='date')" onblur="setDate(this.value)" data-constraints="@Required">
                           </div>
                         </div>
 
@@ -738,9 +738,14 @@
         }
       }
 
-      function setDate(input) {
-        var timestamp = Date.parse(input.value);
-        
+      function setDate(value) {
+        if(value.indexOf("/") != -1){
+          return true;
+        }
+
+        var timestamp = Date.parse(value);
+        var input = document.getElementById("calendario");
+
         input.type = "text";
         
         if (!isNaN(timestamp)) {
@@ -751,15 +756,15 @@
           var mes = data.getMonth();
 
           if (parseInt(mes) < mesInicial || parseInt(mes) > mesFinal) {
-            alert('Escolha um m\u00EAs entre fevereiro e julho.\nOs dias podem variar de 01/02 a 01/07.');
+        alert('Escolha um m\u00EAs entre fevereiro e julho.\nOs dias podem variar de 01/02 a 20/07.');
             resetDate(input);
-            return;
+            return false;
           }
           else {
-            if (parseInt(mes) == mesFinal && parseInt(dia) > 1) {
-              alert('Para o m\u00EAs de julho, dia 01 \u00E9 o \u00FAltimo dia recomendado.');
+            if (parseInt(mes) == mesFinal && parseInt(dia) > 20) {
+              alert('Para o m\u00EAs de julho, dia 20 \u00E9 o \u00FAltimo dia recomendado.');
               resetDate(input);
-              return;
+              return false;
             }
           }
 
@@ -770,10 +775,11 @@
           if (ano < 1900 || ano > 2100){
             alert("A data informada não é válida.");
             resetDate(input);
-            return;
+            return false;
           }
           
           input.value = dia + "/" + mes + "/" + ano;
+          return true;
         }
       }
 
@@ -920,7 +926,7 @@
 
           }
           if (parseFloat(numero) < 2.00 || parseFloat(numero) > 7.00) {
-            alert(' Escolha um valor entre 2.0 e 7.0');
+            alert(' Escolha um valor entre 2.0 e 7.0 para informação da l\u00E2mina a ser aplicada.');
             return 0
           }
           else
@@ -1000,7 +1006,7 @@
         dataInicial = document.getElementById('calendario').value
         dataInicial = dataInicial.trim();
         var dia = parseInt(dataInicial.substring(0, 2));
-        var mes = parseInt(dataInicial.substring(3, 5));
+        var mes = parseInt(dataInicial.substring(3, 5))-1;
 
         if (mes < mesInicial || mes > mesFinal){
           alert('Escolha um m\u00EAs entre fevereiro e julho.\nOs dias podem variar de 01/02 a 01/07.');
@@ -1114,7 +1120,7 @@
           }
           else {
             if (parseFloat(numero) < 2.00 || parseFloat(numero) > 7.00) {
-              alert(' Escolha um valor entre 2.0 e 7.0');
+              alert(' Escolha um valor entre 2.0 e 7.0 para informação da l\u00E2mina a ser aplicada.');
               return 0;
             }
             else {
@@ -1127,6 +1133,10 @@
       function verifica() {
         var cidade;
         var flag;
+        
+        if(!setDate(document.getElementById("calendario").value)){
+          return;
+        }
 
         id = document.getElementById("cidade").selectedIndex;
 
@@ -1188,17 +1198,17 @@
                   dataInicial = document.getElementById("calendario").value;
                   dataInicial = dataInicial.trim();
                   dia1 = parseInt(dataInicial.substring(0, 2));
-                  mes1 = parseInt(dataInicial.substring(3, 5));
+                  mes1 = parseInt(dataInicial.substring(3, 5))-1;
 
                   if (mes1 < mesInicial || mes1 > mesFinal) {
 
-                    alert('Escolha um m\u00EAs entre fevereiro e junho.\nOs dias podem variar de 01/02 a 20/07.');
+                    alert('Escolha um m\u00EAs entre fevereiro e julho.\nOs dias podem variar de 01/02 a 20/07.');
                     flag = 0;
                   }
                   else
                     if (mes1 == mesFinal && dia1 > 20) {
 
-                      alert('Para o m\u00EAs de junho, dia 20 é o \u00FAltimo dia permitido');
+                      alert('Para o m\u00EAs de julho, dia 20 é o \u00FAltimo dia permitido');
                       flag = 0;
 
                     }

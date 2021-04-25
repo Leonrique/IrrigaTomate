@@ -172,7 +172,6 @@
         numero = numero.trim();
 
         if (numero.length == 0) {
-
           alert('O valor da l\u00E2mina aplicada a 100% do percent\u00EDmetro \nn\u00E3o deve ser nulo. Insira um valor entre 2.0 e 7.0');
           return 0;
         }
@@ -191,7 +190,7 @@
 
           }
           if (parseFloat(numero) < 2.00 || parseFloat(numero) > 7.00) {
-            alert(' Escolha um valor entre 2.0 e 7.0');
+            alert('Escolha um valor entre 2.0 e 7.0 para informação da l\u00E2mina a ser aplicada.');
             return 0
           }
           else
@@ -383,7 +382,7 @@
 
                     if (mes1 < mesInicial || mes1 > mesFinal) {
 
-                      alert('Escolha um m\u00EAs entre fevereiro e junho.\nOs dias podem variar de 01/02 a 01/07.');
+                    alert('Escolha um m\u00EAs entre fevereiro e julho.\nOs dias podem variar de 01/02 a 01/07.');
                       flag = 0;
                     }
                     else
