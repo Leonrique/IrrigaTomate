@@ -1,6 +1,6 @@
 <?php
 
-  include 'getDadosNasa.php';
+  //include 'getDadosNasa.php';
 
   function media( $strVar ) {
 
