@@ -1,4 +1,13 @@
 <?php
+   session_start();
+
+   if(isset($_POST) && count($_POST)) {
+      $_SESSION['post'] = $_POST; 
+   }
+   
+   if(isset($_SESSION['post']) && count($_SESSION['post'])) {
+      $_POST = $_SESSION['post']; 
+   }
 
      $idCidade = $_POST["cidade"];
      $data = $_POST["calendario"];
@@ -188,8 +197,7 @@
                   $percentimetro2 = number_format($percentimetro2 + 0.5, 0, '.', ''); // faz com que o numero tenha apenas uma casa decimal
                if($percentimetro2 > 100.0 )
                  $percentimetro2 = 100.0;
-
-               session_start();
+               
                echo '
                  <!doctype html>
                  <html>

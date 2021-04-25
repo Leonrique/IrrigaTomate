@@ -1,9 +1,19 @@
 <?php
-    if (!isset($_POST["cidade"])) {
+    session_start();
+
+    if(isset($_POST) && count($_POST)) {
+       $_SESSION['post'] = $_POST; 
+    }
+    
+    if(isset($_SESSION['post']) && count($_SESSION['post'])) {
+       $_POST = $_SESSION['post']; 
+    }
+    
+    if (!isset($_POST["cidade"]) && !isset($_SESSION['post']["cidade"])) {
       header('Location:' . 'manejo.html');
       exit(1);
     }
-     
+
     $message = "";
     $idCidade = $_POST["cidade"]; // municipio escolhido
     $identificacao = $_POST["ident"];
@@ -363,7 +373,6 @@
                if($percentimetro > 100.0 )
                  $percentimetro = 100.0;
 
-               session_start();
                echo '
                  <!doctype html>
                  <html>

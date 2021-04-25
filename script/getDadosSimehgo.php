@@ -1,10 +1,10 @@
 <?php
 
-include 'getDadosNasa.php';
-include 'simple_html_dom.php';
-include 'pathConfig.php';
-$arquivoPath = configPath;
-include($arquivoPath);
+//include 'getDadosNasa.php';
+//include 'simple_html_dom.php';
+//include 'pathConfig.php';
+//$arquivoPath = configPath;
+//include($arquivoPath);
  
      // Abadia de Goias -> cpcd=138
      // Aerodromo de Hoiania -> cpcd=1306 
@@ -169,7 +169,7 @@ function getvarSimehgo($dia, $mes, $ano, $codCidade) {
     global $hora;
     $simehgo = "http://www.simehgo.sectec.go.gov.br/cgi-bin/rede_obs/consulta_dados_dia.pl?cpcd=$codCidade&dd=$dia&mm=$mes&aa=$ano";
            
-//echo $simehgo ."<br>";
+//echo $simehgo ."\n";
 
     //$html = file_get_html($simehgo);
     $data = file_get_contents($simehgo);  //A busca por table border = 1 estava dando erro
@@ -205,7 +205,7 @@ function getvarSimehgo($dia, $mes, $ano, $codCidade) {
            $header = 0;
  
            foreach($ul->find('td') as $li) {
-              //echo $li->plaintext . '<br>';
+              //echo $li->plaintext . '\n';
               $j =  $j + 1;   
               $len = $len + strlen($li->plaintext);
               $palavra1 =  strstr(strtoupper($li->plaintext), $tempo1);
@@ -218,7 +218,7 @@ function getvarSimehgo($dia, $mes, $ano, $codCidade) {
  
            }
            if(  $header >= 1) {
-              //echo "$i   $valorJ   $len   $num <br>";
+              //echo "$i   $valorJ   $len   $num \n";
               $fim = 1;
               $valorI = $i;
               $limiteJ = $j;
@@ -499,12 +499,8 @@ function getvarSimehgo($dia, $mes, $ano, $codCidade) {
       if( $j_ur == 0) {  $umidRel = -99.9; } else { $umidRel = $URM / $j_ur;    }
       if( $j_temp == 0) {  $tempAr = -99.9; } else {$tempAr = $tempArM / $j_temp;  }
       if( $j_pto == 0) {  $ptoOrv = -99.9; } else {$ptoOrv = $ptoOrvM / $j_pto;  }
-
-// para converter de MJ/(m2.dia) para  W/m2, multiplica-se pelo fator de conversao 1/0,0864 (1M/(24*60*60))
       if( $j_rad == 0) {  $radSol = -99.9; } else {$radSol = $radSolarM * 1000000.0 / (24.0*60.0*60.0);}//  O valor da radiacao solar eh o acumulado diario
 
-// para converter de W/m2 para MJ/(m2.dia), multiplica-se pelo fator de conversao 0,0864
-// ver https://www.scielo.br/pdf/rbmet/v25n4/06.pdf
 
       $etoX = -99.9;
       if  ( $radSol > -5 && $velVento > -5 && $tempAr > $tempArMin && $umidRel > -5  ) { 
@@ -577,13 +573,15 @@ function getvarSimehgo($dia, $mes, $ano, $codCidade) {
            if($umidRel2 > -50 )
              $umidRelFinal = $umidRel2;
 
-
+// para converter de W/m2 para MJ/(m2.dia), multiplica-se pelo fator de conversao 0,0864
+// para converter de MJ/(m2.dia) para  W/m2, multiplica-se pelo fator de conversao 1/0,0864 (1M/(24*60*60))
+// ver https://www.scielo.br/pdf/rbmet/v25n4/06.pdf
 
          if($radSolar > -50 ) 
-            $radSolFinal = $radSolar;  //   * 1.0 / (0.0864); // No simehgo, eh dado em MJ/m2/dia. O fator de conversao para w/m2 eh 1/0.0864 = 11.5740
+            $radSolFinal = $radSolar  * 1.0 / (0.0864); // No simehgo, eh dado em MJ/m2/dia. O fator de conversao para w/m2 eh 1/0.0864 = 11.5740
          else
            if($radSol2 > -50 )
-             $radSolFinal = $radSol2; //  se for em kwh* 41.664;  // 1 kWh/m2/day= 41.664 W/m2. Ver https://www.researchgate.net/post/How_can_I_convert_Wh_m2_to_W_m2
+             $radSolFinal = $radSol2 * 41.664;  // 1 kWh/m2/day= 41.664 W/m2. Ver https://www.researchgate.net/post/How_can_I_convert_Wh_m2_to_W_m2
 
 
          if( $tempArFinal > -9 && $velVentoFinal > -50 && $umidRelFinal > -50 && $radSolFinal > -50 ) {
@@ -597,8 +595,9 @@ function getvarSimehgo($dia, $mes, $ano, $codCidade) {
          return("$tempArFinal,$etoFinal,$velVentoFinal,$umidRelFinal,$radSolFinal");          
      } 
      else {
-  
-        return("$tempAr,$eto,$velVento,$UR,$radSolar");
+ 
+        $radSolAcum = $radSolar * 1000000.0 / (60.0*60.0); 
+        return("$tempAr,$eto,$velVento,$UR,$radSolarAcum");
      }
 
 
@@ -623,8 +622,8 @@ function getvarSimehgo($dia, $mes, $ano, $codCidade) {
      }
      $where = $where." idCidade = $idCidade[$numEstacoes] ) ";
 
-     $sql = "select id, dia, mes, ano, idCidade from evapoTranspiracaoTomateEstacao where $where and (eto is null or temMedia is null or ur is null or velVento is null or radSol is null)";
-//echo $sql.'<br>';
+     $sql = "select id, dia, mes, ano, idCidade from evapoTranspiracaoTomateEstacao where validado = 0 and $where and (eto is null or temMedia is null)";
+//echo $sql.'\n';
      $query = mysqli_query($conexao, $sql) ;
  
      $numLinhas = $query->num_rows;
@@ -648,7 +647,7 @@ function getvarSimehgo($dia, $mes, $ano, $codCidade) {
                   $result2 = update2($id, $tempAr,$eto,$radSol,$velVento, $umidRel);
                   list ($upd1,$upd2,$upd3,$upd4,$upd5,$upd6) = explode(";",$result2);
 
-//echo "<br>$upd1<br>$upd2<br>$upd3<br>$upd4<br>$upd5<br>$upd6";
+//echo "\n$upd1\n$upd2\n$upd3\n$upd4\n$upd5\n$upd6";
                   $query2 = mysqli_query($conexao, $upd1);
                   $query2 = mysqli_query($conexao, $upd2);
                   if( strcmp($upd3,"000") )
@@ -756,13 +755,13 @@ function getvarSimehgo($dia, $mes, $ano, $codCidade) {
  
                 while( !( $dia == $hojeDia && $mes == $hojeMes && $ano == $hojeAno)) {
 
-//echo "$dia == $hojeDia && $mes == $hojeMes && $ano == $hojeAno     $idEstacao[$i], $idCidade[$i]<br>";
+//echo "$dia == $hojeDia && $mes == $hojeMes && $ano == $hojeAno     $idEstacao[$i], $idCidade[$i]\n";
                   $q = getDataSimehgo($dia, $mes, $ano, $idEstacao[$i],$i);   
                   list ($tempAr,$eto,$velVento,$umidRel,$radSol) = explode(",",$q);
                   $result2 = insere2($dia, $mes, $ano, $tempAr,$eto, $radSol, $velVento,$umidRel, $idEstacao[$i], $idCidade[$i]);
                   if(strlen($result2) > 30)
                      $query2 = mysqli_query($conexao, $result2);
-                  //echo "   <br>  ".$result2 . "   <br>   ";
+                  //echo "   \n  ".$result2 . "   \n   ";
 
                   $data2->modify('+1 day');
                   $dia = $data2->format('d');

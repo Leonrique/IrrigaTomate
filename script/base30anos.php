@@ -12,12 +12,13 @@ Final do programa
 
 */
 
+  function base30anos() {
 
      // Abrir base de dados para inserir um atualizar dados
      
-     include 'pathConfig.php';
-     $arquivoPath = configPath;
-     include($arquivoPath);
+     //include 'pathConfig.php';
+     //$arquivoPath = configPath;
+     //include($arquivoPath);
 
      $conexao = mysqli_connect(hostBancoPantanal, userDonoPantanal, senhaDonoPantanal, nomeBancoPantanal) ;
      if (!$conexao) {
@@ -221,5 +222,6 @@ echo "\n$sql\n";
 
      } // final de while($linha = $query->fetch_row()) {
 
+  }
 
 ?>

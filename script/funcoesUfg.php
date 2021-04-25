@@ -46,7 +46,10 @@
  
      // Define the request parameter's
      $method = "GET";
+
+
      
+
      //$request = "/data/$estacao/raw/from/1589241600/to/1589319000";
      $inicio = strtotime("$diaX  00:00:01") ; // timestamp unix menos 7200
      $a = (int) $inicio;
@@ -205,15 +208,12 @@
 
             $update = "update evapoTranspiracaoTomateEstacao set temMedia = $tempAr where id = $id;#";
             $update2 = " update evapoTranspiracaoTomateEstacao set eto = $etoX where id = $id;#";
-            $update3 = " update evapoTranspiracaoTomateEstacao set radSol = $radSol where id = $id;#";
-            $update4 = " update evapoTranspiracaoTomateEstacao set velVento = $velVento where id = $id;#";
-            $update5 = " update evapoTranspiracaoTomateEstacao set ur = $umidRel where id = $id;#";
-            $update6 = " update evapoTranspiracaoTomateEstacao set validado = 1 where id = $id;";
-            $retorno = $update.$update2.$update3.$update4.$update5.$update6;
+            $update3 = " update evapoTranspiracaoTomateEstacao set validado = 1 where id = $id;";
+            $retorno = $update.$update2.$update3;
           }
           else {
 
-                $insert = "insert into evapoTranspiracaoTomateEstacao(dia, mes, ano, idCidade, temMedia, eto, radSol, velVento, ur, codEstacao, validado) values ($dia, $mes, $ano, $idCidade, $tempAr, $etoX, $radSol, $velVento, $umidRel, \"$estacao\", 1); ";
+                $insert = "insert into evapoTranspiracaoTomateEstacao(dia, mes, ano, idCidade, temMedia, eto, codEstacao, validado) values ($dia, $mes, $ano, $idCidade, $tempAr, $etoX, \"$estacao\", 1); ";
                 $retorno = $insert;
 
           }
@@ -230,9 +230,9 @@ function getDadosUfg() {
      //
      // Abrir base de dados para inserir um atualizar dados
      //
-     include 'pathConfig.php';
-     $arquivoPath = configPath;
-     include($arquivoPath);
+     //include 'pathConfig.php';
+     //$arquivoPath = configPath;
+     //include($arquivoPath);
 
      $conexao = mysqli_connect(hostBancoPantanal, userDonoPantanal, senhaDonoPantanal, nomeBancoPantanal) ;
      if (!$conexao) {
@@ -261,9 +261,7 @@ function getDadosUfg() {
      // Incluir as cidades do estado de goias
      //   include ("dadosEstacoes.php");
  
-
-     $sql = "select id, dia, mes, ano, codEstacao, idCidade from evapoTranspiracaoTomateEstacao where  ( codEstacao = \"00206B1B\" or codEstacao = \"00203E21\"  or codEstacao = \"00203E1D\"  or codEstacao = \"00203E22\"  or codEstacao = \"00203E24\"  or codEstacao = \"00203E26\") and (eto is null or temMedia is null or ur is null or radSol is null or velVento is null or validado = 0) ;";
-//echo "<br>query = $sql";
+     $sql = "select id, dia, mes, ano, codEstacao, idCidade from evapoTranspiracaoTomateEstacao where  ( codEstacao = \"00206B1B\" or codEstacao = \"00203E21\"  or codEstacao = \"00203E1D\"  or codEstacao = \"00203E22\"  or codEstacao = \"00203E24\"  or codEstacao = \"00203E26\") and (eto is null or temMedia is null or validado = 0) ;";
      $query = mysqli_query($conexao, $sql) ;
      if(!$query)
            {
@@ -298,18 +296,15 @@ function getDadosUfg() {
                 //$retorno = insereDados($codigo, $data, $opt, $id, $idCidade, $codigoEstacaoCidade, $numCidadesGoias);
 
                 $retorno = insereDados($codigo, $data, $opt, $id, $idCidadeV);
-// echo "<br>0 - cod = $codigo, data = $data, opt = $opt, id = $id, idCidade = $idCidadeV  retorno = $retorno";
+ 
                 if( strlen($retorno) > 0 ) {
-//echo "<br>1 - $retorno";
+
                       $list = explode("#", $retorno);
                       $queryInsert = mysqli_query($conexao, $list[0]) ;
                       $queryInsert2 = mysqli_query($conexao, $list[1]) ;
                       $queryInsert3 = mysqli_query($conexao, $list[2]) ;
-                      $queryInsert4 = mysqli_query($conexao, $list[3]) ;
-                      $queryInsert5 = mysqli_query($conexao, $list[4]) ;
-                      $queryInsert6 = mysqli_query($conexao, $list[5]) ;
                      
-                      if(!$queryInsert || !$queryInsert2 || !$queryInsert3 || !$queryInsert4 || !$queryInsert5 || !$queryInsert6 )
+                      if(!$queryInsert || !$queryInsert2 || !$queryInsert3 )
                         {          
                             echo "Houve erro nesta Insercao de dados!  $retorno";
                             $registro = "Houve erro nesta consulta ==>  $retorno";
@@ -323,7 +318,7 @@ function getDadosUfg() {
 
                 } // final de if( strlen($retorno) > 0 )
                 else {
-//echo "<br>2 - $retorno";
+
                    $codigo = $linha[4];
                    if( !strcmp($codigo , "00203E1D") ) {
 
@@ -378,20 +373,11 @@ function getDadosUfg() {
                         $varClimaticas = explode(",", $resultadoNasa);
                         $tempAr = $varClimaticas[0];
                         $eto = $varClimaticas[1];
-                        $velVento = $varClimaticas[2];
-                        $umidRel = $varClimaticas[3];
-                        $radSol = $varClimaticas[4];
                         if( $tempAr > -40 && $eto > -40 ) {
 
                                  $update = "update evapoTranspiracaoTomateEstacao set temMedia = $tempAr where mes = $mesV and dia = $diaV and ano = $anoV and idCidade = $idCidadeV;";
                                  $pesquisa = mysqli_query($conexao, $update);
                                  $update = " update evapoTranspiracaoTomateEstacao set eto = $eto where mes = $mesV and dia = $diaV and ano = $anoV and idCidade = $idCidadeV;";
-                                 $pesquisa = mysqli_query($conexao, $update);
-                                 $update = " update evapoTranspiracaoTomateEstacao set velVento = $velVento where mes = $mesV and dia = $diaV and ano = $anoV and idCidade = $idCidadeV;";
-                                 $pesquisa = mysqli_query($conexao, $update);
-                                 $update = " update evapoTranspiracaoTomateEstacao set ur = $umidRel where mes = $mesV and dia = $diaV and ano = $anoV and idCidade = $idCidadeV;";
-                                 $pesquisa = mysqli_query($conexao, $update);
-                                 $update = " update evapoTranspiracaoTomateEstacao set radSol = $radSol where mes = $mesV and dia = $diaV and ano = $anoV and idCidade = $idCidadeV;";
                                  $pesquisa = mysqli_query($conexao, $update);
                                  $update = " update evapoTranspiracaoTomateEstacao set validado = 0 where mes = $mesV and dia = $diaV and ano = $anoV and idCidade = $idCidadeV;";
                                  $pesquisa = mysqli_query($conexao, $update);
@@ -401,18 +387,6 @@ function getDadosUfg() {
 
                                  $update = "update evapoTranspiracaoTomateEstacao set temMedia = $tempAr where mes = $mesV and dia = $diaV and ano = $anoV and idCidade = $idCidadeV;";
                                  $pesquisa = mysqli_query($conexao, $update);
-                                 if( $radSol > -40) {
-                                     $update = " update evapoTranspiracaoTomateEstacao set radSol = $radSol where mes = $mesV and dia = $diaV and ano = $anoV and idCidade = $idCidadeV;";
-                                     $pesquisa = mysqli_query($conexao, $update);
-                                 }
-                                 if( $velVento > -1) {
-                                     $update = " update evapoTranspiracaoTomateEstacao set velVento = $velVento where mes = $mesV and dia = $diaV and ano = $anoV and idCidade = $idCidadeV;";
-                                     $pesquisa = mysqli_query($conexao, $update);
-                                 }
-                                 if( $umidRel > -1) {
-                                     $update = " update evapoTranspiracaoTomateEstacao set ur = $umidRel where mes = $mesV and dia = $diaV and ano = $anoV and idCidade = $idCidadeV;";
-                                     $pesquisa = mysqli_query($conexao, $update);
-                                 }
                                  $update = " update evapoTranspiracaoTomateEstacao set validado = 0 where mes = $mesV and dia = $diaV and ano = $anoV and idCidade = $idCidadeV;";
                                  $pesquisa = mysqli_query($conexao, $update);
                           }
@@ -484,7 +458,7 @@ function getDadosUfg() {
                            $ano = $linha2[0];  
                        }
                        else
-                           $ano = 2020;                
+                           $ano = date('Y');                
                        $sql = "select  max(mes) from evapoTranspiracaoTomateEstacao where codEstacao = \"$codigo\" and ano = $ano  and validado = 1;";
                        $query2 = mysqli_query($conexao, $sql) ;
                        if(!$query2) {
@@ -524,7 +498,7 @@ function getDadosUfg() {
 
                       $dia = "01";
                       $mes = "01";
-                      $ano = '2020';
+                      $ano = date('Y');
                   }
 
                 $diaSemana = date('w');
@@ -544,11 +518,6 @@ function getDadosUfg() {
                //      $id = $linha2[0];
                //      $idCidade = $id ;
                // }
-
-                      $dia = "01";
-                      $mes = "01";
-                      $ano = "2019";
-
                 $idCidade = $idCidade1[$contLoop] ;
                 $diaInicial = $dia.'-'.$mes.'-'.$ano;
                 $data2 = new DateTime($diaInicial);
@@ -591,45 +560,21 @@ function getDadosUfg() {
                               $mesV = "0".$mes;
                             else
                               $mesV = $mes;
-
                             $diaNasa = $ano.$mesV.$diaV;
                             $resultadoNasa =  getvarNasa($diaNasa, $lat, $lon);
                             $varClimaticas = explode(",", $resultadoNasa);
                             $tempAr = $varClimaticas[0];
                             $eto = $varClimaticas[1];
-                            $velVento = $varClimaticas[2];
-                            $umidRel = $varClimaticas[3];
-                            $radSol = $varClimaticas[4];
-
                             if( $tempAr > -40 && $eto > -40 ) {
 
-                                  $ins = "insert into evapoTranspiracaoTomateEstacao(dia, mes, ano, temMedia, eto, velVento, ur, radSol, codEstacao, idCidade, validado) values($dia, $mes, $ano, $tempAr, $eto, $velVento, $umidRel, $radSol,  $codigo, $idCidade, 0 );";
+                                  $ins = "insert into evapoTranspiracaoTomateEstacao(dia, mes, ano, temMedia, eto, codEstacao, idCidade, validado) values($dia, $mes, $ano, $tempAr, $eto, $codigo, $idCidade, 0 );";
                                   $pesquisa = mysqli_query($conexao, $ins);
 
                             }
                             else
                               if( $tempAr > -40 ) {
 
-                                  $ins = "insert into evapoTranspiracaoTomateEstacao(dia, mes, ano, temMedia, codEstacao, idCidade, validado";
-                                  $ins2 = " values($dia, $mes, $ano, $tempAr, $codigo, $idCidade, 0";
-                                  if( $radSol > -10 ); {
-
-                                      $ins = $ins . ", radSol";
-                                      $ins2 = $ins2 . ", $radSol";
-                                  }
-                                  if( $velVento > -1 ); {
-
-                                      $ins = $ins . ", velVento";
-                                      $ins2 = $ins2 . ", $velVento";
-                                  }
-                                  if( $umidRel > -1 ); {
-
-                                      $ins = $ins . ", ur";
-                                      $ins2 = $ins2 . ", $umidRel";
-                                  }
-                                  $ins = $ins . ")";
-                                  $ins2 = $ins2 . ");";
-                                  $ins = $ins . $ins2;
+                                  $ins = "insert into evapoTranspiracaoTomateEstacao(dia, mes, ano, temMedia, codEstacao, idCidade, validado) values($dia, $mes, $ano, $tempAr, $codigo, $idCidade, 0 );";
                                   $pesquisa = mysqli_query($conexao, $ins);
                               }
 
@@ -670,7 +615,7 @@ function getDadosUfg() {
 
   } // final da funcao getDadosUfg() {
 
-  getDadosUfg();
+  //getDadosUfg();
 
 ?>
 

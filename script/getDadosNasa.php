@@ -19,19 +19,27 @@ function getvarNasa($dia, $lat, $lon) {
 
  
           $nasa = "https://power.larc.nasa.gov/cgi-bin/v1/DataAccess.py?&request=execute&identifier=SinglePoint&parameters=T2M,PRECTOT,RH2M,WS2M,ALLSKY_SFC_SW_DWN&startDate=$dia&endDate=$dia&userCommunity=AG&tempAverage=DAILY&outputList=ASCII&lat=$lat&lon=$lon";
-//                 https://power.larc.nasa.gov/cgi-bin/v1/DataAccess.py?&request=execute&identifier=SinglePoint&parameters=T2M,PRECTOT,RH2M,WS2M,ALLSKY_SFC_SW_DWN&startDate=20200120&endDate=20200120&userCommunity=AG&tempAverage=DAILY&outputList=ASCII&lat=-14.1305&lon=-47.51
+/*
+          $ch = curl_init();
+          curl_setopt($ch, CURLOPT_URL, $nasa); 
+          curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+          curl_setopt($ch,CURLOPT_USERAGENT,'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36\r\n');
+          $data = curl_exec($ch);
+          curl_close($ch);
+          $a = $data;
+*/
           $a = curl_get_contents_nasa($nasa);
           if( is_null($a) ) {
 
             //echo "O valor de a eh nulo ";           
-            $resultado = "-99.0,-99.0,-99.0,-99.0,-99.0";
+            $resultado = "-99.0,-99.0";
             return($resultado);
           }
           else
              if( strlen($a) == 0 ) {
 
                echo "O valor de a eh vazio ";          
-               $resultado = "-99.0,-99.0,-99.0,-99.0,-99.0"; 
+               $resultado = "-99.0,-99.0"; 
                return($resultado);
 
              }
@@ -40,7 +48,7 @@ function getvarNasa($dia, $lat, $lon) {
           if( is_null($obj)) {
 
             echo "O valor de obj eh nulo";
-            $resultado = "-99.0,-99.0,-99.0,-99.0,-99.0";
+            $resultado = "-99.0,-99.0";
             return($resultado);
           }
 
@@ -59,7 +67,7 @@ function getvarNasa($dia, $lat, $lon) {
                   }
                   else
                      if( $radSol > -50 ) {
-                         $radSol = $radSol * 1000000.0 / (24.0*60.0*60.0); // MJ/m2 para w/m2
+                         $radSol = $radSol * 1000000.0 / (24.0*60.0*60.0); // em w/m3
                      }
 
           }

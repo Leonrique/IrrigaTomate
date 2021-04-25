@@ -1,7 +1,7 @@
 <?php
 
-  define('userDonoPantanal', 'leon');
-  define('senhaDonoPantanal', '123456');
+  define('userDonoPantanal', 'userIrriga');
+  define('senhaDonoPantanal', 'senhaIrriga');
   define('nomeBancoPantanal', 'nomeBaseIrriga');
   define('hostBancoPantanal', 'localhost');
 

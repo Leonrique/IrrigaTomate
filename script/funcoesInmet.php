@@ -15,7 +15,7 @@ function getvarNasa2($dia, $lat, $lon) {
 
  
           $nasa = "https://power.larc.nasa.gov/cgi-bin/v1/DataAccess.py?&request=execute&identifier=SinglePoint&parameters=T2M,PRECTOT,RH2M,WS2M,ALLSKY_SFC_SW_DWN&startDate=$dia&endDate=$dia&userCommunity=AG&tempAverage=DAILY&outputList=ASCII&lat=$lat&lon=$lon";
-//                 https://power.larc.nasa.gov/cgi-bin/v1/DataAccess.py?&request=execute&identifier=SinglePoint&parameters=T2M,PRECTOT,RH2M,WS2M,ALLSKY_SFC_SW_DWN&startDate=20200120&endDate=20200120&userCommunity=AG&tempAverage=DAILY&outputList=ASCII&lat=-14.1305&lon=-47.51
+ 
           $a = curl_get_contents_data($nasa);
           if( is_null($a) ) {
 
@@ -36,7 +36,7 @@ function getvarNasa2($dia, $lat, $lon) {
           if( is_null($obj)) {
 
             echo "O valor de obj eh nulo";
-            $resultado = "-99.0,-99.0,-99.0,-99.0,-99.0"; 
+            $resultado = "-99.0,-99.0";
             return($resultado);
           }
 
@@ -47,7 +47,7 @@ function getvarNasa2($dia, $lat, $lon) {
           if(  isset ($obj->features[0]->properties->parameter->ALLSKY_SFC_SW_DWN->$data1 ) ) {
 
                $radSol = $obj->features[0]->properties->parameter->ALLSKY_SFC_SW_DWN->$data1; // Em MJ/m2
-               $radSol = $radSol * 1000000.0 / (24.0*60.0*60.0); // em w/m2
+               $radSol = $radSol * 1000000.0 / (24.0*60.0*60.0); // em w/m3
                if(is_null($radSol) || strlen($radSol) == 0)
                    $radSol = -99.0;
           }
@@ -283,7 +283,7 @@ function getvar($dia, $codigoEstacao) {
           else
               $torv = -999.99;
           if($j_rad > 0)
-             $radSolar = $radSolar*1000/(24*60*60); // KJ/m2 para w/m2 em 24 horas
+             $radSolar = $radSolar*1000/(24*60*60); // KJ/m2 para w/m
           else
              $radSolar =  -999.99;
           if($j_precipt > 0)
@@ -395,9 +395,10 @@ function getDadosInmet() {
           //
           // Abrir base de dados para inserir um atualizar dados
           
-           include 'pathConfig.php';
-           $arquivoPath = configPath;
-           include($arquivoPath);
+           //include 'pathConfig.php';
+           
+           //$arquivoPath = configPath;
+           //include($arquivoPath);
 
            $conexao = mysqli_connect(hostBancoPantanal, userDonoPantanal, senhaDonoPantanal, nomeBancoPantanal) ;
            if (!$conexao) {
@@ -511,9 +512,9 @@ function getDadosInmet() {
                 $anoInicio = $ano;
                 $mesInicio = $mes;
                 $diaInicio = $dia;
-                $dia = 1;
-                $mes = 1;
-                $ano = 2019;
+                //$dia = 1;
+                //$mes = 1;
+                //$ano = 2019;
 
  
                 $fim = 0;
@@ -843,5 +844,5 @@ function getDadosInmet() {
           mysqli_close($conexao);
 } // final da funcao  getDadosInmet() {
 
-    getDadosInmet();
+    //getDadosInmet();
 ?>
