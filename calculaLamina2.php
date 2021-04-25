@@ -86,8 +86,11 @@
 
      }
 
-
-     $sql= "select dia, mes, eto, tempMax, tempMin from  evapoTrasnpiracaoTomate  where idCidade = $idCidade and ( (mes = $mes and dia > $dia ) or mes > $mes );";
+     $sql= "select dia, mes, eto, tempMax, tempMin 
+            from evapoTrasnpiracaoTomate 
+            where idCidade = $idCidade 
+            and ( (mes = $mes and dia > $dia ) or mes > $mes )
+            order by mes, dia;";
 
      //$query = mysql_query($sql) ;
      $query = mysqli_query($conexao, $sql) ;

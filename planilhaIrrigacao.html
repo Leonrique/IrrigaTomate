@@ -407,9 +407,9 @@
                           <div class="form-wrap">
                             <div class="form-input">
                               <label>Eficiência de distribuição da água do pivô-central:</label>
-                              <input class="input" type="radio" value="2" name="optradio" id="efic2">
+                              <input class="input" type="radio" value="2" name="optradio" id="efic2" checked>
                               <label class="" for="efic2">80%</label>
-                              <input class="input" type="radio" value="1" name="optradio" id="efic1" checked>
+                              <input class="input" type="radio" value="1" name="optradio" id="efic1">
                               <label class="" for="efic1">85%</label>
                             </div>
                           </div>
@@ -419,9 +419,9 @@
                           <div class="form-wrap">
                             <div class="form-input">
                               <label>Sistema de plantio:</label>
-                              <input class="input" type="radio" value="2" name="optradio2" id="Ptconvencional">
+                              <input class="input" type="radio" value="2" name="optradio2" id="Ptconvencional" checked>
                               <label class="" for="Ptconvencional">Convencional</label>
-                              <input class="input" type="radio" value="1" name="optradio2" id="Ptdireto" checked>
+                              <input class="input" type="radio" value="1" name="optradio2" id="Ptdireto">
                               <label class="" for="Ptdireto">Direto</label>
                             </div>
                           </div>
@@ -450,7 +450,7 @@
 
                         <div class="col-sm-6">
                           <div class="form-wrap">
-                            <input class="form-input" name="area" id="area" placeholder="Área total do pivô (ha)" maxlength="10" type="number" data-constraints="@Required">
+                            <input class="form-input" name="area" id="area" placeholder="Área total do pivô (ha)" min="0" max="99999999999" maxlength="10" type="number" data-constraints="@Required">
                           </div>
                         </div>
                       </div>
