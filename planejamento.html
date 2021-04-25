@@ -51,9 +51,14 @@
         }
       }
 
-      function setDate(input) {
-        var timestamp = Date.parse(input.value);
-        
+      function setDate(value) {
+        if(value.indexOf("/") != -1){
+          return true;
+        }
+
+        var timestamp = Date.parse(value);
+        var input = document.getElementById("calendario");
+
         input.type = "text";
         
         if (!isNaN(timestamp)) {
@@ -64,13 +69,13 @@
           var mes = data.getMonth();
 
           if (parseInt(mes) < mesInicial || parseInt(mes) > mesFinal) {
-            alert('Escolha um m\u00EAs entre fevereiro e julho.\nOs dias podem variar de 01/02 a 01/07.');
+            alert('Escolha um m\u00EAs entre fevereiro e julho.\nOs dias podem variar de 01/02 a 20/07.');
             resetDate(input);
             return;
           }
           else {
-            if (parseInt(mes) == mesFinal && parseInt(dia) > 1) {
-              alert('Para o m\u00EAs de julho, dia 01 \u00E9 o \u00FAltimo dia recomendado.');
+            if (parseInt(mes) == mesFinal && parseInt(dia) > 20) {
+              alert('Para o m\u00EAs de julho, dia 20 \u00E9 o \u00FAltimo dia recomendado.');
               resetDate(input);
               return;
             }
@@ -311,21 +316,20 @@
       }
 
       function verifica() {
-
-        //var id = document.getElementById("estado").selectedIndex;
-        //var opcao = document.getElementById("estado").options[id].value;
         var cidade, estado;
         var flag = 1;
         var opcao = 1;
         var identfier;
+
+        if(!setDate(document.getElementById("calendario").value)){
+          return;
+        }
 
         if (parseInt(opcao) == 0) {
           alert("Escolha o estado.");
           flag = 0;
         }
         else {
-
-          //estado = id;
           id = document.getElementById("cidade").selectedIndex;
           opcao = document.getElementById("cidade").options[id].value;
           cidade = id;
@@ -337,20 +341,16 @@
 
           }
           else {
-
             if (document.getElementById("calendario") === undefined || document.getElementById("calendario") === null) {
-
               alert("Escolha uma data inicial.");
               flag = 0;
             }
             else
               if (document.getElementById("calendario").value == "") {
-
                 alert("Escolha a data de transplantio.");
                 flag = 0;
               }
               else {
-
                 if (document.getElementById("efic1").checked === true) {
                   opcao = 1;
                 }
@@ -374,21 +374,20 @@
                     event.preventDefault();
                   }
                   else {
-
                     dataInicial = document.getElementById("calendario").value;
                     dataInicial = dataInicial.trim();
                     dia1 = parseInt(dataInicial.substring(0, 2));
-                    mes1 = parseInt(dataInicial.substring(3, 5));
+                    mes1 = parseInt(dataInicial.substring(3, 5))-1;
 
                     if (mes1 < mesInicial || mes1 > mesFinal) {
 
-                    alert('Escolha um m\u00EAs entre fevereiro e julho.\nOs dias podem variar de 01/02 a 01/07.');
+                    alert('Escolha um m\u00EAs entre fevereiro e julho.\nOs dias podem variar de 01/02 a 20/07.');
                       flag = 0;
                     }
                     else
                       if (mes1 == mesFinal && dia1 > 1) {
 
-                        alert('Para o m\u00EAs de julho, dia 01 e o \u00FAltimo dia permitido');
+                        alert('Para o m\u00EAs de julho, dia 20 &eacute; o \u00FAltimo dia permitido');
                         flag = 0;
 
                       }
@@ -812,7 +811,7 @@
 
                         <div class="col-sm-6">
                           <div class="form-wrap">
-                            <input class="form-input" name="calendario" id="calendario" placeholder="Data de transplantio" type="text" onfocus="(this.type='date')" onblur="setDate(this)" data-constraints="@Required">
+                            <input class="form-input" name="calendario" id="calendario" placeholder="Data de transplantio" type="text" onfocus="(this.type='date')" onblur="setDate(this.value)" data-constraints="@Required">
                           </div>
                         </div>
 
