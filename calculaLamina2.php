@@ -56,16 +56,16 @@
        }
 
 
-     $sql = "select m.cidadeHTML, e.siglaEstado from municipios as m, estados as e  where e.id=m.idEstado and m.id = $idCidade;";
-       
+   //   $sql = "select m.cidadeHTML, e.siglaEstado from municipios as m, estados as e  where e.id=m.idEstado and m.id = $idCidade;";
+     $sql = "select cidadeHTML from municipios where id = $idCidade and idEstado = 9;"; //Estado de Goias  
 
      //$query = mysql_query($sql) ;
      $query = mysqli_query($conexao, $sql) ;
      if(!$query)
-           {
-                    $nomeCidade = "";
-                    $sigla = "";
-           }
+      {
+         $nomeCidade = "";
+         $sigla = "";
+      }
      else {
 
             //$numLinhas = mysql_num_rows($query);
@@ -76,7 +76,7 @@
                    //$linha=mysql_fetch_row($query);
                    $linha=$query->fetch_row() ;
                    $nomeCidade = $linha[0];
-                   $sigla = $linha[1];
+                   $sigla = "GO";
             }
             else {
 
