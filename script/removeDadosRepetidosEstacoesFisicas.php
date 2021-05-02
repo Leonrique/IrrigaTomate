@@ -21,7 +21,23 @@
 
         for($mes = 1; $mes <= 12; $mes ++) {
 
-          $sql = " delete b.* FROM `evapoTranspiracaoTomateEstacao` a INNER JOIN `evapoTranspiracaoTomateEstacao` b ON a.`idCidade` = b.`idCidade` AND a.`ano` = b.`ano` AND a.`mes` = b.`mes` AND a.`dia` = b.`dia` AND a.`id` < b.`id` AND $whereEstacoes AND  a.`ano` = $ano AND a.`mes` = $mes AND a.`dia` > 0  AND a.`radSol` is not null WHERE a.`idCidade` > 1 AND a.`ano` > 1 and a.`mes` > 1 AND a.`dia` > 1;";
+          $sql = " delete b.* 
+                   FROM `evapoTranspiracaoTomateEstacao` a 
+                   INNER JOIN `evapoTranspiracaoTomateEstacao` b
+                   ON a.`idCidade` = b.`idCidade` 
+                   AND a.`ano` = b.`ano` 
+                   AND a.`mes` = b.`mes` 
+                   AND a.`dia` = b.`dia` 
+                   AND a.`id` < b.`id` 
+                   AND $whereEstacoes 
+                   AND a.`ano` = $ano 
+                   AND a.`mes` = $mes 
+                   AND a.`dia` > 0  
+                   AND a.`radSol` is not null 
+                   WHERE a.`idCidade` > 1 
+                   AND a.`ano` > 1 
+                   and a.`mes` > $mes 
+                   AND a.`dia` > 1;";
 
           $query = mysqli_query($conexao, $sql) ;
            if(!$query) {

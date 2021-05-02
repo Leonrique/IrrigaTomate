@@ -449,9 +449,7 @@ function getDadosUfg() {
 
                 $sql = "select  max(ano) from evapoTranspiracaoTomateEstacao where codEstacao = \"$codigo\" and validado = 1;";
                 $query2 = mysqli_query($conexao, $sql) ;
-                if(!$query2) {
-
-
+                if($query2) {
                        $num_rows = $query2->num_rows;
                        if( $num_rows > 0) {
                            $linha2 = $query2->fetch_row();
@@ -461,33 +459,32 @@ function getDadosUfg() {
                            $ano = date('Y');                
                        $sql = "select  max(mes) from evapoTranspiracaoTomateEstacao where codEstacao = \"$codigo\" and ano = $ano  and validado = 1;";
                        $query2 = mysqli_query($conexao, $sql) ;
-                       if(!$query2) {
+                       if($query2) {
+                           $num_rows = $query2->num_rows;
+                           if( $num_rows > 0) {
+                              $linha2 = $query2->fetch_row();                                        
+                              $mes = $linha2[0];
+                           }
+                           else
+                              $mes =  1;
 
-                                       $num_rows = $query2->num_rows;
-                                       if( $num_rows > 0) {
-                                          $linha2 = $query2->fetch_row();                                        
-                                          $mes = $linha2[0];
-                                       }
-                                       else
-                                         $mes =  1;
+                           $sql = "select  max(dia) from evapoTranspiracaoTomateEstacao where  codEstacao = \"$codigo\" and ano = $ano  and mes = $mes and validado = 1;";
+                           $query2 = mysqli_query($conexao, $sql) ;
+                           if($query2) {
 
-                                       $sql = "select  max(dia) from evapoTranspiracaoTomateEstacao where  codEstacao = \"$codigo\" and ano = $ano  and mes = $mes and validado = 1;";
-                                       $query2 = mysqli_query($conexao, $sql) ;
-                                       if(!$query2) {
+                                 $num_rows = $query2->num_rows;
+                                 if( $num_rows > 0) {
+                                    $linha2 = $query2->fetch_row();
+                                    $dia = $linha2[0];
+                                 }
+                                 else {
+                                    $dia = 1;
+                                 }
 
-                                            $num_rows = $query2->num_rows;
-                                            if( $num_rows > 0) {
-                                               $linha2 = $query2->fetch_row();
-                                               $dia = $linha2[0];
-                                            }
-                                            else {
-                                              $dia = 1;
-                                            }
-
-                                       }
-                                       else {
-                                              $dia = 1;
-                                       }
+                           }
+                           else {
+                                    $dia = 1;
+                           }
                        } else {
 
                                $dia = "01";

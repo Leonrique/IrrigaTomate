@@ -56,25 +56,41 @@ function base30anos()
     $idCidade = $linha[0];
     $mes = 1;
     $dia = 0;
+    
+    //echo "\nAtualizando a cidade $idCidade";
+    
+    $sql = "select dia, mes, ano, STR_TO_DATE(CONCAT(dia,',',mes,',',ano),'%d,%m,%Y') data
+            from evapoTranspiracaoTomateEstacao where idCidade = $idCidade
+            order by STR_TO_DATE(CONCAT(dia,',',mes,',',ano),'%d,%m,%Y') desc limit 1 ;";
+    $queryMax = mysqli_query($conexao, $sql);
+
+    if ($queryMax) {
+      if($queryMax->num_rows > 0){
+        $linhaMax = $queryMax->fetch_row();
+
+        $dia = $linhaMax[0];
+        $mes = $linhaMax[1];
+        $ano = $linhaMax[2];
+      }
+    }
+
     $diaInicial = $dia . '-' . $mes . '-' . $ano;
     $data2 = new DateTime($diaInicial);
+
     $fim = 0;
 
-    echo "\nAtualizando a cidade $idCidade";
-
     while (!$fim) {
-
-      //!( $dia == $hojeDia && $mes == $hojeMes && $ano == $hojeAno)
-
       $novaData =  date("m-j-Y", mktime(0, 0, 0, $mes, $dia + 1, $ano));
       list($mes, $dia, $ano) = explode("-", $novaData);
 
-      if ($dia == $hojeDia && $mes == $hojeMes && $ano == $hojeAno) {
+      if ($dia >= $hojeDia && $mes >= $hojeMes && $ano >= $hojeAno) {
         $fim = 1;
         break;
       }
 
-      $sql = " select dia, mes, eto, idCidade from evapoTranspiracaoTomateEstacao where dia = $dia and mes = $mes and idCidade = $idCidade;";
+      echo "\nAtualizando a cidade $idCidade no dia $novaData";
+
+      $sql = " select dia, mes, eto, idCidade from evapoTranspiracaoTomateEstacao where dia = $dia and mes = $mes and ano = $ano and idCidade = $idCidade;";
       $query2 = mysqli_query($conexao, $sql);
       if (!$query2) {
 
@@ -88,7 +104,7 @@ function base30anos()
         $numLinhas2 = $query2->num_rows;
         if ($numLinhas2 == 0) {
 
-          $sql = "select eto, tempMax, tempMin from  evapoTranspiracaoTomateMediaTrintaAnos  where idCidade = $idCidade and ( (mes = $mes and dia = $dia )  );";
+          $sql = "select eto, tempMax, tempMin from  evapoTranspiracaoTomateMediaTrintaAnos  where idCidade = $idCidade and ( (mes = $mes and dia = $dia)  );";
           $query3 = mysqli_query($conexao, $sql);
           if (!$query3) {
 

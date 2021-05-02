@@ -16,39 +16,42 @@ include 'removeDadosRepetidos.php';
 //
 // iNSERIR DADOS DO inmet, ufg E Simehgo
 //
-echo "Started getDadosInmet \n";
-getDadosInmet();
-echo "Done getDadosInmet \n";
 
-echo "Started getDadosUfg \n";
+date_default_timezone_set('America/Sao_Paulo');
+
+echo "\nStarted getDadosInmet ".date("m/d/Y h:i:s a", time());
+getDadosInmet();
+echo "\nDone getDadosInmet ".date("m/d/Y h:i:s a", time());
+
+echo "\nStarted getDadosUfg ".date("m/d/Y h:i:s a", time());
 getDadosUfg();
-echo "Done getDadosUfg \n";
+echo "\nDone getDadosUfg ".date("m/d/Y h:i:s a", time());
 
 //
 // Verificar dados faltantes de 
 // temperatura media e temperatura
 // de evapotranspiracao (ETC)
 
-echo "Started base30anos \n";
+echo "\nStarted base30anos ".date("m/d/Y h:i:s a", time());
 base30anos();
-echo "Done base30anos \n";
+echo "\nDone base30anos ".date("m/d/Y h:i:s a", time());
 
 // remover dados duplicados das estacoes UFG, INMET e SIMEHGO
 
-echo "Started removeDadosEstacoesFisicas \n";
+echo "\nStarted removeDadosEstacoesFisicas ".date("m/d/Y h:i:s a", time());
 removeDadosEstacoesFisicas();  //Remove todos os dados replicados das estacoes existentes
-echo "Done removeDadosEstacoesFisicas \n";
+echo "\nDone removeDadosEstacoesFisicas ".date("m/d/Y h:i:s a", time());
 
 //Inserir dados nas demais cidades
 // a partir dos dados do Inmet, UFG e Simehgo
 //
-echo "Started cidadesSemEstacoes \n";
+echo "\nStarted cidadesSemEstacoes ".date("m/d/Y h:i:s a", time());
 cidadesSemEstacoes();
-echo "Done cidadesSemEstacoes \n";
+echo "\nDone cidadesSemEstacoes ".date("m/d/Y h:i:s a", time());
 
 // 
 // remover dados duplicados das demais estacoes
 
-echo "Started removeDadosDuplicados \n";
+echo "\nStarted removeDadosDuplicados ".date("m/d/Y h:i:s a", time());
 removeDadosDuplicados();  //Remove todos os dados replicados das demais estacoes
-echo "Done removeDadosDuplicados \n";
+echo "\nDone removeDadosDuplicados ".date("m/d/Y h:i:s a", time());

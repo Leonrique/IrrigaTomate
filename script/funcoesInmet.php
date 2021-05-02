@@ -611,26 +611,26 @@ function getDadosInmet() {
                                if( $tempAr >= -40) {
 
                                   $insere = $insere ."temMedia, ";
-                                  $valores = $valores ."$tempAr, ;";
+                                  $valores = $valores ."$tempAr, ";
                                }
  
   
                                if( $radSolar >= -40) {
 
-                                  $insere = $insere ."radSolar, ";
-                                  $valores = $valores ."$radSolar;";
+                                  $insere = $insere ."radSol, ";
+                                  $valores = $valores ."$radSolar, ";
                                }
                                if( $velVento >= -40) {
 
                                   $insere = $insere ."velVento,  ";
-                                  $valores = $valores ."$velVento, ;";
+                                  $valores = $valores ."$velVento, ";
                                }
                                if( $tempAr >= -40) {
 
                                   $insere = $insere ."ur) ";
-                                  $valores = $valores ."$ur);";
+                                  $valores = $valores ."$ur)";
                                }
-                               $ins = $insere.$valores;
+                               $ins = $insere.$valores.";";
                                $pesquisa = mysqli_query($conexao, $ins);
                                //echo "\n $ins \n";
                                //echo "<br> $sql <br> $ins <br>";
