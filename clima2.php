@@ -44,7 +44,11 @@
 
                     <script src="https://code.jquery.com/jquery-1.8.2.js"></script>
                     <script src="https://code.jquery.com/ui/1.9.0/jquery-ui.js"></script>
-
+                    <script>
+                      function paginaPlanilha() {
+                        setTimeout(  function() { setTimeout( function() { window.location.href = document.referrer;  } , 700 ); }, 10);
+                      }
+                    </script>
                  </head>
                  <body onload="getDadosClimaticos('.$idCidade.', '.$diaPlantio.', '.$mesPlantio.')">
                  <!-- Barra dos logotipos -->
@@ -70,13 +74,11 @@
 
        ';
      
-
-
        echo '
                  <!-- box do conteudo-->
 
                   <div id="conteudoPrincipal">
-
+                     <p style="margin: 40px 20px"><a href="javascript:paginaPlanilha()" class="botao">« voltar</a></p>
                      <p style="font-size:25px">Dados Clim&aacute;ticos de <span>'.$nomeCidade.' </span></p>                     
                      <div id="tabela">
 

@@ -420,15 +420,20 @@
                    }
 
                    function clima(nomeCidade) {
-
+                    var ua = navigator.userAgent.toLowerCase();
+                    var isAndroid = ua.indexOf("android") > -1;
+                    
                     window.document.form1.enctype = "multipart/form-data";
                     window.document.form1.method = "post";
-                    window.document.form1.target = "_blank";
+                    
+                    if(!isAndroid) {
+                      window.document.form1.target = "_blank";
+                    }
+                    
                     argClima = "clima2.php?idCidade='.$idCidade.'&nome=" + nomeCidade + "&dia='.$diaInicial.'&mes='.$mesInicial.'"; // mostra variaveis climaticas do ano ou dos ultimos 30 anos                    
                     window.document.form1.action = argClima;
                     //window.document.form1.action = "clima2.php?idCidade='. $idCidade.'&nome=" + nomeCidade; // mostra variaveis climaticas do ano ou dos ultimos 30 anos
                     window.document.form1.submit();
-
                    }
 
                    function formEscoamentoOnClick() {
@@ -1007,11 +1012,11 @@ $sistemaDePlantio ==>1- direto;  2 - convencional;
 
  
  
+                   $totalElementos = $i;
+                   
                    if($ontemDia == $dataDia &&  $ontemMes == $dataMes) {
-                     $totalElementos = $i;
                      break;
                    }
-
 
                    $necessidadeIrrigacaoOntem = $necessidadeIrrigacao;
                    
@@ -1445,7 +1450,7 @@ $sistemaDePlantio ==>1- direto;  2 - convencional;
                    
                     function paginaManejo() {
 
-                        setTimeout(  function() { atualizaDados(10);  setTimeout( function() { window.location="planilhaIrrigacao.html";  } , 700 ); }, 10);
+                      setTimeout(  function() { atualizaDados(10);  setTimeout( function() { window.location="planilhaIrrigacao.html";  } , 700 ); }, 10);
                     }
 
                     function primeiraFase() {
@@ -1491,7 +1496,7 @@ $sistemaDePlantio ==>1- direto;  2 - convencional;
                      // Para ver como fazer os acentos das palavras no grafico, veja o sitio
                      // https://rotinadigital.net/como-exibir-corretamente-caracteres-acentuados-nas-mensagens-javascript-e-codigo-html/
                      //
- 
+
                      var config = {
                         type: "line",
                         data: {
@@ -1507,7 +1512,7 @@ $sistemaDePlantio ==>1- direto;  2 - convencional;
 
                 echo $labels."\n";
                 echo '
-
+                                
                                 datasets: [{
                                         label: "",
                                         borderColor: window.chartColors.green,
