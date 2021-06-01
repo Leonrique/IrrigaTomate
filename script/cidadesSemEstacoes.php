@@ -206,7 +206,8 @@
               $i = $indice;
               $sql = "insert into evapoTranspiracaoTomateEstacao(dia, mes, ano, idCidade, temMedia, eto, validado, radSol, velVento, ur, codEstacao ) ";
               $sql = $sql . " values($dia, $mes, $ano, $idCidade[$j], $temMedia[$i], $eto[$i], $validado[$i], $radSol[$i], $velVento[$i], $ur[$i], \"$codEstacao[$i]\");";
-
+              echo "\n$sql\n";
+              
               $query = mysqli_query($conexao, $sql) ;
               if(!$query) {
 

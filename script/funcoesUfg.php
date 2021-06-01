@@ -47,9 +47,6 @@
      // Define the request parameter's
      $method = "GET";
 
-
-     
-
      //$request = "/data/$estacao/raw/from/1589241600/to/1589319000";
      $inicio = strtotime("$diaX  00:00:01") ; // timestamp unix menos 7200
      $a = (int) $inicio;
@@ -213,7 +210,8 @@
           }
           else {
 
-                $insert = "insert into evapoTranspiracaoTomateEstacao(dia, mes, ano, idCidade, temMedia, eto, codEstacao, validado) values ($dia, $mes, $ano, $idCidade, $tempAr, $etoX, \"$estacao\", 1); ";
+                $insert = "insert into evapoTranspiracaoTomateEstacao(dia, mes, ano, idCidade, temMedia, eto, codEstacao, validado, radSol, velVento, ur) 
+                           values ($dia, $mes, $ano, $idCidade, $tempAr, $etoX, \"$estacao\", 1, $radSol, $velVento, $umidRel); ";
                 $retorno = $insert;
 
           }
@@ -298,7 +296,7 @@ function getDadosUfg() {
                 $retorno = insereDados($codigo, $data, $opt, $id, $idCidadeV);
  
                 if( strlen($retorno) > 0 ) {
-
+                     echo "\n$retorno\n";
                       $list = explode("#", $retorno);
                       $queryInsert = mysqli_query($conexao, $list[0]) ;
                       $queryInsert2 = mysqli_query($conexao, $list[1]) ;
@@ -565,6 +563,8 @@ function getDadosUfg() {
                             if( $tempAr > -40 && $eto > -40 ) {
 
                                   $ins = "insert into evapoTranspiracaoTomateEstacao(dia, mes, ano, temMedia, eto, codEstacao, idCidade, validado) values($dia, $mes, $ano, $tempAr, $eto, $codigo, $idCidade, 0 );";
+                                  
+                                  echo "\n$ins\n";
                                   $pesquisa = mysqli_query($conexao, $ins);
 
                             }
@@ -572,6 +572,8 @@ function getDadosUfg() {
                               if( $tempAr > -40 ) {
 
                                   $ins = "insert into evapoTranspiracaoTomateEstacao(dia, mes, ano, temMedia, codEstacao, idCidade, validado) values($dia, $mes, $ano, $tempAr, $codigo, $idCidade, 0 );";
+                                  
+                                  echo "\n$ins\n";
                                   $pesquisa = mysqli_query($conexao, $ins);
                               }
 

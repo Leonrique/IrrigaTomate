@@ -16,7 +16,7 @@
 
     $message = "";
     $idCidade = $_POST["cidade"]; // municipio escolhido
-    $identificacao = $_POST["ident"];
+    $identificacao = (isset($_POST["newident"]) && $_POST["newident"] != "")? $_POST["newident"] : $_POST["ident"];
     $sistemaDePlantio = $_POST["optradio2"]; // 2 - convencional;  1- direto;
     $tipoSolo = $_POST["optradio1"]; // 1 - arenoso, 2 - medio, 3 - argiloso
     $data = $_POST["calendario"]; // data de plantio

@@ -20,7 +20,7 @@ include 'removeDadosRepetidos.php';
 date_default_timezone_set('America/Sao_Paulo');
 
 echo "\nStarted getDadosInmet ".date("m/d/Y h:i:s a", time());
-getDadosInmet();
+//getDadosInmet();
 echo "\nDone getDadosInmet ".date("m/d/Y h:i:s a", time());
 
 echo "\nStarted getDadosUfg ".date("m/d/Y h:i:s a", time());
@@ -33,25 +33,25 @@ echo "\nDone getDadosUfg ".date("m/d/Y h:i:s a", time());
 // de evapotranspiracao (ETC)
 
 echo "\nStarted base30anos ".date("m/d/Y h:i:s a", time());
-base30anos();
+//base30anos();
 echo "\nDone base30anos ".date("m/d/Y h:i:s a", time());
 
 // remover dados duplicados das estacoes UFG, INMET e SIMEHGO
 
 echo "\nStarted removeDadosEstacoesFisicas ".date("m/d/Y h:i:s a", time());
-removeDadosEstacoesFisicas();  //Remove todos os dados replicados das estacoes existentes
+//removeDadosEstacoesFisicas();  //Remove todos os dados replicados das estacoes existentes
 echo "\nDone removeDadosEstacoesFisicas ".date("m/d/Y h:i:s a", time());
 
 //Inserir dados nas demais cidades
 // a partir dos dados do Inmet, UFG e Simehgo
 //
 echo "\nStarted cidadesSemEstacoes ".date("m/d/Y h:i:s a", time());
-cidadesSemEstacoes();
+//cidadesSemEstacoes();
 echo "\nDone cidadesSemEstacoes ".date("m/d/Y h:i:s a", time());
 
 // 
 // remover dados duplicados das demais estacoes
 
 echo "\nStarted removeDadosDuplicados ".date("m/d/Y h:i:s a", time());
-removeDadosDuplicados();  //Remove todos os dados replicados das demais estacoes
+//removeDadosDuplicados();  //Remove todos os dados replicados das demais estacoes
 echo "\nDone removeDadosDuplicados ".date("m/d/Y h:i:s a", time());

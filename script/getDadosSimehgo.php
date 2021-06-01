@@ -759,8 +759,11 @@ function getvarSimehgo($dia, $mes, $ano, $codCidade) {
                   $q = getDataSimehgo($dia, $mes, $ano, $idEstacao[$i],$i);   
                   list ($tempAr,$eto,$velVento,$umidRel,$radSol) = explode(",",$q);
                   $result2 = insere2($dia, $mes, $ano, $tempAr,$eto, $radSol, $velVento,$umidRel, $idEstacao[$i], $idCidade[$i]);
-                  if(strlen($result2) > 30)
-                     $query2 = mysqli_query($conexao, $result2);
+                  if(strlen($result2) > 30){
+                    echo "\n$result2\n";
+                    $query2 = mysqli_query($conexao, $result2);     
+                  }
+
                   //echo "   \n  ".$result2 . "   \n   ";
 
                   $data2->modify('+1 day');

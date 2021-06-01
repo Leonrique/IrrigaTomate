@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="css/bootstrap.css">
     <link rel="stylesheet" href="css/fonts.css">
     <link rel="stylesheet" href="css/style.css">
-    
+   
     <!--[if lt IE 10]>
     <div style="background: #212121; padding: 10px 0; box-shadow: 3px 3px 5px 0 rgba(0,0,0,.3); clear: both; text-align:center; position: relative; z-index:1;"><a href="http://windows.microsoft.com/en-US/internet-explorer/"><img src="images/ie8-panel/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today."></a></div>
     <script src="js/html5shiv.min.js"></script>
@@ -127,7 +127,7 @@
                 <ul class="nav nav-tabs">
                   <li class="nav-item" role="presentation"><a class="nav-link active" href="#tabs-4-1" data-toggle="tab">Manejo</a></li>
                   <li class="nav-item" role="presentation"><a class="nav-link" href="#tabs-4-2" data-toggle="tab">Orientações</a></li>
-                  <li class="nav-item" role="presentation"></li>
+                  <li class="nav-item" role="presentation"><a class="nav-link" href="#tabs-4-3" data-toggle="tab">Minha estação</a></li>
                   <li class="nav-item" role="presentation"></li>
                   <li class="nav-item" role="presentation"></li>
                   <li class="nav-item" role="presentation"></li>
@@ -137,14 +137,22 @@
                   <div class="tab-pane fade show active" id="tabs-4-1">
                     <form name="form1" class="rd-form rd-mailform" method="post" action>
                       <div class="row row-14 gutters-14">
-                        <div class="col-sm-6">
+                        <div class="col-sm-3">
                           <div class="form-wrap">
-                            <input class="form-input" list="userIdentifications" onclick=" limparSelecaoPivo(this)"
-                              onchange="selectOptionValue(this)" autocomplete="off" name="ident" id="ident" type="search" 
-                              placeholder="Identificação pivô-central / quadrante / proprietário" data-constraints="@Required">
-                              <datalist id="userIdentifications">
-                              </datalist>
-                            </input>
+                            <select class="form-input" title="Identificação pivô-central / quadrante / proprietário" 
+                                    name="ident" id="ident" 
+                                    onchange="selectOptionValue(this)">
+                              <option value="0" disabled selected hidden >Selecione um pivô</option>
+                            </select>
+                          </div>
+                        </div>
+
+                        <div class="col-sm-3">
+                          <div class="form-wrap">
+                            <input class="form-input" type="text" 
+                                    name="newident" id="newident" 
+                                    title="Identificação pivô-central / quadrante / proprietário" 
+                                    placeholder="Novo pivô/quadrante/proprietário" />
                           </div>
                         </div>
                         
@@ -466,6 +474,32 @@
                     <p style="text-align: justify;">4.&nbsp;Na Planilha do manejo pr&aacute;tico da irriga&ccedil;&atilde;o gerado est&atilde;o "em verde" as datas, e as l&acirc;minas brutas de irriga&ccedil;&atilde;o e as regulagens do percent&iacute;metro do piv&ocirc;-central para a aplica&ccedil;&atilde;o da l&acirc;mina de &aacute;gua necess&aacute;ria, assim como o total de &aacute;gua aplicado no ciclo da cultura.</p>
                     <p style="text-align: justify;">5.&nbsp;A Planilha foi elaborada (o calend&aacute;rio foi elaborado) para o transplantio variando de 01 de fevereiro a 01 de julho, &eacute;poca mais apropriada para transplantio de tomate em Goi&aacute;s. Recomenda-se registrar o total de horas trabalhadas pelo sistema pelo registro inicial e final das leituras no hor&iacute;metro do piv&ocirc;-central.</p>
                   </div>
+                  <div class="tab-pane fade" id="tabs-4-3">
+                    <form name="form1" class="rd-form rd-mailform" method="post" action>
+                      <div class="row row-14 gutters-14">
+                        <div class="col-sm-5">
+                          <div class="form-wrap">
+                            <input class="form-input" type="text" 
+                                    name="station_name" id="station_name" 
+                                    title="Nome da estação" 
+                                    placeholder="Nome da estação" />
+                          </div>
+                        </div>
+
+                        <div class="col-sm-5">
+                          <div class="form-wrap">
+                            <input class="form-input" type="text" 
+                                    name="station_id" id="station_id" 
+                                    title="Identificador da estação (FieldClimate)" 
+                                    placeholder="Identificador da estação (FieldClimate)" />
+                          </div>
+                        </div>
+
+                        <div class="col-sm-2">
+                          <button class="button button-primary button-pipaluk" type="submit" onclick="verifica()">Gravar estação</button>
+                        </div>
+                    </form>
+                  </div>
                 </div>
               </div>
             </div>
@@ -695,10 +729,12 @@
           userOptions = userOptions.split(";");
 
           for (var i = 0; i < userOptions.length; i++) {
-            listOptions += '<option value="' + userOptions[i] + '" />';
+            var option = document.createElement("option");
+            
+            option.text = userOptions[i];
+            option.value = userOptions[i];
+            document.getElementById("ident").appendChild(option);
           }
-
-          document.getElementById('userIdentifications').innerHTML = listOptions;
         }
       }
 
@@ -1133,7 +1169,12 @@
       function verifica() {
         var cidade;
         var flag;
-        
+        var identifier = document.getElementById("newident").value;
+
+        if(identifier == undefined || identifier == ""){
+          identifier = document.getElementById("ident").value;
+        }
+
         if(!setDate(document.getElementById("calendario").value)){
           return;
         }
@@ -1214,14 +1255,12 @@
                     }
                     else {
 
-                      if (document.getElementById("ident") === undefined) {
+                      if (identifier === undefined) {
 
                         alert('O campo relativo a identifica\u00E7\u00E3o  piv\u00F4-central/ quadrante / propriet\u00E1rio \nn\u00E3o pode ser vazio.');
                         flag = 0;
                       }
                       else {
-
-                        identifier = document.getElementById("ident").value;
                         identifier = identifier.trim();
                       }
                       if (identifier == "") {
@@ -1307,7 +1346,7 @@
         }
 
         sessionStorage.setItem("cidade", cidade);
-        sessionStorage.setItem("identificacao", document.getElementById("ident").value);
+        sessionStorage.setItem("identificacao", identifier);
         sessionStorage.setItem("dataplantio", document.getElementById("calendario").value);
         sessionStorage.setItem("area", document.getElementById("area").value);
         sessionStorage.setItem("eficiencia", opcao);

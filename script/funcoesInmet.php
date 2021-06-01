@@ -631,6 +631,8 @@ function getDadosInmet() {
                                   $valores = $valores ."$ur)";
                                }
                                $ins = $insere.$valores.";";
+
+                               echo "\n$ins\n";
                                $pesquisa = mysqli_query($conexao, $ins);
                                //echo "\n $ins \n";
                                //echo "<br> $sql <br> $ins <br>";
@@ -674,6 +676,8 @@ function getDadosInmet() {
                                       $insere = $insere ."temMedia) ";
                                       $valores = $valores ."$tempAr);";
                                       $ins = $insere.$valores;
+                                      
+                                      echo "\n$ins\n";
                                       $pesquisa = mysqli_query($conexao, $ins);
  
                                   } // final de else de if( $numItens > 0 )
@@ -762,6 +766,8 @@ function getDadosInmet() {
                                                     $insere = $insere ."temMedia) ";
                                                     $valores = $valores ."$tempAr);";                     
                                                     $ins = $insere.$valores;
+
+                                                    echo "\n$ins\n";
                                                     $pesquisa = mysqli_query($conexao, $ins);
 
                                       }
@@ -820,6 +826,8 @@ function getDadosInmet() {
                                                     $insere = $insere ."temMedia) ";
                                                     $valores = $valores ."$tempAr);";                     
                                                     $ins = $insere.$valores;
+
+                                                    echo "\n$ins\n";
                                                     $pesquisa = mysqli_query($conexao, $ins);
 
                                          }
