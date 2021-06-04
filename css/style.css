@@ -2713,7 +2713,7 @@ input:-webkit-autofill ~ .form-validation {
 	background-color: #f1efeb;
 	background-image: none;
 	border-radius: 0;
-	-webkit-appearance: none;
+	-webkit-appearance: auto;
 	transition: .3s ease-in-out;
 	border: 1px solid #f1efeb;
 }

@@ -461,12 +461,34 @@
                             <input class="form-input" name="area" id="area" placeholder="Área total do pivô (ha)" min="0" max="99999999999" maxlength="10" type="number" data-constraints="@Required">
                           </div>
                         </div>
-                      </div>
 
+                        <div class="col-sm-3">
+                          <div class="form-wrap">
+                            <div class="form-input">
+                              <input class="input" type="checkbox" name="estacao" id="estacao" checked onclick="toggleStation()" >
+                              <label class="" for="estacao">Estação automática</label>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <!-- onchange="selectOptionValue(this)" -->
+
+                        <div class="col-sm-3">
+                          <div class="form-wrap">
+                            <select class="form-input" title="Selecionar estação" 
+                                    name="estacao_select" id="estacao_select" disabled>
+                              <option value="0" disabled selected hidden >Selecionar estação</option>
+                            </select>
+                          </div>
+                        </div>
+                        
+                      </div>
+                     
                       <span class="fa fa-question-circle-o fa-4x" style="color:#f1efeb;" onmouseover="showInfo()"></span>
-                      <button class="button button-primary button-pipaluk" style="float: right;" type="submit" onclick="verifica()">Acessar</button>
+                      <button class="button button-primary button-pipaluk" style="float: right;" type="submit" onclick="acessarPlanilha()">Acessar</button>
                     </form>
                   </div>
+
                   <div class="tab-pane fade" id="tabs-4-2">
                     <p style="text-align: justify;">1.&nbsp;Na <strong>data de transplantio do tomate</strong>, o solo deve estar <strong>&uacute;mido</strong>, com bom teor de &aacute;gua ("caixa cheia"). Por ser cultivado em per&iacute;odo de escassez de chuvas, pode ser necess&aacute;rio fazer irriga&ccedil;&atilde;o pr&eacute;via para fornecer &aacute;gua ao solo. Em termos m&eacute;dios, os solos do Cerrado ret&ecirc;m 30 mm de &aacute;gua em uma profundidade de 0-30 cm. A Planilha gerada pelo&nbsp;IrrigaTomate&nbsp;foi desenvolvida para solos de textura m&eacute;dia a argilosa. Para solos arenosos, que exigem irriga&ccedil;&otilde;es mais frequentes, o usu&aacute;rio pode elaborar sua pr&oacute;pria planilha, pois s&atilde;o apresentadas as l&acirc;minas di&aacute;rias de irriga&ccedil;&atilde;o.</p>
                     <p style="text-align: justify;">2.&nbsp;Ocorrendo <strong>chuva</strong> entre a &uacute;ltima irriga&ccedil;&atilde;o e a pr&oacute;xima (duas irriga&ccedil;&otilde;es consecutivas), a quantidade da precipita&ccedil;&atilde;o pluvial, em mm, medida por pluvi&ocirc;metro instalado na &aacute;rea, deve ser <strong>subtra&iacute;da da l&acirc;mina de &aacute;gua da pr&oacute;xima irriga&ccedil;&atilde;o</strong>. Se essa precipita&ccedil;&atilde;o pluvial for maior que a l&acirc;mina da pr&oacute;xima irriga&ccedil;&atilde;o, considerar essa irriga&ccedil;&atilde;o j&aacute; atendida e n&atilde;o computar cr&eacute;ditos dos mm de &aacute;gua excedentes em irriga&ccedil;&otilde;es futuras.</p>
@@ -474,15 +496,16 @@
                     <p style="text-align: justify;">4.&nbsp;Na Planilha do manejo pr&aacute;tico da irriga&ccedil;&atilde;o gerado est&atilde;o "em verde" as datas, e as l&acirc;minas brutas de irriga&ccedil;&atilde;o e as regulagens do percent&iacute;metro do piv&ocirc;-central para a aplica&ccedil;&atilde;o da l&acirc;mina de &aacute;gua necess&aacute;ria, assim como o total de &aacute;gua aplicado no ciclo da cultura.</p>
                     <p style="text-align: justify;">5.&nbsp;A Planilha foi elaborada (o calend&aacute;rio foi elaborado) para o transplantio variando de 01 de fevereiro a 01 de julho, &eacute;poca mais apropriada para transplantio de tomate em Goi&aacute;s. Recomenda-se registrar o total de horas trabalhadas pelo sistema pelo registro inicial e final das leituras no hor&iacute;metro do piv&ocirc;-central.</p>
                   </div>
+                  
                   <div class="tab-pane fade" id="tabs-4-3">
-                    <form name="form1" class="rd-form rd-mailform" method="post" action>
+                    <form name="formEstacao" class="rd-form rd-mailform" method="post" action>
                       <div class="row row-14 gutters-14">
                         <div class="col-sm-5">
                           <div class="form-wrap">
                             <input class="form-input" type="text" 
                                     name="station_name" id="station_name" 
                                     title="Nome da estação" 
-                                    placeholder="Nome da estação" />
+                                    placeholder="Nome da estação" data-constraints="@Required" minlength="3" maxlength="60"/>
                           </div>
                         </div>
 
@@ -491,12 +514,12 @@
                             <input class="form-input" type="text" 
                                     name="station_id" id="station_id" 
                                     title="Identificador da estação (FieldClimate)" 
-                                    placeholder="Identificador da estação (FieldClimate)" />
+                                    placeholder="Identificador da estação (FieldClimate)" data-constraints="@Required" minlength="3" maxlength="20"/>
                           </div>
                         </div>
 
                         <div class="col-sm-2">
-                          <button class="button button-primary button-pipaluk" type="submit" onclick="verifica()">Gravar estação</button>
+                          <button class="button button-primary button-pipaluk" type="submit" onclick="gravarEstacao()">Gravar estação</button>
                         </div>
                     </form>
                   </div>
@@ -616,7 +639,8 @@
   <script language="javascript">
       var mesInicial = 1;
       var mesFinal = 6;
-      
+      var xmlHttpObject = XMLHttpRequest;
+
       function identificacaoPivot(nomePivot) {
         var idCidadeZ = [];
         var identificacaoZ = [];
@@ -719,10 +743,10 @@
 
       document.addEventListener('DOMContentLoaded', function () {
         setUserIdentifications();
+        setStations();
       }, false);
 
       function setUserIdentifications() {
-        var listOptions = '';
         var userOptions = sessionStorage.getItem("selectBoxOptions2");
 
         if (userOptions != undefined) {
@@ -735,6 +759,25 @@
             option.value = userOptions[i];
             document.getElementById("ident").appendChild(option);
           }
+        }
+      }
+
+      function setStations() {
+        let stations = sessionStorage.getItem("estacoes");
+        
+        if (stations == undefined) {
+          return;
+        }
+
+        stations = stations.split("|");
+
+        for (let counter = 0; counter < stations.length; counter++) {
+          let option = document.createElement("option");
+          let stationInfo = stations[counter].split(";");
+
+          option.text = stationInfo[3] + ' ' + stationInfo[2];
+          option.value = stationInfo[3];
+          document.getElementById("estacao_select").appendChild(option);
         }
       }
 
@@ -1166,10 +1209,145 @@
         }
       }
 
-      function verifica() {
+      function retornarRequestObject() {
+        if (window.XMLHttpRequest) { // FireFox, Mozilla, Safari,...
+            xmlHttpObject = new XMLHttpRequest();
+            if (xmlHttpObject.overrideMimeType) {
+                xmlHttpObject.overrideMimeType('text/xml');
+            }
+        } else if (window.ActiveXObject) { // Internet Explorer
+            try {
+                xmlHttpObject = new ActiveXObject("Msxml2.XMLHTTP"); // Internet Explorer 5.5+
+            } catch (e) {
+                try {
+                    xmlHttpObject = new ActiveXObject("Microsoft.XMLHTTP"); //Internet Explorer 5.5-
+                } catch (e) {}
+            }
+        }
+
+        if (!xmlHttpObject) {
+            alert('Imposs\u00EDvel criar inst\u00E2ncia do objeto XMLHttpResquest.');
+            return false;
+        }
+        
+        return xmlHttpObject;
+      }
+
+      function checkIfStationAlreadyExists(givenStationId){
+        let stations = document.getElementById("estacao_select");
+
+        if(stations.options.length <= 1){
+          return false
+        }
+
+        for (let index = 1; index < stations.options.length; index++) {
+          const stationId = stations.options[index].text.split(" ")[0];
+          
+          if(givenStationId == stationId){
+            return true;
+          }
+        }
+
+        return false;
+      }
+
+      async function gravarEstacao(){
+        let station_name = document.getElementById("station_name").value;
+        let station_id = document.getElementById("station_id").value;
+
+        if(station_name == undefined || station_name == ""){
+          event.preventDefault();
+          alert("Informe o nome da estação.");
+          document.getElementById("station_name").focus();
+          return false;
+        }
+        
+        if(station_id == undefined || station_id == ""){
+          event.preventDefault();
+          alert("Informe o identificador da estação.");
+          document.getElementById("station_id").focus();
+          return false;
+        }
+        
+        if(checkIfStationAlreadyExists(station_id)){
+          event.preventDefault();
+          alert(`Já existe a estação ${station_id} cadastrada para o usuário logado.`);
+          document.getElementById("station_id").focus();
+          return false;
+        }
+
+        let url = 'cadastroEstacoes.php?idUser='+sessionStorage.getItem("idUser")+'&station_name='+station_name+'&station_id='+station_id;
+
+        let response = await cadastrarEstacao(url);
+        let message = getValuesFromResponse(response, "<message>", "</message>")
+        
+        if(message != ""){
+          alert(message);
+        }
+        
+        let stations = getValuesFromResponse(response, "<estacao>", "</estacao>")
+
+        if(stations != ""){
+          sessionStorage.setItem("estacoes", stations);
+          setStations()
+        }
+
+        return true;
+      }
+
+      function getValuesFromResponse(response, opentag, closetag){
+          let texto = response;
+          let j = texto.indexOf(opentag);
+          let s = opentag.length;
+          let i = texto.length;
+
+          let texto2 = "";
+          for (k = j + s; k < i; k++)
+              texto2 = texto2 + texto.charAt(k);
+
+          texto2 = texto2 + "";
+          let texto3 = "";
+
+          j = texto2.indexOf(closetag);
+          for (k = 0; k < j; k++)
+              texto3 = texto3 + texto2.charAt(k);
+
+          texto3 = texto3 + "";
+          texto3 = texto3.trim();
+
+          return texto3
+      }
+
+      function cadastrarEstacao(url){
+        return new Promise(function(resolve, reject){
+          xmlHttpObject = retornarRequestObject();
+
+          xmlHttpObject.open('GET', url); //executa a chamada no servidor
+
+          xmlHttpObject.onload = function(){
+            var status = xmlHttpObject.status;
+            if (status == 200) {
+                resolve(xmlHttpObject.response.replace("\r\n", ""));
+            } else {
+                reject(status);
+            }
+          }; 
+
+          xmlHttpObject.send(null); // envia parametros ao servidor se for pelo metodo POST
+        })
+      }
+
+      function acessarPlanilha() {
         var cidade;
         var flag;
         var identifier = document.getElementById("newident").value;
+        var estacao_select = document.getElementById("estacao_select");
+
+        let estacao = "";
+
+        if(estacao_select.selectedIndex > 0){
+          estacao = estacao_select.options[estacao_select.selectedIndex].value;
+        }
 
         if(identifier == undefined || identifier == ""){
           identifier = document.getElementById("ident").value;
@@ -1209,17 +1387,15 @@
               flag = 0;
             }
             else {
-
+              opcao = 0;
+              
               if (document.getElementById("efic1").checked === true) {
                 opcao = 1;
               }
-              else
-                if (document.getElementById("efic2").checked === true) {
-                  opcao = 2;
-                }
-                else
-                  opcao = 0;
 
+              if (document.getElementById("efic2").checked === true) {
+                opcao = 2;
+              }
 
               eficiencia = parseInt(opcao);
               if (parseInt(opcao) == 0) {
@@ -1353,6 +1529,7 @@
         sessionStorage.setItem("laminaAplicada", document.getElementById("norma").value);
         sessionStorage.setItem("solo", solo);
         sessionStorage.setItem("plantio", plantio);
+        sessionStorage.setItem("estacao", estacao);
 
         window.document.form1.enctype = "multipart/form-data";
         window.document.form1.method = "post";
@@ -1360,6 +1537,16 @@
         window.document.form1.submit();
         
         //return flag;
+      }
+
+      function toggleStation(){
+        let estacao_select = document.getElementById("estacao_select");
+
+        estacao_select.disabled = !estacao_select.disabled; 
+
+        if(estacao_select.disabled){
+          estacao_select.selectedIndex = 0;
+        }
       }
     </script>
 </html>

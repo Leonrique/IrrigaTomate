@@ -32,14 +32,14 @@ function getvarNasa($dia, $lat, $lon) {
           if( is_null($a) ) {
 
             //echo "O valor de a eh nulo ";           
-            $resultado = "-99.0,-99.0";
+            $resultado = "-99.0,-99.0,-99.0,-99.0,-99.0";
             return($resultado);
           }
           else
              if( strlen($a) == 0 ) {
 
                echo "O valor de a eh vazio ";          
-               $resultado = "-99.0,-99.0"; 
+               $resultado = "-99.0,-99.0,-99.0,-99.0,-99.0"; 
                return($resultado);
 
              }
@@ -48,7 +48,7 @@ function getvarNasa($dia, $lat, $lon) {
           if( is_null($obj)) {
 
             echo "O valor de obj eh nulo";
-            $resultado = "-99.0,-99.0";
+            $resultado = "-99.0,-99.0,-99.0,-99.0,-99.0";
             return($resultado);
           }
 

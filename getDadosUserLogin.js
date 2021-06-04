@@ -27,6 +27,31 @@ function getDadosUser2(id) {
     return false;
 }
 //**********************************************************************************
+
+
+function getValuesFromResponse(response, opentag, closetag){
+    let texto = response;
+    let j = texto.indexOf(opentag);
+    let s = opentag.length;
+    let i = texto.length;
+
+    let texto2 = "";
+    for (k = j + s; k < i; k++)
+        texto2 = texto2 + texto.charAt(k);
+
+    texto2 = texto2 + "";
+    let texto3 = "";
+
+    j = texto2.indexOf(closetag);
+    for (k = 0; k < j; k++)
+        texto3 = texto3 + texto2.charAt(k);
+
+    texto3 = texto3 + "";
+    texto3 = texto3.trim();
+
+    return texto3
+}
+
 function mostraSaidaId2() {
     if (xmlHttpObject.readyState == 4) {
         if (xmlHttpObject.status == 200) {
@@ -41,27 +66,14 @@ function mostraSaidaId2() {
             var tipoSoloZ = [];
             var areaPivotZ = [];
             
-            texto = xmlHttpObject.responseText;
-            j = texto.indexOf("<id>");
-            s = "<id>".length;
-            i = texto.length;
-
-            texto2 = "";
-            for (k = j + s; k < i; k++)
-                texto2 = texto2 + texto.charAt(k);
-            texto2 = texto2 + "";
-            texto3 = "";
-            j = texto2.indexOf("</id>");
-            for (k = 0; k < j; k++)
-                texto3 = texto3 + texto2.charAt(k);
-            texto3 = texto3 + "";
-            texto3 = texto3.trim();
+            texto3 = getValuesFromResponse( xmlHttpObject.responseText, "<id>", "</id>" );
 
             sessionStorage.setItem("selectBoxOptions2", "");
             sessionStorage.setItem("colecaoId", "");
+            sessionStorage.setItem("estacoes", "");
+
             colecaoId = "";
             if (texto3.length > 10) {
-
                 results = texto3.split("#%&@1743@");
                 numRegistrosZ = 0;
                 opcoesId = "";
@@ -95,7 +107,7 @@ function mostraSaidaId2() {
 
                 sessionStorage.setItem("selectBoxOptions2", opcoesId);
                 sessionStorage.setItem("colecaoId", colecaoId);
-
+                
                 sessionStorage.setItem("numRegistrosZ", numRegistrosZ);
                 sessionStorage.setItem("idCidadeZ", idCidadeZ);
                 sessionStorage.setItem("identificacaoZ", identificacaoZ);
@@ -106,26 +118,11 @@ function mostraSaidaId2() {
                 sessionStorage.setItem("tipoPlantioZ", tipoPlantioZ);
                 sessionStorage.setItem("tipoSoloZ", tipoSoloZ);
                 sessionStorage.setItem("areaPivotZ", areaPivotZ);
-
             } 
-            // else 
-            // {
-            //     if (texto3 == 'B') {
-            //         alert('codigo -> ' + texto3 + '\n\nO servidor de base de dados n\u00E3o est\u00E1 acess\u00EDvel!');
-            //     }
-            //     else
-            //         if (texto3 == 'A') {
-            //             alert('codigo -> ' + texto3 + '\n\nUsername ou senha n\u00E3o confere!');
-            //         }
-            //         else
-            //             if (texto3 == 'D') {
-            //                 alert('codigo -> ' + texto3 + '\n\nUsername ou senha com caracter invalido ou nulo!');
-            //             }
-            //             else
-            //                 if (texto3 == 'F') {
-            //                     //alert('codigo -> '+ texto3 +'\n\nNenhum registro foi encontrado na base de dados!');
-            //                 }
-            // }
+
+            let stations = getValuesFromResponse(xmlHttpObject.responseText, "<estacao>", "</estacao>" );
+
+            sessionStorage.setItem("estacoes", stations);
         } else {
             alert('Problema na requisi\u00E7\u00E3o!');
         }

@@ -1,6 +1,10 @@
 <?php
 
-  //include 'getDadosNasa.php';
+//  include 'getDadosNasa.php';
+ //    include 'pathConfig.php';
+  //   $arquivoPath = configPath;
+   //  include($arquivoPath);
+
 
   function media( $strVar ) {
 
@@ -46,6 +50,9 @@
  
      // Define the request parameter's
      $method = "GET";
+
+
+     
 
      //$request = "/data/$estacao/raw/from/1589241600/to/1589319000";
      $inicio = strtotime("$diaX  00:00:01") ; // timestamp unix menos 7200
@@ -205,13 +212,12 @@
 
             $update = "update evapoTranspiracaoTomateEstacao set temMedia = $tempAr where id = $id;#";
             $update2 = " update evapoTranspiracaoTomateEstacao set eto = $etoX where id = $id;#";
-            $update3 = " update evapoTranspiracaoTomateEstacao set validado = 1 where id = $id;";
+            $update3 = " update evapoTranspiracaoTomateEstacao set validado = 1, ur = $umidRel, radsol = $radSol, velVento = $velVento where id = $id;";
             $retorno = $update.$update2.$update3;
           }
           else {
 
-                $insert = "insert into evapoTranspiracaoTomateEstacao(dia, mes, ano, idCidade, temMedia, eto, codEstacao, validado, radSol, velVento, ur) 
-                           values ($dia, $mes, $ano, $idCidade, $tempAr, $etoX, \"$estacao\", 1, $radSol, $velVento, $umidRel); ";
+                $insert = "insert into evapoTranspiracaoTomateEstacao(dia, mes, ano, idCidade, temMedia, eto, codEstacao, validado, ur, radsol, velVento) values ($dia, $mes, $ano, $idCidade, $tempAr, $etoX, \"$estacao\", 1, $umidRel, $radSol, $velVento); ";
                 $retorno = $insert;
 
           }
@@ -222,6 +228,190 @@
 
   } // final de function insereDados
 
+function getDadosFaltantes() {
+
+     $conexao2 = mysqli_connect(hostBancoPantanal, userDonoPantanal, senhaDonoPantanal, nomeBancoPantanal) ;
+     if (!$conexao2) {
+
+            echo "Erro ao se conectar com a base de dados. Veja arquivo config.php";
+            exit(1);
+     }
+
+
+          date_default_timezone_set('America/Sao_Paulo');
+          $hojeDia = date('d');
+          $hojeMes = date('m');
+          $hojeAno = date('Y');
+       
+          $dia = "01";
+          $mes = "01";
+          $ano = $hojeAno; 
+
+          $diaInicial = $dia.'-'.$mes.'-'.$ano;
+          $data2 = new DateTime($diaInicial);
+
+          $codigoEstacaoUFG[1]= "00203E1D"; $lat[1] = "-16.0206";  $lon[1] = "-49.806";
+          $codigoEstacaoUFG[2]= "00203E21"; $lat[2] = "-16.8044";  $lon[2] = "-49.924";
+          $codigoEstacaoUFG[3]= "00203E22"; $lat[3] = "-16.9626";  $lon[3] = "-49.2265";
+          $codigoEstacaoUFG[4]= "00203E24"; $lat[4] = "-17.3020";  $lon[4] = "-49.017";
+          $codigoEstacaoUFG[5]= "00203E26"; $lat[5] = "-16.6769";  $lon[5] = "-48.6181";
+          $codigoEstacaoUFG[6]= "00206B1B"; $lat[6] = "-16.0834";  $lon[6] = "-48.5076";
+
+          $numEstacoesUfg = 6;
+
+          # O select abaixo seleciona todas as estacoes. Cada estacao nova da UFG
+          # deverah ser inserido na clausula where deste select.
+
+          $sql = "select distinct dia, mes, ano, codEstacao, idCidade, id 
+                  from evapoTranspiracaoTomateEstacao 
+                  where  ( codEstacao = \"00206B1B\" or codEstacao = \"00203E21\"  or codEstacao = \"00203E1D\"  or codEstacao = \"00203E22\"  or codEstacao = \"00203E24\"  or codEstacao = \"00203E26\") 
+                  and ano = $ano order by codEstacao,ano, mes, dia;";
+          $query = mysqli_query($conexao2, $sql) ;
+          if(!$query)
+           {
+              echo "Houve erro nesta consulta!";
+              echo $sql;
+              mysqli_close($conexao2);
+              exit(1);
+           }
+
+          $numLinhas = $query->num_rows;
+
+          if ($numLinhas > 0) {
+
+              $flag = 1;
+              $codEstacaoAnterior = "";
+
+              while( $linha=$query->fetch_row() ) {
+
+//if( $flag == 0)
+//echo "$codEstacaoAnterior $linha[3] $linha[0]   $linha[1]  $linha[2] \n";
+                   if( $flag == 0 )  {
+                       if( ! strcmp( trim($codEstacaoAnterior) , trim($linha[3]) ) ) {
+
+                           $data2->modify('+1 day');
+                           $dia = $data2->format('d');
+                           $mes = $data2->format('m');
+                           $codEstacaoAnterior = $linha[3];
+                       } 
+                       else {
+
+                           $dia = "01";
+                           $mes = "01";
+                           $diaInicial = $dia.'-'.$mes.'-'.$ano;
+                           $data2 = new DateTime($diaInicial);
+                           $codEstacaoAnterior = $linha[3];
+                       }
+                        
+                   }
+                   else  {
+                     $codEstacaoAnterior = $linha[3];
+                     $flag = 0;
+                   }
+                   //
+                   // Por causa de dados repetitos, eh necessario
+                   // ser tolerante a este erro.
+                   // O if abaixo eh para nao deixar que a varredura
+                   // tenha uma data (dia,mes) maior do que a considerada no momento (dia2,mes2)
+                   $dia2 = (int)$linha[0];
+                   $mes2 = (int)$linha[1];
+                   $dia1 = (int)$dia;
+                   $mes1 = (int)$mes;
+                   if( (int)$mes == (int)$mes2 ) {
+
+                       if( (int)$dia > (int)$dia2 ) {
+                   
+                           $dia = $dia2;
+                           $dia1 = $dia2;
+                           $mes1 = (int)$mes;
+                           $diaInicial = $dia.'-'.$mes.'-'.$ano;
+                           $data2 = new DateTime($diaInicial);
+
+                       }
+
+                   }
+                   else {
+
+                             if( (int)$mes > (int)$mes2 ) {
+
+                               $dia = $dia2;
+                               $mes = $mes2;
+                               $dia1 = $dia2;
+                               $mes1 = $mes2;
+                               $diaInicial = $dia.'-'.$mes.'-'.$ano;
+                               $data2 = new DateTime($diaInicial);
+                             }
+                   }
+                     
+
+//echo "$dia   $mes  $linha[3] $dia2   $mes2\n";                
+                   while( !($dia1 == $dia2 && $mes1 == $mes2) && !( $dia1 == $hojeDia && $mes1 == $hojeMes ))  {
+
+                     $data = $ano."-".$mes1."-".$dia1;
+                     $codigo = trim($linha[3]);
+                     $id = $linha[5];
+                     $idCidade = trim($linha[4]); 
+                     $retorno = insereDados($codigo, $data, 1, $id, $idCidade);
+ 
+                     if ( strlen( $retorno ) > 10 )  {
+                         $queryInsert = mysqli_query($conexao2, $retorno) ;
+                         if(!$queryInsert) {
+
+                            echo "Nao deu certo o comando ===>  $retorno\n"; 
+                         }
+
+                     }
+                     else {
+
+                        for ($u = 1; $u <= $numEstacoesUfg; $u++)
+                           if( !strcmp(trim($codigoEstacaoUFG[$u]), trim($codigo) ) ) {
+                             $latV = $lat[$u];
+                             $lonV = $lon[$u];
+                           }
+
+                        if( strlen($dia1) < 2)
+                             $diaV = "0".$dia1;
+                        else
+                             $diaV = $dia1;
+
+                        if( strlen($mes1) < 2)
+                             $mesV = "0".$mes1;
+                        else
+                             $mesV = $mes1;
+
+                        $diaNasa = $ano.$mesV.$diaV;
+                        $resultadoNasa =  getvarNasa($diaNasa, $latV, $lonV);
+//echo "dia -->$diaNasa   res --> $resultadoNasa\n";
+                        $varClimaticas = explode(",", $resultadoNasa);
+                            $tempAr = $varClimaticas[0];
+                            $eto = $varClimaticas[1];
+                            $velVento = $varClimaticas[2];
+                            $umidRel = $varClimaticas[3];
+                            $radSol = $varClimaticas[4];
+
+                            if( $tempAr > -40 && $eto > -40 ) {
+
+                                  $ins = "insert into evapoTranspiracaoTomateEstacao(dia, mes, ano, temMedia, eto, codEstacao, idCidade, validado, ur, radsol, velVento) values($diaV, $mesV, $ano, $tempAr, $eto, \"$codigo\", $idCidade, 1, $umidRel, $radSol, $velVento );";
+//echo "insercao --> $ins \n";
+                                  $pesquisa = mysqli_query($conexao2, $ins);
+
+                            }
+
+
+
+                     }
+                     //echo "O dia $dia1/$mes1/$ano, para a estacao $linha[3], nao tem registro. \n";
+                     $data2->modify('+1 day');
+                     $dia1 = $data2->format('d');
+                     $mes1 = $data2->format('m');
+                   }
+                  //echo "sau do while mais interno \n"; 
+              } // final de while( $linha=$query->fetch_row() ) {
+          }
+
+          mysqli_close($conexao2);
+
+     } // final da funcao getDadosFaltantes()
 
 function getDadosUfg() {
 
@@ -259,7 +449,10 @@ function getDadosUfg() {
      // Incluir as cidades do estado de goias
      //   include ("dadosEstacoes.php");
  
-     $sql = "select id, dia, mes, ano, codEstacao, idCidade from evapoTranspiracaoTomateEstacao where  ( codEstacao = \"00206B1B\" or codEstacao = \"00203E21\"  or codEstacao = \"00203E1D\"  or codEstacao = \"00203E22\"  or codEstacao = \"00203E24\"  or codEstacao = \"00203E26\") and (eto is null or temMedia is null or validado = 0) ;";
+     $sql = "select id, dia, mes, ano, codEstacao, idCidade 
+             from evapoTranspiracaoTomateEstacao 
+             where  ( codEstacao = \"00206B1B\" or codEstacao = \"00203E21\"  or codEstacao = \"00203E1D\"  or codEstacao = \"00203E22\"  or codEstacao = \"00203E24\"  or codEstacao = \"00203E26\") 
+             and (eto is null or temMedia is null or validado = 0 or ur is null or radsol is null or radsol < 0.1 or velVento is null) ;";
      $query = mysqli_query($conexao, $sql) ;
      if(!$query)
            {
@@ -275,7 +468,7 @@ function getDadosUfg() {
        {
               $opt = 2; // update = 2, insert = 1
               while( $linha=$query->fetch_row() ) {
- 
+               
                 //$data = $linha[1]."-".$linha[2]."-".$linha[3];
                 $codigo = $linha[4];
                 $id = $linha[0];
@@ -296,12 +489,16 @@ function getDadosUfg() {
                 $retorno = insereDados($codigo, $data, $opt, $id, $idCidadeV);
  
                 if( strlen($retorno) > 0 ) {
-                     echo "\n$retorno\n";
+
                       $list = explode("#", $retorno);
                       $queryInsert = mysqli_query($conexao, $list[0]) ;
                       $queryInsert2 = mysqli_query($conexao, $list[1]) ;
                       $queryInsert3 = mysqli_query($conexao, $list[2]) ;
                      
+                      echo "\n$list[0]";
+                      echo "\n$list[1]";
+                      echo "\n$list[2]";
+
                       if(!$queryInsert || !$queryInsert2 || !$queryInsert3 )
                         {          
                             echo "Houve erro nesta Insercao de dados!  $retorno";
@@ -416,22 +613,6 @@ function getDadosUfg() {
      $idCidade1[6] =   109; $codigo1[6] = "00206B1B";
      $numEstacoesUFG = 6; // quantidade de estacoes da ufg
 
-     date_default_timezone_set('America/Sao_Paulo');
- 
-/*
-     $sql = "select distinct codEstacao from evapoTranspiracaoTomateEstacao where idCidade = 2259 or idCidade = 3488 or idCidade = 2037 or idCidade = 3763 or idCidade = 4960 or idCidade = 109;";
-     $query = mysqli_query($conexao, $sql) ;
-     if(!$query)
-           {
-              mysqli_close($conexao);
-              echo "Houve erro nesta consulta!";
-              echo $sql;
-              exit(1);
-           }
-
-     $numLinhas = $query->num_rows;
-*/
-
 
      //if ($numLinhas > 0) {
 
@@ -448,6 +629,8 @@ function getDadosUfg() {
                 $sql = "select  max(ano) from evapoTranspiracaoTomateEstacao where codEstacao = \"$codigo\" and validado = 1;";
                 $query2 = mysqli_query($conexao, $sql) ;
                 if($query2) {
+
+
                        $num_rows = $query2->num_rows;
                        if( $num_rows > 0) {
                            $linha2 = $query2->fetch_row();
@@ -458,31 +641,32 @@ function getDadosUfg() {
                        $sql = "select  max(mes) from evapoTranspiracaoTomateEstacao where codEstacao = \"$codigo\" and ano = $ano  and validado = 1;";
                        $query2 = mysqli_query($conexao, $sql) ;
                        if($query2) {
-                           $num_rows = $query2->num_rows;
-                           if( $num_rows > 0) {
-                              $linha2 = $query2->fetch_row();                                        
-                              $mes = $linha2[0];
-                           }
-                           else
-                              $mes =  1;
 
-                           $sql = "select  max(dia) from evapoTranspiracaoTomateEstacao where  codEstacao = \"$codigo\" and ano = $ano  and mes = $mes and validado = 1;";
-                           $query2 = mysqli_query($conexao, $sql) ;
-                           if($query2) {
+                                       $num_rows = $query2->num_rows;
+                                       if( $num_rows > 0) {
+                                          $linha2 = $query2->fetch_row();                                        
+                                          $mes = $linha2[0];
+                                       }
+                                       else
+                                         $mes =  1;
 
-                                 $num_rows = $query2->num_rows;
-                                 if( $num_rows > 0) {
-                                    $linha2 = $query2->fetch_row();
-                                    $dia = $linha2[0];
-                                 }
-                                 else {
-                                    $dia = 1;
-                                 }
+                                       $sql = "select  max(dia) from evapoTranspiracaoTomateEstacao where  codEstacao = \"$codigo\" and ano = $ano  and mes = $mes and validado = 1;";
+                                       $query2 = mysqli_query($conexao, $sql) ;
+                                       if($query2) {
 
-                           }
-                           else {
-                                    $dia = 1;
-                           }
+                                            $num_rows = $query2->num_rows;
+                                            if( $num_rows > 0) {
+                                               $linha2 = $query2->fetch_row();
+                                               $dia = $linha2[0];
+                                            }
+                                            else {
+                                              $dia = 1;
+                                            }
+
+                                       }
+                                       else {
+                                              $dia = 1;
+                                       }
                        } else {
 
                                $dia = "01";
@@ -563,8 +747,6 @@ function getDadosUfg() {
                             if( $tempAr > -40 && $eto > -40 ) {
 
                                   $ins = "insert into evapoTranspiracaoTomateEstacao(dia, mes, ano, temMedia, eto, codEstacao, idCidade, validado) values($dia, $mes, $ano, $tempAr, $eto, $codigo, $idCidade, 0 );";
-                                  
-                                  echo "\n$ins\n";
                                   $pesquisa = mysqli_query($conexao, $ins);
 
                             }
@@ -572,13 +754,8 @@ function getDadosUfg() {
                               if( $tempAr > -40 ) {
 
                                   $ins = "insert into evapoTranspiracaoTomateEstacao(dia, mes, ano, temMedia, codEstacao, idCidade, validado) values($dia, $mes, $ano, $tempAr, $codigo, $idCidade, 0 );";
-                                  
-                                  echo "\n$ins\n";
                                   $pesquisa = mysqli_query($conexao, $ins);
                               }
-
-
-
 
                             echo "Houve erro nesta insercao de dados!  $retorno";
                             $registro = "Houve erro nesta consulta ==>  $retorno";
@@ -608,12 +785,13 @@ function getDadosUfg() {
 
      //} // final de if(num_linhas > 0.....
 
- 
+    getDadosFaltantes(); 
 
     mysqli_close($conexao);
 
   } // final da funcao getDadosUfg() {
 
+    //getDadosFaltantes(); 
   //getDadosUfg();
 
 ?>

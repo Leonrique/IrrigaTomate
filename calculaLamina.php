@@ -24,6 +24,7 @@
     $laminaAplicada = $_POST["norma"];
     $areaPivo = $_POST["area"]; // Area total do Pivot (ha)
     $regula = $_POST["norma"];
+    $estacao = (isset($_POST["estacao_select"]))? $_POST["estacao_select"] : "";
 
     $pieces = explode("/", $data);
     $mesInicial = (int)$pieces[1];
@@ -83,8 +84,6 @@
     if (!$conexao) {
         $message = "Problemas de acesso &agrave; base de dados do sistema. Tente mais tarde.";
         include 'Validacao.php';
-
-        mysqli_close($conexao);
         exit(1);
   }
 
@@ -226,15 +225,22 @@
 // Serah atraves do Agritempo, Nasapower ou os dados com medias de
 // 30 anos
 //
+     $numLinhas  = 0;
 
- 
+     $sql= "select dia, mes, temMedia, eto 
+            from evapoTranspiracaoTomateEstacao  
+            where idCidade = $idCidade and  (mes = $mes and dia = $dia )";
+     
+    if($estacao != ""){
+      $query = mysqli_query($conexao, $sql." and codEstacao = \"$estacao\" ");
+      $numLinhas = $query->num_rows;
+    }
+    
+     if( $numLinhas == 0) {
+      $query = mysqli_query($conexao, $sql);
+     } 
 
-     $sql= "select dia, mes, temMedia, eto from evapoTranspiracaoTomateEstacao  where idCidade = $idCidade and  (mes = $mes and dia = $dia ) ;";
-
-     $query = mysqli_query($conexao, $sql);
      if(!$query) {
-
-
              $t = (int)$mes;
              $mesZ = $mesNovo[$t];
              $necessidadeInicial = 0;
@@ -254,8 +260,6 @@
              //
      }
      else {
-
-
           $numLinhas = $query->num_rows;
           if( $numLinhas > 0) {
        
@@ -284,71 +288,49 @@
      $ano = date("Y");
      $novaData =  date("m-j-Y", mktime(0, 0, 0, $mes, $dia + 1, $ano));
      list ($mes, $dia, $ano) = explode("-",$novaData);
+
+     $numLinhas = 0;
+     $orderBy = "order by mes, dia;";
+
      $sql= "select dia, mes, temMedia, eto 
             from evapoTranspiracaoTomateEstacao
             where idCidade = $idCidade 
-            and ((mes = $mes and dia >= $dia ) or mes > $mes )
-            and ano = (select MAX(ano) from evapoTranspiracaoTomateEstacao where idCidade = $idCidade and ((mes = $mes and dia >= $dia ) or mes > $mes))
-            order by mes, dia;";
- 
-     //$query = mysql_query($sql) ;
-     $query = mysqli_query($conexao, $sql) ;
-     if(!$query)
-           {
-             echo '
-               <center>
-               <table border=0>
-                     <tr><td><img SRC="imagens/embrapaArrozFeijao.png" ALT="Embrapa Arroz e Feij&atilde;o" BORDER=0></td></tr>
-                     <tr><td><br><h3  style="background-color: green; font-size:24px; color:white; font-weight:bold; margin-left:0px; margin-right: 0px"><center> Planilha de irriga&ccedil;&atilde;o </center></h3></td></tr>
-                     <tr><td><br><h2  style="font-size:24px; color:green; font-weight:bold; margin-left:0px; margin-right: 0px"><center> N&atilde;o existem dados para esta cidade!  </center></h2></td></tr>
-                     <tr><td><center><table border = 0>
-                                        <tr style="color:blue; font-weight: bold; font-size:20px;"><td><center><a href="javascript:history.go(-1)" >Voltar</a><br></center></td><td><center><br></center></td><td><center></center></td><td><center></center></td><td><center></center></td></tr>
-                                     </table>
-                             </center>
+            and ((mes = $mes and dia >= $dia ) or mes > $mes)
+            and ano = (select MAX(ano) from evapoTranspiracaoTomateEstacao where idCidade = $idCidade and ((mes = $mes and dia >= $dia ) or mes > $mes))";
+    
+     if($estacao != ""){
+       $query = mysqli_query($conexao, $sql." and codEstacao = \"$estacao\" ".$orderBy);
+       $numLinhas = $query->num_rows;
+     } 
+     
+     if($numLinhas == 0){
+      $query = mysqli_query($conexao, $sql." ".$orderBy) ;
+      $estacao = "";
+     }
 
-               </table>
-               </center>
-             ';
-              mysqli_close($conexao);
-              exit(1);
-           }
+     if(!$query)
+      {
+        $message = "N&atilde;o existem dados para esta cidade!";
+        include 'Validacao.php'; 
+
+        mysqli_close($conexao);
+        exit(1);
+      }
  
      $numLinhas = $query->num_rows;
      
-
      if ($numLinhas == 0)
       {
-          echo '
-               <center>
-               <table border=0>
-                     <tr><td><img SRC="imagens/embrapaArrozFeijao.png" ALT="Embrapa Arroz e Feij&atilde;o" BORDER=0></td></tr>
-                     <tr><td><br><h3  style="background-color: green; font-size:24px; color:white; font-weight:bold; margin-left:0px; margin-right: 0px"><center> Planilha de irriga&ccedil;&atilde;o </center></h3></td></tr>
-                     <tr><td><br><h2  style="font-size:24px; color:green; font-weight:bold; margin-left:0px; margin-right: 0px"><center> N&atilde;o foram encontrados dados sobre esta cidade! </center></h2></td></tr>
-                     <tr><td><center><table border = 0>
-                             <tr style="color:blue; font-weight: bold; font-size:20px;"><td><center><a href="javascript:history.go(-1)" >Voltar</a><br></center></td><td><center><br></center></td><td><center></center></td><td><center></center></td><td><center></center></td></tr></table> </center>
+        $message = "N&atilde;o foram encontrados dados sobre esta cidade!";
+        include 'Validacao.php'; 
 
-               </table>
-               </center>
-          ';
-               mysqli_close($conexao);
-               exit(1);
+        mysqli_close($conexao);
+        exit(1);
       }
      else {
 
-
-
-
-
-
-
-
-
-
-
-
 //  Inicio do trecho do programa que faz os caldulos diarios sobre a lamina de agua
 //
-
                if($sistemaDePlantio == 2)
                   $tipoPlantio = "Convencional";
                else
@@ -522,6 +504,7 @@
                   <p>L&acirc;mina aplicada (mm) : <span>'.$laminaAplicada.'</span></p>
                   <p>Sistema de plantio : <span>'.$tipoPlantio.'</span></p>
                   <p>Tipo de Solo : <span>'.$solo.'</span></p>
+                  <p>Estação : <span>'.($estacao == ""? 'Automática': $estacao).'</span></p>
                   <table class="resultado" border="0" cellpadding="0" cellspacing="0" align="center">
                    <tbody>
                    <colgroup>
