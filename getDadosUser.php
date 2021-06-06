@@ -71,10 +71,10 @@
          
          mysqli_close($conexao);
 
-         GetEstacoes($id);
+         GetEstacoes($id, 0);
      }
      
-     function GetEstacoes($idUsuario){
+     function GetEstacoes($idUsuario, $city_id){
          $conexao = mysqli_connect(hostBancoPantanal, userDonoPantanal, senhaDonoPantanal, nomeBancoPantanal) ;
          if (!$conexao) {
             $estacoes = '<estacao>B</estacao>';
@@ -82,8 +82,15 @@
             exit(1);
          }
 
-         $sql = "select * from estacoes where user_id = $idUsuario;";
-         $query = mysqli_query($conexao,$sql);
+         $sql = "select * from estacoes where user_id = $idUsuario";
+
+         if($city_id != 0){
+            $sql." and id_cidade = $city_id";
+         }
+
+         $sql.";";
+
+         $query = mysqli_query($conexao, $sql);
 
          if(!$query)
             {

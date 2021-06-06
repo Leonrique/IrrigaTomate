@@ -11,6 +11,7 @@
      $idUser = $_GET["idUser"];
      $station_name = $_GET["station_name"];
      $station_id = $_GET["station_id"];
+     $city_id = $_GET["city_id"];
      
      include 'pathConfig.php';
      $arquivoPath = configPath;
@@ -37,7 +38,7 @@
         exit(1);
      }
     
-     $sqlInsert = "insert into estacoes (user_id, nome_estacao, id_estacao) values ($idUser, \"$station_name\", \"$station_id\");";
+     $sqlInsert = "insert into estacoes (user_id, nome_estacao, id_estacao, id_cidade) values ($idUser, \"$station_name\", \"$station_id\", $city_id);";
 
      $query = mysqli_query($conexao, $sqlInsert);
 
@@ -45,7 +46,7 @@
         echo setEchoMessage("Cadastro não realizado.");
      }
      else {
-        echo setEchoMessage("Estação $station_id cadastrada com sucesso.").GetEstacoes($idUser);
+        echo setEchoMessage("Estação $station_id cadastrada com sucesso.").GetEstacoes($idUser, $city_id);
      }
 
      function setEchoMessage($message){
