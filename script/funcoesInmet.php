@@ -1,5 +1,9 @@
 <?php
 
+     //include 'pathConfig.php';
+     //$arquivoPath = configPath;
+     //include($arquivoPath);
+
 function curl_get_contents_data($url)
 {
   $ch = curl_init();
@@ -10,7 +14,285 @@ function curl_get_contents_data($url)
   curl_close($ch);
   return $data;
 }
+
  
+
+function getDadosFaltantesInmet() {
+
+     $conexao2 = mysqli_connect(hostBancoPantanal, userDonoPantanal, senhaDonoPantanal, nomeBancoPantanal) ;
+     if (!$conexao2) {
+
+            echo "Erro ao se conectar com a base de dados. Veja arquivo config.php";
+            exit(1);
+     }
+
+
+          date_default_timezone_set('America/Sao_Paulo');
+          $hojeDia = date('d');
+          $hojeMes = date('m');
+          $hojeAno = date('Y');
+       
+          $dia = "01";
+          $mes = "01";
+          $ano = $hojeAno; 
+
+          $diaInicial = $dia.'-'.$mes.'-'.$ano;
+          $data2 = new DateTime($diaInicial);
+
+         $codigoGO[1] = "A024";
+         $codigoGO[2] = "A013";         $codigoGO[3] = "A023";         $codigoGO[4] = "A034";
+         $codigoGO[5] = "A036";         $codigoGO[6] = "A011";         $codigoGO[7] = "A029";
+         $codigoGO[8] = "A022";         $codigoGO[9] = "A002";         $codigoGO[10] = "A014";
+         $codigoGO[11] = "A028";         $codigoGO[12] = "A015";         $codigoGO[13] = "A035";
+         $codigoGO[14] = "A016";         $codigoGO[15] = "A012";         $codigoGO[16] = "A026";
+         $codigoGO[17] = "A032";         $codigoGO[18] = "A003";         $codigoGO[19] = "A027";
+         $codigoGO[20] = "A033";         $codigoGO[21] = "A005";         $codigoGO[22] = "A017";
+         $codigoGO[23] = "A025";         $codigoGO[24] = "A031";         $codigoGO[25] = "A042";
+         $codigoGO[26] = "A046";         $codigoGO[27] = "A047";         $codigoGO[28] = "A045";
+
+          $lat[1] = -14.1305; $lon[1] =  -47.51;          $lat[2] = -15.8955; $lon[2] =  -52.2372;
+          $lat[3] = -16.9539; $lon[3] =  -51.8091;        $lat[4] = -18.1578; $lon[4] =  -47.9264;
+          $lat[5] = -16.7676; $lon[5] =  -47.6131;        $lat[6] = -18.9697; $lon[6] =  -50.6289;
+          $lat[7] = -17.3406; $lon[7] = -49.9295;         $lat[8] = -15.3118; $lon[8] = -49.1162;
+          $lat[9] = -16.63;   $lon[9] = -49.22;           $lat[10] = -15.94; $lon[10] = -50.14;
+          $lat[11] = -16.4398; $lon[11] = -51.118;        $lat[12] = -14.9522; $lon[12] = -49.5511;
+          $lat[13] = -18.4093; $lon[13] = -49.2158;       $lat[14] = -17.8784; $lon[14] = -51.7204;
+          $lat[15] = -16.2634; $lon[15] = -47.9665;       $lat[16] = -17.5654; $lon[16] = -52.5537;
+          $lat[17] = -13.2552; $lon[17] = -46.8928;       $lat[18] = -17.7166; $lon[18] = -49.10;
+          $lat[19] = -16.9625; $lon[19] = -50.4253;       $lat[20] = -17.3019; $lon[20] = -48.2768;
+          $lat[21] = -13.4391; $lon[21] = -49.1503;       $lat[22] = -14.0859; $lon[22] = -46.3704;
+          $lat[23] = -17.7923; $lon[23] = -50.9192;       $lat[24] = -13.2731; $lon[24] = -50.1634;
+          $lat[25] = -15.5997; $lon[25] = -48.1311;       $lat[26] = -15.9352; $lon[26] = -48.1374;
+          $lat[27] = -16.0122; $lon[27] = -47.5574;       $lat[28] = -15.5964; $lon[28] = -47.6258;
+
+          $numEstacoesInmet = 28;
+          $where = "( codEstacao = \"$codigoGO[1]\" ";
+          for ($i = 2; $i <= $numEstacoesInmet; $i++) {
+
+               $where =  $where . " or codEstacao = \"$codigoGO[$i]\" ";
+          }
+          $where =  $where . ")";
+
+          # O select abaixo seleciona todas as estacoes. Cada estacao nova da UFG
+          # deverah ser inserido na clausula where deste select.
+
+          $sql = "select distinct dia, mes, ano, codEstacao, idCidade, id from evapoTranspiracaoTomateEstacao where  $where and ano = $ano order by codEstacao,ano, mes, dia;";
+
+          $query = mysqli_query($conexao2, $sql) ;
+          if(!$query)
+           {
+              echo "Houve erro nesta consulta!";
+              echo $sql;
+              mysqli_close($conexao2);
+              exit(1);
+           }
+
+          $numLinhas = $query->num_rows;
+
+          if ($numLinhas > 0) {
+
+              $flag = 1;
+              while( $linha=$query->fetch_row() ) {
+
+//if( $flag == 0)
+//echo "$codEstacaoAnterior $linha[3] $linha[0]   $linha[1]  $linha[2] \n";
+                   if( $flag == 0 )  {
+                       if( ! strcmp( trim($codEstacaoAnterior) , trim($linha[3]) ) ) {
+
+                           $data2->modify('+1 day');
+                           $dia = $data2->format('d');
+                           $mes = $data2->format('m');
+                           $codEstacaoAnterior = $linha[3];
+                       } 
+                       else {
+
+                           $dia = "01";
+                           $mes = "01";
+                           $diaInicial = $dia.'-'.$mes.'-'.$ano;
+                           $data2 = new DateTime($diaInicial);
+                           $codEstacaoAnterior = $linha[3];
+                       }
+                        
+                   }
+                   else  {
+                     $codEstacaoAnterior = $linha[3];
+                     $flag = 0;
+                   }
+                   //
+                   // Por causa de dados repetitos, eh necessario
+                   // ser tolerante a este erro.
+                   // O if abaixo eh para nao deixar que a varredura
+                   // tenha uma data (dia,mes) maior do que a considerada no momento (dia2,mes2)
+                   $dia2 = (int)$linha[0];
+                   $mes2 = (int)$linha[1];
+                   $dia1 = (int)$dia;
+                   $mes1 = (int)$mes;
+                   if( (int)$mes == (int)$mes2 ) {
+
+                       if( (int)$dia > (int)$dia2 ) {
+                   
+                           $dia = $dia2;
+                           $dia1 = $dia2;
+                           $mes1 = (int)$mes;
+                           $diaInicial = $dia.'-'.$mes.'-'.$ano;
+                           $data2 = new DateTime($diaInicial);
+
+                       }
+
+                   }
+                   else {
+
+                             if( (int)$mes > (int)$mes2 ) {
+
+                               $dia = $dia2;
+                               $mes = $mes2;
+                               $dia1 = $dia2;
+                               $mes1 = $mes2;
+                               $diaInicial = $dia.'-'.$mes.'-'.$ano;
+                               $data2 = new DateTime($diaInicial);
+                             }
+                   }
+                     
+
+//echo "$dia   $mes  $linha[3] $dia2   $mes2\n";                
+                   while( !($dia1 == $dia2 && $mes1 == $mes2) && !( $dia1 == $hojeDia && $mes1 == $hojeMes ))  {
+
+                     $data = $ano."-".$mes1."-".$dia1;
+                     $codigo = trim($linha[3]);
+                     $id = $linha[5];
+                     $idCidade = trim($linha[4]); 
+
+                     $resultado = getvar($data, $codigo);
+                     $varClimaticas = explode(",", $resultado);
+                     $tempAr = (float)$varClimaticas[0];
+                     $ur = (float)$varClimaticas[1];
+                     $velVento = (float)$varClimaticas[2];
+                     $radSolar = (float)$varClimaticas[3];
+                     $eto = (float)$varClimaticas[5];
+                     $umidRel = $ur;
+//echo "$tempAr   $ur  $velVento  $radSolar  $eto  ---  \n";
+                     if( $tempAr < -10  || $ur < 0   || $velVento < 0   || $radSolar < 0 || $eto < 0 )
+                        $retorno = "";
+                     else {
+                                  $retorno = "insert into evapoTranspiracaoTomateEstacao(dia, mes, ano, temMedia, eto, codEstacao, idCidade, validado, ur, radSol, velVento) values($dia1, $mes1, $ano, $tempAr, $eto, \"$codigo\", $idCidade, 1, $umidRel, $radSol, $velVento );";
+//echo "insercao --> $ins \n";
+                        
+                     }
+
+                     if ( strlen( $retorno ) > 10 )  {
+                         $queryInsert = mysqli_query($conexao2, $retorno) ;
+                         if(!$queryInsert) {
+
+                            echo "Nao deu certo o comando ===>  $retorno\n"; 
+                         }
+
+                     }
+                     else {
+
+                        for ($u = 1; $u <= $numEstacoesInmet; $u++)
+                           if( !strcmp(trim($codigoGO[$u]), trim($codigo) ) ) {
+                             $latV = $lat[$u];
+                             $lonV = $lon[$u];
+                           }
+
+                        if( strlen($dia1) < 2)
+                             $diaV = "0".$dia1;
+                        else
+                             $diaV = $dia1;
+
+                        if( strlen($mes1) < 2)
+                             $mesV = "0".$mes1;
+                        else
+                             $mesV = $mes1;
+
+                        $diaNasa = $ano.$mesV.$diaV;
+                        $resultadoNasa =  getvarNasa2($diaNasa, $latV, $lonV);
+//echo "dia -->$diaNasa   res --> $resultadoNasa\n";
+                        $varClimaticas = explode(",", $resultadoNasa);
+                            $tempAr2 = $varClimaticas[0];
+                            $eto = $varClimaticas[1];
+                            $velVento2 = $varClimaticas[2];
+                            $umidRel2 = $varClimaticas[3];
+                            $radSol2 = $varClimaticas[4];
+
+                            $tar = -99.0;
+                            if( ! is_null($tempAr2) &&  strlen($tempAr2) > 0 )
+                               if( $tempAr2 > -10)
+				 $tar = $tempAr2;
+                            if( ! is_null($tempAr) &&  strlen($tempAr) > 0 )
+                               if( $tempAr > -10)
+				 $tar = $tempAr;
+                            if($tar > -10)
+                                 $tempAr = $tar;
+                            
+                            $ur = -99.0;
+                            if( ! is_null($umidRel2) &&  strlen($umidRel2) > 0 )
+                               if( $umidRel2 > -1)
+				 $ur = $umidRel2;
+
+                            if( ! is_null($umidRel) &&  strlen($umidRel) > 0 )
+                               if( $umidRel > -1)
+				 $ur = $umidRel;
+                            if($ur > -10)
+                                 $umidRel = $ur;
+                            
+                            $rs = -99.0;
+                            if( ! is_null($radSol2) &&  strlen($radSol2) > 0 )
+                               if( $radSol2 > -10)
+				 $rs = $radSol2;
+                            if( ! is_null($radSolar) &&  strlen($radSolar) > 0 )
+                               if( $radSolar > -10)
+				 $rs = $radSolar;
+                            if($tar > -10)
+                                 $radSol = $rs;
+                            
+                            $vv  = -99.0;
+                            if( ! is_null($velVento2) &&  strlen($velVento2) > 0 )
+                               if( $velVento2 > -1)
+				 $vv = $velVento2;
+                            if( ! is_null($velVento) &&  strlen($velVento) > 0 )
+                               if( $velVento > -1)
+				 $vv = $velVento;
+                            if($vv > -1)
+                                 $velVento = $vv;
+
+
+                            if( $tempAr >= -40 && $radSol >= 0 && $velVento >= 0 && $umidRel >= 0 ) {
+
+                               $eto1 = pow(10, ((7.5*$tempAr)/(237.3+$tempAr)) );
+                               $eto2 = pow( ($tempAr +237.3), 2);
+                               $eto=((0.408*((4098*(0.6108*$eto1))/$eto2)*$radSol*0.55*0.0864)+(0.063*900*$velVento*((0.6108*$eto1)-(((0.6108*$eto1)*$umidRel)/100)))/($tempAr+275))/(((4098*(0.6108*$eto1))/$eto2)+0.063*(1+0.34*$velVento));
+
+                            }
+
+
+        		    if( $tempAr > -40 && $eto > -40 ) {
+
+                                  $ins = "insert into evapoTranspiracaoTomateEstacao(dia, mes, ano, temMedia, eto, codEstacao, idCidade, validado, ur, radSol, velVento) values($diaV, $mesV, $ano, $tempAr, $eto, \"$codigo\", $idCidade, 1, $umidRel, $radSol, $velVento );";
+//echo "insercao --> $ins \n";
+                                  $pesquisa = mysqli_query($conexao2, $ins);
+
+                            }
+//
+// Terminar. Mesclar dados do inmet, q nao forem vazios
+// com dados do nasapower e entao calcular o etco
+//
+
+
+                     }
+                     //echo "O dia $dia1/$mes1/$ano, para a estacao $linha[3], nao tem registro. \n";
+                     $data2->modify('+1 day');
+                     $dia1 = $data2->format('d');
+                     $mes1 = $data2->format('m');
+                   }
+                  //echo "sau do while mais interno \n"; 
+              } // final de while( $linha=$query->fetch_row() ) {
+          }
+
+          mysqli_close($conexao2);
+
+     } // final da funcao getDadosFaltantes()
+
 function getvarNasa2($dia, $lat, $lon) {
 
  
@@ -332,7 +614,6 @@ function getDadosInmet() {
          $codigoGO[20] = "A033";         $codigoGO[21] = "A005";         $codigoGO[22] = "A017";
          $codigoGO[23] = "A025";         $codigoGO[24] = "A031";         $codigoGO[25] = "A042";    
          $codigoGO[26] = "A046";         $codigoGO[27] = "A047";         $codigoGO[28] = "A045";     
-         $codigoGO[29] = "A014"; 
 
          $cidadeGO[1] = "Alto Paraiso";         $cidadeGO[2] = "Aragarcas";         $cidadeGO[3] = "Caiaponia";
          $cidadeGO[4] = "Catalao";         $cidadeGO[5] = "Cristalina";         $cidadeGO[6] = "Sao Simao";
@@ -343,8 +624,7 @@ function getDadosInmet() {
          $cidadeGO[19] = "Parauna";         $cidadeGO[20] = "Pires do Rio";         $cidadeGO[21] = "Porangatu";
          $cidadeGO[22] = "Posse";         $cidadeGO[23] = "Rio Verde";         $cidadeGO[24] = "Sao Miguel do Araguaia";
          $cidadeGO[25] = "Brazlandia";   $cidadeGO[26] = "Gama (Ponte Alta)";   $cidadeGO[27] = "Paranoa";
-         $cidadeGO[28] = "Aguas Emendadas";   $cidadeGO[29] = "Goias";    
-         
+         $cidadeGO[28] = "Aguas Emendadas";       
 //a056 fazenda sta monica/cristalina, goiania 002, goias 014, 
 
           $idGO[1] = 157;   $idGO[2] = 306;    $idGO[3] = 873;
@@ -356,7 +636,7 @@ function getDadosInmet() {
           $idGO[19] = 3552;  $idGO[20] = 3794;   $idGO[21] = 3871;
           $idGO[22] = 3918;  $idGO[23] = 4177;   $idGO[24] = 4757;
           $idGO[25] = 16453;  $idGO[26] = 16454;   $idGO[27] = 16455;
-          $idGO[28] = 16456;  $idGO[29] = 1908;    
+          $idGO[28] = 16456;  
 
           $latitude[1] = -14.1305; $longitude[1] =  -47.51;          $latitude[2] = -15.8955; $longitude[2] =  -52.2372;	 
           $latitude[3] = -16.9539; $longitude[3] =  -51.8091;	     $latitude[4] = -18.1578; $longitude[4] =  -47.9264;	 
@@ -373,7 +653,6 @@ function getDadosInmet() {
 
           $latitude[25] = -15.5997; $longitude[25] = -48.1311;	     $latitude[26] = -15.9352; $longitude[26] = -48.1374;
           $latitude[27] = -16.0122; $longitude[27] = -47.5574;	     $latitude[28] = -15.5964; $longitude[28] = -47.6258;
-          $latitude[29] = -15.9397; $longitude[29] = -50.1414;	    
   
           // $codigoGO[14] = "A756 ";  $idGO[14] = 64;
           // $idGO[1] = 10;  $codigoGO[1] = "A731"; 
@@ -388,7 +667,7 @@ function getDadosInmet() {
           //INSERT INTO `goiasInmet` (`latitude`, `longitude`, `tipoEstacao`, `idCidade`, `nomeCidade`) VALUES ('-15.5964', '-47.6258', 'Automatica', '16456', 'Aguas Emendadas');
 
 
-          $numElemEstacoes = 29;
+          $numElemEstacoes = 28;
  
           // As estacoes do inmet estao em https://mapas.inmet.gov.br/
 
@@ -396,7 +675,6 @@ function getDadosInmet() {
           // Abrir base de dados para inserir um atualizar dados
           
            //include 'pathConfig.php';
-           
            //$arquivoPath = configPath;
            //include($arquivoPath);
 
@@ -414,7 +692,7 @@ function getDadosInmet() {
            $anoFim = $anoHoje;
            $mesFim = $mesHoje;
            $diaFim = $diaHoje;
-
+	//echo " $anoFim   $mesFim  $diaFim  \n";
            //
           // Atualizar dados faltantes na base de dados
           //
@@ -444,14 +722,17 @@ function getDadosInmet() {
                         if($num_registros > 0) {
 
                             $linha=$query->fetch_row();
-                            $ano = $linha[0];
+                            if( ! is_null($linha[0]) && is_numeric($linha[0]) )
+                               $ano = $linha[0];
+                            else
+                               $ano = $anoHoje;
+
                             $sql = "select max(mes) from evapoTranspiracaoTomateEstacao  where idCidade = $idGO[$i] and ano = $ano and validado = 1;";
                             $query = mysqli_query($conexao, $sql) ;
                             if(!$query) {
 
                                 $dia = 01;
                                 $mes = 01;
-                                $ano = $ano;
 
                             }
                             else {
@@ -466,8 +747,6 @@ function getDadosInmet() {
                                  if(!$query) {
 
                                    $dia = 01;
-                                   $mes = $mes;
-                                   $ano = $ano;
 
                                  }
                                  else {
@@ -482,8 +761,6 @@ function getDadosInmet() {
                                    else {
 
                                      $dia = 01;
-                                     $mes = $mes;
-                                     $ano = $ano;
 
                                    }
                                  }
@@ -493,7 +770,6 @@ function getDadosInmet() {
 
                                  $dia = 01;
                                  $mes = 01;
-                                 $ano = $ano;
 
                               }
                             }
@@ -528,6 +804,7 @@ function getDadosInmet() {
                       $dia2 = "$ano-$mes-$dia"; 
                       $codigoEstacao = $codigoGO[$i];
                       $resultado = getvar($dia2, $codigoEstacao);
+//echo "$dia2, $codigoEstacao $resultado \n";
 //echo "<br>---- $resultado<br>";
                       $varClimaticas = explode(",", $resultado);
                       $tempAr = $varClimaticas[0];
@@ -628,11 +905,10 @@ function getDadosInmet() {
                                if( $tempAr >= -40) {
 
                                   $insere = $insere ."ur) ";
-                                  $valores = $valores ."$ur)";
+                                  $valores = $valores ."$ur);";
                                }
-                               $ins = $insere.$valores.";";
-
-                               echo "\n$ins\n";
+                               $ins = $insere.$valores;
+//echo $ins."  1\n";
                                $pesquisa = mysqli_query($conexao, $ins);
                                //echo "\n $ins \n";
                                //echo "<br> $sql <br> $ins <br>";
@@ -676,8 +952,7 @@ function getDadosInmet() {
                                       $insere = $insere ."temMedia) ";
                                       $valores = $valores ."$tempAr);";
                                       $ins = $insere.$valores;
-                                      
-                                      echo "\n$ins\n";
+//echo $ins."   2\n";
                                       $pesquisa = mysqli_query($conexao, $ins);
  
                                   } // final de else de if( $numItens > 0 )
@@ -766,8 +1041,7 @@ function getDadosInmet() {
                                                     $insere = $insere ."temMedia) ";
                                                     $valores = $valores ."$tempAr);";                     
                                                     $ins = $insere.$valores;
-
-                                                    echo "\n$ins\n";
+//echo $ins."   3\n";
                                                     $pesquisa = mysqli_query($conexao, $ins);
 
                                       }
@@ -826,8 +1100,7 @@ function getDadosInmet() {
                                                     $insere = $insere ."temMedia) ";
                                                     $valores = $valores ."$tempAr);";                     
                                                     $ins = $insere.$valores;
-
-                                                    echo "\n$ins\n";
+//echo $ins."  4\n";
                                                     $pesquisa = mysqli_query($conexao, $ins);
 
                                          }
@@ -850,7 +1123,9 @@ function getDadosInmet() {
           } // for ($i = 1; $i <=  $numElemEstacoes; $i++ ) {
      
           mysqli_close($conexao);
+      getDadosFaltantesInmet();
 } // final da funcao  getDadosInmet() {
 
     //getDadosInmet();
+      //getDadosFaltantes();
 ?>
