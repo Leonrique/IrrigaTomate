@@ -62,9 +62,6 @@
                      $j = 1;
    
                   }
-   
-                  
-   
                }      
                echo "$registro2</id>";	       
          }
@@ -75,6 +72,10 @@
      }
      
      function GetEstacoes($idUsuario, $city_id){
+         if($idUsuario == 0){
+            return;
+         }
+         
          $conexao = mysqli_connect(hostBancoPantanal, userDonoPantanal, senhaDonoPantanal, nomeBancoPantanal) ;
          if (!$conexao) {
             $estacoes = '<estacao>B</estacao>';
@@ -115,12 +116,13 @@
                $idTabela = $result[0];
                $nomeEstacao = $result[2];
                $idEstacaoFieldClimate = $result[3];
+               $idCidade = $result[4];
                
                if( $j == 1) {
-                  $estacoes = $estacoes . "|$idTabela;$idUsuario;$nomeEstacao;$idEstacaoFieldClimate";
+                  $estacoes = $estacoes . "|$idTabela;$idUsuario;$nomeEstacao;$idEstacaoFieldClimate;$idCidade";
                }
                else {
-                  $estacoes = $estacoes . "$idTabela;$idUsuario;$nomeEstacao;$idEstacaoFieldClimate";
+                  $estacoes = $estacoes . "$idTabela;$idUsuario;$nomeEstacao;$idEstacaoFieldClimate;$idCidade";
                   $j = 1;
                }
             }      

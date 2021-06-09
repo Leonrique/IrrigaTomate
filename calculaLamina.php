@@ -288,6 +288,7 @@
      $ano = date("Y");
      $novaData =  date("m-j-Y", mktime(0, 0, 0, $mes, $dia + 1, $ano));
      list ($mes, $dia, $ano) = explode("-",$novaData);
+     $SemDadosParaEstacao = false;
 
      $numLinhas = 0;
      $orderBy = "order by mes, dia;";
@@ -301,11 +302,11 @@
      if($estacao != ""){
        $query = mysqli_query($conexao, $sql." and codEstacao = \"$estacao\" ".$orderBy);
        $numLinhas = $query->num_rows;
+       $SemDadosParaEstacao = $numLinhas == 0;
      } 
      
      if($numLinhas == 0){
       $query = mysqli_query($conexao, $sql." ".$orderBy) ;
-      $estacao = "";
      }
 
      if(!$query)
@@ -504,7 +505,7 @@
                   <p>L&acirc;mina aplicada (mm) : <span>'.$laminaAplicada.'</span></p>
                   <p>Sistema de plantio : <span>'.$tipoPlantio.'</span></p>
                   <p>Tipo de Solo : <span>'.$solo.'</span></p>
-                  <p>Estação : <span>'.($estacao == ""? 'Automática': $estacao).'</span></p>
+                  <p>Estação : <span>'.($estacao == ""? 'Automática': ($SemDadosParaEstacao? "Automática (sem dados para a estação $estacao)" : $estacao)).'</span></p>
                   <table class="resultado" border="0" cellpadding="0" cellspacing="0" align="center">
                    <tbody>
                    <colgroup>

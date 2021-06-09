@@ -23,7 +23,6 @@
     <![endif]-->
     <script language="javascript" src="login.js" ></script>
     <script type="text/javascript" src="getDadosUserLogin.js"></script>
-   
     <script language="javascript">
       function verificalogin(user, senha) {
         if (user !== null)
@@ -262,7 +261,7 @@
                           <div class="form-wrap">
                             <input class="form-input" type="text" 
                                     name="station_name" id="station_name" 
-                                    title="Nome da estação" 
+                                    title="Nome da estação"
                                     placeholder="Nome da estação" data-constraints="@Required" minlength="3" maxlength="60"/>
                           </div>
                         </div>
@@ -282,14 +281,26 @@
                             </select>
                           </div>
                         </div>
-
-                        
                       </div>
                       
                       <button class="button button-primary button-pipaluk" style="float: right;" type="submit" onclick="gravarEstacao()">Gravar estação</button>
-
                     </form>
+
+                    <table id="listaEstacoes" class="table-custom" style="margin-top: 125px;">
+                      <thead>
+                        <tr>
+                          <th>Nome estação</th>
+                          <th>Identificador estação</th>
+                          <th>Cidade</th>
+                          <th></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+
+                      </tbody>
+                    </table>
                   </div>
+
                 </div>
               </div>
             </div>
@@ -407,6 +418,7 @@
   <script language="javascript">
       var mesInicial = 1;
       var mesFinal = 6;
+      var idEstacao = 0;
       var xmlHttpObject = XMLHttpRequest;
       var otpions = [];
 
@@ -526,6 +538,8 @@
       document.addEventListener('DOMContentLoaded', function () {
         setUserIdentifications();
         setStations();
+        setStationsList();
+
         popularCidades("cidade")
         popularCidades("cidadeEstacao")
       }, false);
@@ -554,7 +568,7 @@
         }
 
         stations = stations.split("|");
-
+        
         for (let counter = 0; counter < stations.length; counter++) {
           let option = document.createElement("option");
           let stationInfo = stations[counter].split(";");
@@ -563,6 +577,78 @@
           option.value = stationInfo[3];
           document.getElementById("estacao_select").appendChild(option);
         }
+      }
+
+      function setStationsList(estacao){
+        let stations = sessionStorage.getItem("estacoes");
+
+        if (stations == undefined) {
+          return;
+        }
+
+        stations = stations.split("|");
+        let table = document.getElementById("listaEstacoes").getElementsByTagName('tbody')[0];
+        table.innerHTML = "";
+        
+        for (let counter = 0; counter < stations.length; counter++) {
+          let stationInfo = stations[counter].split(";");
+
+          addStationRow(stationInfo);
+        }
+      }
+
+      function addStationRow(stationInfo){
+        let table = document.getElementById("listaEstacoes").getElementsByTagName('tbody')[0];
+        let newRow = table.insertRow(table.length);
+
+        cellNome = newRow.insertCell(0);
+        cellNome.id = stationInfo[0];
+        cellNome.innerHTML = stationInfo[2];
+
+        cellId = newRow.insertCell(1);
+        cellId.innerHTML = stationInfo[3];
+
+        cellCidade = newRow.insertCell(2);
+        cellCidade.innerHTML = getCityNameById(stationInfo[4]);
+
+        cellEdit = newRow.insertCell(3);
+        cellEdit.innerHTML = `<button class="button button-primary" style="margin-top: 0" onclick="editarEstacao(this)">Editar</button>
+                              <button class="button button-google" style="margin-top: 0" onclick="excluirEstacao(this)">Excluir</button>`
+      }
+
+      function editarEstacao(td){
+        selectedRow = td.parentElement.parentElement;
+
+        document.getElementById('station_name').value = selectedRow.cells[0].innerHTML;
+        document.getElementById('station_id').value = selectedRow.cells[1].innerHTML;
+        document.getElementById('cidadeEstacao').value = getCityIdByName(selectedRow.cells[2].innerHTML);
+        idEstacao = selectedRow.cells[0].id;
+      }
+
+      async function excluirEstacao(td){
+        if(!confirm("Deseja excluir a estação selecionada?")){
+          return;
+        }
+        
+        selectedRow = td.parentElement.parentElement;
+
+        let url = retornarUrlAtualizacaoEstacao("", "", "",  selectedRow.cells[0].id, 1);
+        let response = await atualizarEstacao(url);
+        let stations = getValuesFromResponse(response, "<estacao>", "</estacao>")
+
+        if(stations != ""){
+          sessionStorage.setItem("estacoes", stations);
+          setStations();
+          setStationsList();
+        }
+      }
+
+      function getCityIdByName(cityName){
+        return getAllCities().find(x => x.label == cityName).id;
+      }
+
+      function getCityNameById(cityId){
+        return getAllCities().find(x => x.id == cityId).label;
       }
 
       function selectOptionValue(input)
@@ -1024,6 +1110,9 @@
           return false
         }
 
+        if(idEstacao != 0)
+          return false;
+
         for (let index = 1; index < stations.options.length; index++) {
           const stationId = stations.options[index].text.split(" ")[0];
           
@@ -1068,9 +1157,8 @@
           return false;
         }
 
-        let url = 'cadastroEstacoes.php?idUser='+sessionStorage.getItem("idUser")+'&station_name='+station_name+'&station_id='+station_id+'&city_id='+city_id;
-
-        let response = await cadastrarEstacao(url);
+        let url = retornarUrlAtualizacaoEstacao(station_name, station_id, city_id, idEstacao, 0);
+        let response = await atualizarEstacao(url);
         let message = getValuesFromResponse(response, "<message>", "</message>")
         
         if(message != ""){
@@ -1081,10 +1169,17 @@
 
         if(stations != ""){
           sessionStorage.setItem("estacoes", stations);
-          setStations()
+          setStations();
+          setStationsList();
         }
+        
+        idEstacao= 0;
 
         return true;
+      }
+
+      function retornarUrlAtualizacaoEstacao(station_name, station_id, city_id, idEstacao, exclusao){
+        return 'cadastroEstacoes.php?idUser='+sessionStorage.getItem("idUser")+'&station_name='+station_name+'&station_id='+station_id+'&city_id='+city_id+'&station_pk='+idEstacao+'&excluir='+exclusao;
       }
 
       function getValuesFromResponse(response, opentag, closetag){
@@ -1110,7 +1205,7 @@
           return texto3
       }
 
-      function cadastrarEstacao(url){
+      function atualizarEstacao(url){
         return new Promise(function(resolve, reject){
           xmlHttpObject = retornarRequestObject();
 
