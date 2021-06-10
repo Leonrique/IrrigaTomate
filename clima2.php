@@ -19,9 +19,7 @@
                </table>
                </center>
              ';
-              mysqli_close($conexao);
               exit(1);
-
        }
 
 

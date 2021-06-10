@@ -44,18 +44,19 @@ function busca30anos() {
 
          if (newTexto.length > 3) {
             tabela =
-               '<center><table class="resultado"  border="0" cellpadding="0" cellspacing="0" align="center"><tr style=" background-color:#009900; color:white"><th>Dia</th><th>M&ecirc;s</th><th>Ano</th><th>Temp M&eacute;dia <br>(&#8451;)</th><th>Soma T&eacute;rmica  (&#8451;)</th><th>ETo (mm/dia)</th><th>Radia&ccedil;&atilde;o Solar (W/m<sup>2</sup>/dia)</th><th>Vel.vento (m/s)</th><th>Umidade Rel. do ar (%)</th></tr>';
+               '<center><table class="resultado" border="0" cellpadding="0" cellspacing="0" align="center"><tr style=" background-color:#009900; color:white"><th>Dia</th><th>M&ecirc;s</th><th>Ano</th><th>Temp M&eacute;dia <br>(&#8451;)</th><th>Soma T&eacute;rmica  (&#8451;)</th><th>ETo (mm/dia)</th><th>Radia&ccedil;&atilde;o Solar (W/m<sup>2</sup>/dia)</th><th>Vel.vento (m/s)</th><th>Umidade Rel. do ar (%)</th><th>Estação</th></tr>';
             tabela = tabela + "<tbody>";
             tabela = tabela + "<colgroup>";
-            tabela = tabela + '<col style="width: 11%; background-color:#e8f0d9;">';
-            tabela = tabela + '<col style="width: 11%; background-color:#fff;">';
-            tabela = tabela + '<col style="width: 11%; background-color:#e8f0d9;">';
-            tabela = tabela + '<col style="width: 11%; background-color:#fff;">';
-            tabela = tabela + '<col style="width: 11%; background-color:#e8f0d9;">';
-            tabela = tabela + '<col style="width: 11%; background-color:#fff;">';
-            tabela = tabela + '<col style="width: 11%; background-color:#e8f0d9;">';
-            tabela = tabela + '<col style="width: 11%; background-color:#fff;">';
-            tabela = tabela + '<col style="width: 11%; background-color:#e8f0d9;">';
+            tabela = tabela + '<col style="width: 10%; background-color:#e8f0d9;">';
+            tabela = tabela + '<col style="width: 10%; background-color:#fff;">';
+            tabela = tabela + '<col style="width: 10%; background-color:#e8f0d9;">';
+            tabela = tabela + '<col style="width: 10%; background-color:#fff;">';
+            tabela = tabela + '<col style="width: 10%; background-color:#e8f0d9;">';
+            tabela = tabela + '<col style="width: 10%; background-color:#fff;">';
+            tabela = tabela + '<col style="width: 10%; background-color:#e8f0d9;">';
+            tabela = tabela + '<col style="width: 10%; background-color:#fff;">';
+            tabela = tabela + '<col style="width: 10%; background-color:#e8f0d9;">';
+            tabela = tabela + '<col style="width: 10%; background-color:#fff;">';
             tabela = tabela + "</colgroup>";
             results = newTexto.split("#");
             somaTermica = 0;
@@ -84,6 +85,8 @@ function busca30anos() {
                   string[6] +
                   "</td><td>" +
                   string[7] +
+                  "</td><td>" +
+                  string[8] +
                   "</td></tr>";
             }
 
@@ -91,19 +94,20 @@ function busca30anos() {
             document.getElementById("tabela").innerHTML = tabela;
          } else {
             if (newTexto.charAt(0) == "0") {
-               tabela = '<center><table class="resultado"  border="0" cellpadding="0" cellspacing="0" align="center"><tr style=" background-color:#009900; color:white"><th>Dia</th><th>M&ecirc;s</th><th>Ano</th><th>Temp M&eacute;dia <br>(&#8451;)</th><th>Soma T&eacute;rmica  (&#8451;)</th><th>ETo (mm/dia)</th><th>Radia&ccedil;&atilde;o Solar (W/m<sup>2</sup>/dia)</th><th>Vel.vento (m/s)</th><th>Umidade Rel. do ar (%)</th></tr>';
+               tabela = '<center><table class="resultado"  border="0" cellpadding="0" cellspacing="0" align="center"><tr style=" background-color:#009900; color:white"><th>Dia</th><th>M&ecirc;s</th><th>Ano</th><th>Temp M&eacute;dia <br>(&#8451;)</th><th>Soma T&eacute;rmica  (&#8451;)</th><th>ETo (mm/dia)</th><th>Radia&ccedil;&atilde;o Solar (W/m<sup>2</sup>/dia)</th><th>Vel.vento (m/s)</th><th>Umidade Rel. do ar (%)</th><th>Estação</th></tr>';
 
                tabela = tabela + "<tbody>";
                tabela = tabela + "<colgroup>";
-               tabela = tabela + '<col style="width: 11%; background-color:#e8f0d9;">';
-               tabela = tabela + '<col style="width: 11%; background-color:#fff;">';
-               tabela = tabela + '<col style="width: 11%; background-color:#e8f0d9;">';
-               tabela = tabela + '<col style="width: 11%; background-color:#fff;">';
-               tabela = tabela + '<col style="width: 11%; background-color:#e8f0d9;">';
-               tabela = tabela + '<col style="width: 11%; background-color:#fff;">';
-               tabela = tabela + '<col style="width: 11%; background-color:#e8f0d9;">';
-               tabela = tabela + '<col style="width: 11%; background-color:#fff;">';
-               tabela = tabela + '<col style="width: 11%; background-color:#e8f0d9;">';
+               tabela = tabela + '<col style="width: 10%; background-color:#e8f0d9;">';
+               tabela = tabela + '<col style="width: 10%; background-color:#fff;">';
+               tabela = tabela + '<col style="width: 10%; background-color:#e8f0d9;">';
+               tabela = tabela + '<col style="width: 10%; background-color:#fff;">';
+               tabela = tabela + '<col style="width: 10%; background-color:#e8f0d9;">';
+               tabela = tabela + '<col style="width: 10%; background-color:#fff;">';
+               tabela = tabela + '<col style="width: 10%; background-color:#e8f0d9;">';
+               tabela = tabela + '<col style="width: 10%; background-color:#fff;">';
+               tabela = tabela + '<col style="width: 10%; background-color:#e8f0d9;">';
+               tabela = tabela + '<col style="width: 10%; background-color:#fff;">';
                tabela = tabela + "</colgroup>";
                tabela =
                   tabela +

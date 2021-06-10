@@ -234,7 +234,7 @@
                           <div class="form-wrap">
                             <select class="form-input" title="Selecionar estação" 
                                     name="estacao_select" id="estacao_select" disabled>
-                              <option value="0" disabled selected hidden >Selecionar estação</option>
+                              <!-- <option value="0" disabled selected hidden >Selecionar estação</option> -->
                             </select>
                           </div>
                         </div>
@@ -262,7 +262,7 @@
                             <input class="form-input" type="text" 
                                     name="station_name" id="station_name" 
                                     title="Nome da estação"
-                                    placeholder="Nome da estação" data-constraints="@Required" minlength="3" maxlength="60"/>
+                                    placeholder="Nome da estação" data-constraints="@Required" minlength="3" maxlength="20"/>
                           </div>
                         </div>
 
@@ -283,10 +283,11 @@
                         </div>
                       </div>
                       
+                      <span class="fa fa-question-circle-o fa-4x" style="color:#f1efeb;" onmouseover="showStationInfo()"></span>
                       <button class="button button-primary button-pipaluk" style="float: right;" type="submit" onclick="gravarEstacao()">Gravar estação</button>
                     </form>
 
-                    <table id="listaEstacoes" class="table-custom" style="margin-top: 125px;">
+                    <table id="listaEstacoes" class="table-custom" style="margin-top: 40px;">
                       <thead>
                         <tr>
                           <th>Nome estação</th>
@@ -560,12 +561,30 @@
         }
       }
 
+      function addDefaultSelection(){
+        let estacao_select = document.getElementById("estacao_select");
+
+        estacao_select.innerHTML = "";
+
+        let option = document.createElement("option");
+
+        option.text = "Selecionar estação";
+        option.setAttribute('disabled', true);
+        option.setAttribute('selected', true);
+        option.setAttribute('hidden', true);
+        option.value = 0;
+
+        estacao_select.appendChild(option);
+      }
+
       function setStations() {
         let stations = sessionStorage.getItem("estacoes");
         
         if (stations == undefined) {
           return;
         }
+        
+        addDefaultSelection();
 
         stations = stations.split("|");
         
@@ -623,6 +642,8 @@
         document.getElementById('station_id').value = selectedRow.cells[1].innerHTML;
         document.getElementById('cidadeEstacao').value = getCityIdByName(selectedRow.cells[2].innerHTML);
         idEstacao = selectedRow.cells[0].id;
+        
+        window.scrollTo({top: 200, behavior: 'smooth'});
       }
 
       async function excluirEstacao(td){
@@ -682,6 +703,28 @@
               break;
             case "area":
               textoAreaTotal();
+              break;
+            case "estacao":
+            case "estacao_select":
+            textoSelecaoEstacao();
+              break;
+          }
+        }
+      }
+
+      function showStationInfo() {
+        var elementName = document.activeElement.name;
+
+        if (!(elementName == undefined)) {
+          switch (elementName) {
+            case "":
+              msgCadastroEstacao();
+              break;
+            case "station_id":
+              msgIdentificadorEstacao();
+              break;
+            case "station_name":
+              msgNomeEstacao();
               break;
           }
         }
@@ -744,7 +787,12 @@
       }
 
       function textoAreaTotal() {
-        msg = "<p style='color:black; text-align:justify' >Digite a &aacute;rea total do piv&ocirc; central, em hectares, mesmo que o plantio tenha sido feito em apenas um quadrante o ou em \"meia-lua\".";
+        msg = "<p style='color:black; text-align:justify' >Digite a &aacute;rea total do piv&ocirc; central, em hectares, mesmo que o plantio tenha sido feito em apenas um quadrante o ou em \"meia-lua\".</p>";
+        Swal.fire({  position: 'top-end', html:  msg});
+      }
+
+      function textoSelecaoEstacao() {
+        msg = "<p style='color:black; text-align:justify'>Se for selecionada uma estação, serão considerados na planilha os dados da estação selecionada. Se não houverem dados para estação, considerará a automática (comportamento padrão).</p>";
         Swal.fire({  position: 'top-end', html:  msg});
       }
 
@@ -770,6 +818,21 @@
 
       }
 
+      function msgCadastroEstacao() {
+        msg = "<p style='color:black; text-align:justify'>Cadastre aqui a sua própria estação meteorológica (FieldClimate).</p>";
+        Swal.fire({ position: 'top-end', html: msg });
+      }
+
+      function msgIdentificadorEstacao() {
+        msg = "<p style='color:black; text-align:justify'>Informe o código identificador da estação, conforme o cadastro no FieldClimate.</p><p>Exemplo: 00206B1B</p>";
+        Swal.fire({ position: 'top-end', html: msg });
+      }
+
+      function msgNomeEstacao() {
+        msg = "<p style='color:black; text-align:justify'>Informe o nome da estação meteorológica.</p>";
+        Swal.fire({ position: 'top-end', html: msg });
+      }
+
       function msgPlantio() {
 
         msg = "<p style='color:black; text-align:justify' ><span style='color:green'>Plantio Direto:</span> com palha na superf&iacute;cie do solo. Sistema de preparo reduzido ou cultivo m&iacute;nimo do solo.<br><span style='color:green'><br>Plantio Convencional:</span> sem palha na superf&iacute;cie do solo </p>";
@@ -777,8 +840,6 @@
       }
 
       function msgDataPlantio() {
-
-
         msg = "<p style='color:black; text-align:justify' >O per&iacute;odo de transplantio de tomate em Goi&aacute;s &eacute; de 01/Fevereiro a 15/Julho, devido &agrave; sensibilidade das plantas ao molhamento foliar e &agrave; alta umidade relativa do ar.</p>";
         Swal.fire({ position: 'top-end', html: msg });
       }

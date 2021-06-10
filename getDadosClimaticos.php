@@ -14,7 +14,7 @@ if (!$conexao) {
    exit(1);
 }
 
-$sql = "select dia, mes, ano, temMedia, eto, radSol, velVento, ur 
+$sql = "select dia, mes, ano, temMedia, eto, radSol, velVento, ur, ifnull(codEstacao, '') codEstacao
               from evapoTranspiracaoTomateEstacao 
               where idCidade = $idCidade 
               and ano = (select MAX(ano) from evapoTranspiracaoTomateEstacao where idCidade = $idCidade and ((mes = $mes and dia >= $dia ) or mes > $mes)) 
@@ -36,16 +36,15 @@ if ($numLinhas == 0) {
    mysqli_close($conexao);
    exit(1);
 } else {
-
-
    $registro2 = "<buscaDados>";
    $i = 1;
+   
    while ($linha = $query->fetch_row()) {
 
       if ($i == 1)
-         $registro2 = $registro2 . $linha[0] . "|" . $linha[1] . "|" . $linha[2] . "|" . $linha[3] . "|" . $linha[4] . "|" . $linha[5] . "|" . $linha[6] . "|" . $linha[7];
+         $registro2 = $registro2 . $linha[0] . "|" . $linha[1] . "|" . $linha[2] . "|" . $linha[3] . "|" . $linha[4] . "|" . $linha[5] . "|" . $linha[6] . "|" . $linha[7] . "|" . $linha[8];
       else
-         $registro2 = $registro2 . "#" . $linha[0] . "|" . $linha[1] . "|" . $linha[2] . "|" . $linha[3] . "|" . $linha[4] . "|" . $linha[5] . "|" . $linha[6] . "|" . $linha[7];
+         $registro2 = $registro2 . "#" . $linha[0] . "|" . $linha[1] . "|" . $linha[2] . "|" . $linha[3] . "|" . $linha[4] . "|" . $linha[5] . "|" . $linha[6] . "|" . $linha[7] . "|" . $linha[8];
       $i = 2;
    } // fim do while
 
