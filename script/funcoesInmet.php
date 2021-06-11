@@ -174,7 +174,7 @@ function getDadosFaltantesInmet() {
                      if( $tempAr < -10  || $ur < 0   || $velVento < 0   || $radSolar < 0 || $eto < 0 )
                         $retorno = "";
                      else {
-                                  $retorno = "insert into evapoTranspiracaoTomateEstacao(dia, mes, ano, temMedia, eto, codEstacao, idCidade, validado, ur, radSol, velVento) values($dia1, $mes1, $ano, $tempAr, $eto, \"$codigo\", $idCidade, 1, $umidRel, $radSol, $velVento );";
+                                  $retorno = "insert into evapoTranspiracaoTomateEstacao(dia, mes, ano, temMedia, eto, codEstacao, idCidade, validado, ur, radSol, velVento) values($dia1, $mes1, $ano, $tempAr, $eto, \"$codigo\", $idCidade, 1, $umidRel, $radSolar, $velVento );";
 //echo "insercao --> $ins \n";
                         
                      }

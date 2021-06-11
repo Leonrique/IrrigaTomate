@@ -14,19 +14,18 @@
                </table>
                </center>
              ';
-              mysqli_close($conexao);
               exit(1);
-
        }
+
        $sql= "select id, cidadeHTML from  municipios  where idEstado = 9 and irrigacao = 1 order by cidade";
        $query = mysqli_query($conexao, $sql) ;
        if(!$query)
-           {
-              mysqli_close($conexao);
-              echo "Erro em consulta a base de dados, a qual est&aacute; descrita a seguir.<br>";
-              echo $sql;
-              exit(1);
-           }
+        {
+          mysqli_close($conexao);
+          echo "Erro em consulta a base de dados, a qual est&aacute; descrita a seguir.<br>";
+          echo $sql;
+          exit(1);
+        }
 
       $numLinhas = $query->num_rows;
       if( $numLinhas == 0) {
@@ -40,9 +39,7 @@
              ';
               mysqli_close($conexao);
               exit(1);
-
        }
-
 
        echo '
                  <!doctype html>

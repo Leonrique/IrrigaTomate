@@ -1,4 +1,4 @@
-function getDadosClimaticos(id, dia, mes) {
+function getDadosClimaticos(id, dia, mes, estacao) {
    if (window.XMLHttpRequest) {
       // FireFox, Mozilla, Safari,...
       xmlHttpObject = new XMLHttpRequest();
@@ -21,7 +21,7 @@ function getDadosClimaticos(id, dia, mes) {
    }
 
    xmlHttpObject.onreadystatechange = busca30anos; //especifica a fun..o JAVASCRIPT que recebera o resultado
-   xmlHttpObject.open("GET", "getDadosClimaticos.php?id=" + id + "&dia=" + dia + "&mes=" + mes); // insercao dos parametros dia e mes
+   xmlHttpObject.open("GET", "getDadosClimaticos.php?id=" + id + "&dia=" + dia + "&mes=" + mes + "&estacao=" + estacao); // insercao dos parametros dia e mes
    xmlHttpObject.send(); // envia par.metros ao servidor se for pelo metodo POST
    return false;
 }

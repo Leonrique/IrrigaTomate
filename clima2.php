@@ -8,6 +8,7 @@
        $nomeCidade = $_GET["nome"];
        $diaPlantio = $_GET["dia"]; // Novo
        $mesPlantio = $_GET["mes"]; // Novo
+       $estacao = $_GET["estacao"]; // Novo
 
        $conexao = mysqli_connect(hostBancoPantanal, userDonoPantanal, senhaDonoPantanal, nomeBancoPantanal) ;
        if (!$conexao) {
@@ -48,7 +49,7 @@
                       }
                     </script>
                  </head>
-                 <body onload="getDadosClimaticos('.$idCidade.', '.$diaPlantio.', '.$mesPlantio.')">
+                 <body onload="getDadosClimaticos('.$idCidade.', '.$diaPlantio.', '.$mesPlantio.', \''.$estacao.'\')">
                  <!-- Barra dos logotipos -->
                  <div id="barraLogotipos">
                    <!-- Logo irrigaFeijao  -->

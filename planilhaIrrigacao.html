@@ -287,7 +287,7 @@
                       <button class="button button-primary button-pipaluk" style="float: right;" type="submit" onclick="gravarEstacao()">Gravar estação</button>
                     </form>
 
-                    <table id="listaEstacoes" class="table-custom" style="margin-top: 40px;">
+                    <table id="listaEstacoes" class="table-custom table-custom-responsive" style="margin-top: 40px;">
                       <thead>
                         <tr>
                           <th>Nome estação</th>
@@ -622,15 +622,19 @@
 
         cellNome = newRow.insertCell(0);
         cellNome.id = stationInfo[0];
+        cellNome.setAttribute('data-label', "Nome estação")
         cellNome.innerHTML = stationInfo[2];
 
         cellId = newRow.insertCell(1);
+        cellId.setAttribute('data-label', "Identificador estação")
         cellId.innerHTML = stationInfo[3];
 
         cellCidade = newRow.insertCell(2);
+        cellCidade.setAttribute('data-label', "Cidade")
         cellCidade.innerHTML = getCityNameById(stationInfo[4]);
 
         cellEdit = newRow.insertCell(3);
+        cellEdit.className = "stationEdit"
         cellEdit.innerHTML = `<button class="button button-primary" style="margin-top: 0" onclick="editarEstacao(this)">Editar</button>
                               <button class="button button-google" style="margin-top: 0" onclick="excluirEstacao(this)">Excluir</button>`
       }
