@@ -1420,6 +1420,11 @@ img {
 		position: relative;
 	}
 
+	#excluirEstacao, #editarEstacao{
+		padding: 10px 15px 9px;
+		min-width: 150px;
+	}
+
 	.table-custom td::before{
 		content: attr(data-label);
 		position: absolute;

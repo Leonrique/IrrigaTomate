@@ -626,7 +626,7 @@
         cellNome.innerHTML = stationInfo[2];
 
         cellId = newRow.insertCell(1);
-        cellId.setAttribute('data-label', "Identificador estação")
+        cellId.setAttribute('data-label', "Cód. estação")
         cellId.innerHTML = stationInfo[3];
 
         cellCidade = newRow.insertCell(2);
@@ -635,8 +635,8 @@
 
         cellEdit = newRow.insertCell(3);
         cellEdit.className = "stationEdit"
-        cellEdit.innerHTML = `<button class="button button-primary" style="margin-top: 0" onclick="editarEstacao(this)">Editar</button>
-                              <button class="button button-google" style="margin-top: 0" onclick="excluirEstacao(this)">Excluir</button>`
+        cellEdit.innerHTML = `<button class="button button-primary" id="editarEstacao" style="margin-top: 0" onclick="editarEstacao(this)">Editar</button>
+                              <button class="button button-google" id="excluirEstacao" style="margin-top: 0" onclick="excluirEstacao(this)">Excluir</button>`
       }
 
       function editarEstacao(td){
