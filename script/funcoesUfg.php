@@ -198,6 +198,9 @@
 
      $retorno = "";
      $radSol = media($outputRadSol);
+     if( $radSol > 0)
+         $radSol = $radSol * (1000000.0 * 24.0 /  86400.0); 
+
      $precipit = media($outputPrecip); // por enquanto nao vai ser usada esta variavel, mas poderah ser usada mais para frente.
      $velVento = media($outputVelVento);
      $tempAr = media($outputTempAr);
